@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="COM_USERNOTES_USERNOTE_VIEW_DEFAULT_TITLE" option="COM_USERNOTES_USERNOTE_VIEW_DEFAULT_OPTION">
+		<help
+			key = "JHELP_MENUS_MENU_ITEM_USERNOTE_USERNOTES"
+		/>
+		<message>
+			<![CDATA[COM_USERNOTES_USERNOTES_VIEW_DEFAULT_DESC]]>
+		</message>
+	</layout>
+
+	<!-- Add fields to the request variables for the layout. -->
+	<fields name="request">
+	</fields>
+
+	<!-- Add fields to the parameters object for the layout. -->
+	<fields name="params">
+
+		<fieldset name="request">
+
+			<field name="notes_type"
+				type="list"
+				description="COM_USERNOTES_FIELD_OWNER_DESC"
+				label="COM_USERNOTES_FIELD_OWNER_LABEL"
+				required="true"
+			>
+				<option value="">JSELECT</option>
+				<option value="0">COM_USERNOTES_OWNER_USER</option>
+				<option value="1">COM_USERNOTES_OWNER_GROUP</option>
+				<option value="2">COM_USERNOTES_OWNER_SITE</option>
+			</field>
+
+			<field name="group_auth"
+				type="usergrouplist"
+				label="Owning group:"
+				description="Select the group who owns/edits the notes"
+				required="true"
+				default="0"
+				showon="notes_type:1"
+			/>
+
+			<field name="site_auth"
+				type="usergrouplist"
+				multipllle="true"
+				label="Editable by:"
+				description="Select the group(s) who may edit the notes"
+				required="true"
+				default="0"
+				showon="notes_type:2"
+			/>
+
+		</fieldset>
+
+		<!-- Basic options. -->
+		<fieldset name="basic" label="COM_USERNOTES_FIELDSET_MORE_OPTIONS_LABEL">
+
+			<field name="show_feed_image" type="list"
+				description="COM_USERNOTES_FIELD_SHOW_FEED_IMAGE_DESC"
+				label="COM_USERNOTES_FIELD_SHOW_FEED_IMAGE_LABEL"
+			>
+				<option value="">JGLOBAL_USE_GLOBAL</option>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+
+			<field name="show_feed_description" type="list"
+				description="COM_USERNOTES_FIELD_SHOW_FEED_DESCRIPTION_DESC"
+				label="COM_USERNOTES_FIELD_SHOW_FEED_DESCRIPTION_LABEL"
+			>
+				<option value="">JGLOBAL_USE_GLOBAL</option>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+
+			<field name="show_item_description" type="list"
+				description="COM_USERNOTES_FIELD_SHOW_ITEM_DESCRIPTION_DESC"
+				label="COM_USERNOTES_FIELD_SHOW_ITEM_DESCRIPTION_LABEL"
+			>
+				<option value="">JGLOBAL_USE_GLOBAL</option>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+
+			<field name="show_tags" type="list"
+				label="COM_USERNOTES_FIELD_SHOW_TAGS_LABEL"
+				description="COM_USERNOTES_FIELD_SHOW_TAGS_DESC"
+			>
+				<option value="">JGLOBAL_USE_GLOBAL</option>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+
+			<field name="feed_character_count" type="text"
+				default="0"
+				description="COM_USERNOTES_FIELD_CHARACTER_COUNT_DESC"
+				label="COM_USERNOTES_FIELD_CHARACTER_COUNT_LABEL"
+				size="6"
+			/>
+
+			<field name="feed_display_order" type="list"
+				description="COM_USERNOTES_FIELD_FEED_DISPLAY_ORDER_DESC"
+				label="COM_USERNOTES_FIELD_FEED_DISPLAY_ORDER_LABEL"
+			>
+				<option value="">JGLOBAL_USE_GLOBAL</option>
+				<option value="des">JGLOBAL_MOST_RECENT_FIRST</option>
+				<option value="asc">JGLOBAL_OLDEST_FIRST</option>
+			</field>
+			
+		</fieldset>
+	</fields>
+</metadata>

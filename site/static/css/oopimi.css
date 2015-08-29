@@ -1,0 +1,198 @@
+::selection{ background-color: #E13300; color: white; }
+::moz-selection{ background-color: #E13300; color: white; }
+::webkit-selection{ background-color: #E13300; color: white; }
+
+html {
+	background-color: #F0FFF0;
+}
+
+}
+body {
+	position: relative;
+	margin: 5;
+	-webkit-text-size-adjust: none;
+	min-height: 416px;
+	font-family: helvetica,sans-serif;
+	font-size: 1em;
+	-webkit-background-size:0.438em 100%; 
+	/*background: -webkit-gradient(linear,left top,right top,from(#c5ccd4), color-stop(71%, #c5ccd4), color-stop(72%, #cbd2d8), to(#cbd2d8));*/
+	-webkit-touch-callout: none;
+}
+
+a {
+	color: #003399;
+	background-color: transparent;
+	font-weight: normal;
+}
+
+h1 {
+	color: #444;
+	background-color: transparent;
+	border-bottom: 1px solid #D0D0D0;
+	font-size: 1.2em;
+	font-weight: normal;
+	/*margin: 0 0 14px 0;
+	padding: 14px 15px 10px 15px;*/
+}
+
+code {
+	font-family: Consolas, Monaco, Courier New, Courier, monospace;
+	font-size: 12px;
+	background-color: #f9f9f9;
+	border: 1px solid #D0D0D0;
+	color: #002166;
+	display: block;
+	margin: 14px 0 14px 0;
+	padding: 12px 10px 12px 10px;
+}
+
+#topmenu {
+	margin-bottom: 4px;
+}
+
+div.menug {
+	float: left;
+	width: 16px;
+	margin-right: 2px;
+	background-image: url('graphics/oopimmenu.gif');
+	background-repeat: no-repeat;
+}
+
+li.menu, li.menu a {
+	height: 28px;
+	width: auto;
+}
+li.menu a {
+	display: block;
+	text-decoration: none;
+	padding-top: 6px;
+}
+li.menu {
+	border-top: 1px solid #D0D0D0;
+	padding: 0 4px;
+}
+li.menu:first-child {
+	border-top: 0;
+}
+span.menun {
+	width: auto;
+}
+
+div.notem {
+	background-position: -1px 0;
+}
+div.ctctm {
+	background-position: -19px 0;
+}
+div.caldm {
+	background-position: -37px 0;
+}
+div.linkm {
+	background-position: -55px 0;
+}
+div.newsm {
+	background-position: -73px 0;
+}
+div.secrm {
+	background-position: -91px 0;
+}
+
+#body {
+	margin: 0;	/* 10px;*/
+	padding: 0;	/* 4px;*/
+}
+
+#body ul {
+	list-style-type: none;
+	padding: 0px;
+	margin: 0;	/*8px 0;*/
+}
+
+#body li.note {
+	background-repeat: no-repeat;
+	background-position: 0px 1px;
+	padding-left: 20px;
+}
+
+#body li.docu {
+	background-image: url('graphics/document.png');
+}
+#body li.docu_s {
+	background-image: url('graphics/document_share.png');
+}
+
+#body li.fold {
+	background-image: url('graphics/folder.png');
+}
+#body li.fold_s {
+	background-image: url('graphics/folder_share.png');
+}
+
+p.footer {
+	text-align: right;
+	font-size: 11px;
+	border-top: 1px solid #D0D0D0;
+	line-height: 32px;
+	padding: 0 10px 0 10px;
+	margin: 20px 0 0 0;
+}
+
+#container {
+	margin: 2px 0;
+	/*padding: 0 4px;*/
+	background-color: white;
+	border: 1px solid #D0D0D0;
+	-webkit-box-shadow: 0 0 8px #D0D0D0;
+}
+
+div.footer {
+	border-top: 1px solid #D0D0D0;
+	padding: 5px 4px 0;
+}
+
+a.edtLnk {
+	float: right;
+	/*margin-right: 3px;*/
+}
+
+input, textarea {
+	font-size: .9em;
+}
+
+.formLayout {
+   background-color: #f3f3f3;
+   border: solid 1px #a1a1a1;
+   padding: 10px;
+   /*width: 300px;*/
+}
+
+.formLayout label, .formLayout input {
+   display: block;
+   width: 120px;
+   float: left;
+   margin-bottom: 10px;
+}
+
+.formLayout label {
+   clear: left;
+   text-align: right;
+   width: 80px;
+   padding-right: 10px;
+   padding-top: 6px;
+}
+
+.formLayout input {
+   font-size: 1em;
+}
+
+input[type=checkbox] {
+	width: 20px;
+}
+
+form.login {
+background-color: #F3F3F3;
+width: 270px;
+padding: 4px 10px 10px;
+border: 1px solid gray;
+margin: 40px auto 0;
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fieldset>
+		<field name="itemID" type="hidden"
+			default="0"
+			label="COM_USERNOTES_ID_LABEL"
+			readonly="true"
+			required="true"
+			size="10"
+		/>
+		<field name="shared" type="hidden"
+			default="1"
+			label="COM_USERNOTES_ID_LABEL"
+			readonly="true"
+			required="true"
+			size="10"
+		/>
+		<field name="isParent" type="hidden"
+			default="0"
+			label="COM_USERNOTES_ID_LABEL"
+			readonly="true"
+			required="true"
+			size="10"
+		/>
+		<field name="contentID" type="hidden"
+			default="0"
+			label="COM_USERNOTES_ID_LABEL"
+			readonly="true"
+			required="true"
+			size="10"
+		/>
+		<field name="parentID" type="hidden"
+			default="0"
+			label="COM_USERNOTES_ID_LABEL"
+			readonly="true"
+			required="true"
+			size="10"
+		/>
+		<field name="title" type="text"
+			description="COM_USERNOTES_FIELD_TITLE_DESC"
+			label="COM_USERNOTES_FIELD_TITLE_LABEL"
+			required="true"
+			size="30"
+		/>
+		<field name="serial_content" type="editor"
+			buttons="true"
+			hide="pagebreak,readmore,article,image"
+			description="COM_USERNOTES_FIELD_NOTE_DESC"
+			filter="safehtml"
+			label="COM_USERNOTES_FIELD_NOTE_LABEL"
+			size="20"
+		/>
+	</fieldset>
+</form>
