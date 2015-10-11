@@ -43,3 +43,50 @@ class Note_model
 		return $html;
 	}
 }
+
+class Secured_model
+{
+
+	public $rawtxt = '';
+	public $ephrase = '';
+
+    function __construct ($raw=NULL)
+	{
+		if ($raw) {
+			$ephrase = JFactory::getApplication()->input->post->get('ephrase','','string');
+			if (!$ephrase) return;
+			$uudat = convert_uuencode($this->doCrypt(false,$ephrase,$raw));
+			$this->rawtxt = $uudat;
+		}
+	}
+
+	function rawdata ()
+	{
+		return $this->rawtxt;
+	}
+
+	function rendered ($addHtml=false)
+	{
+		$this->ephrase = JFactory::getApplication()->input->post->get('ephrase','','string');	//var_dump($this->ephrase);
+		if (!$this->ephrase) return '';
+		$odat = $this->doCrypt(true,$this->ephrase,convert_uudecode($this->rawtxt));
+		if (!$addHtml) return $odat;
+		return $this->withHtml($odat);
+		return '<pre>'.$odat.'</pre>';
+	}
+
+	private function doCrypt ($de,$pass,$dat)
+	{
+		$td = mcrypt_module_open(MCRYPT_3DES, '', MCRYPT_MODE_ECB, '');
+		$iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_DEV_RANDOM);
+		$ks = mcrypt_enc_get_key_size($td);
+		$key = substr($pass, 0, $ks);
+		mcrypt_generic_init($td, $key, $iv);
+		if ($de) { $retdat = trim(mdecrypt_generic($td, $dat)); }
+		else { $retdat = mcrypt_generic($td, $dat); }
+		mcrypt_generic_deinit($td);
+		mcrypt_module_close($td);
+		return $retdat;
+	}
+
+}

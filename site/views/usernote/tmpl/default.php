@@ -12,7 +12,7 @@ var parentID = '.$this->item->parentID.';
 var contentID = '.$this->item->contentID.';
 var upldDestURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'";
 var fup_payload = {task:"attach", cID:'.$this->item->contentID.'};
-var uploadMaxFilesize = 268435456;
+var uploadMaxFilesize = '.$this->maxUploadBytes.';
 ');
 $jdoc->addScript('components/com_usernotes/static/js/oopim.js');
 $jdoc->addScript('components/com_usernotes/static/js/pumenu.js');
@@ -63,7 +63,7 @@ if ($prning) echo '<button type="button" class="btn btn-primary" onclick="window
 	</ul>
 </div>
 <div id="filupld" class="uplddlog" style="display:none;">
-	<span style="color:#36C;">Max file upload size: <?=ini_get('upload_max_filesize')?></span>
+	<span style="color:#36C;">Max file upload size: <?=UserNotesHelper::formatBytes($this->maxUploadBytes)?></span>
 	<input type="file" id="upload_field" name="attm[]" multiple="multiple" />
 	<div id="dropArea">Or drop files here</div>
 	<div id="result"></div>

@@ -81,8 +81,14 @@ div.secrm {
 div.docum {
 	background-image: url('../imgs/32/document.png');
 }
+div.docum.isecure {
+	background-image: url('../imgs/32/document-secure.png');
+}
 div.foldm {
 	background-image: url('../imgs/32/folder.png');
+}
+div.foldm.isecure {
+	background-image: url('../imgs/32/folder-secure.png');
 }
 
 a.act-left {
@@ -243,6 +249,21 @@ span.atchlink
 .unote-edit {
 	position: relative;
 }
+
+.unote-edit label {
+	width: 1%;
+	white-space: nowrap;
+}
+
+.unote-edit input[type='checkbox'] {
+	vertical-align: baseline;
+}
+
+.unote-edit input+label {
+	display: initial;
+	margin-left: 0.25em;
+}
+
 .unote-buttons {
 	position: absolute;
 	right: 0;

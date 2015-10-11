@@ -7,8 +7,8 @@ abstract class UserNotesHelperDb
 	{
 		$execs = explode(';', file_get_contents(JPATH_COMPONENT_ADMINISTRATOR.'/sql/usernotes.sql'));
 		foreach ($execs as $exec) {
-			$db->setQuery($exec);
-			$db->execute();
+			$exec = trim($exec);
+			if ($exec[0] != '#') $db->setQuery($exec)->execute();
 		}
 	}
 }

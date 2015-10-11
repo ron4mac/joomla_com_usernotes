@@ -7,7 +7,30 @@ $jdoc = JFactory::getDocument();
 $jdoc->addScript('components/com_usernotes/static/js/oopim.js');
 $jdoc->addScript('components/com_usernotes/static/js/notesview.js');
 
-//var_dump($this->items);
+if (/*$this->state->secured*/ $this->item && $this->item->secured && $_SERVER['SERVER_PORT'] != 443) {
+	//JError::raiseNotice(100, 'You do not have a secure connection!', 'error');
+	JFactory::getApplication()->enqueueMessage('<span style="color:red">'.JText::_('You do not have a secure connection!').'</span>', 'warning');
+	//echo '<div style="background-color:red;color:white;">WARNING: You do not have a secure connection!</div>';
+}
+
+if (isset($this->posq)) {
+	JFactory::getApplication()->enqueueMessage(JText::sprintf('Storage usage is at %s%% of quota!',$this->posq), 'notice');
+}
+//JFactory::getApplication()->enqueueMessage('<span style="color:red">'.JText::_('Storage usage is at 90% of quota!').'</span>', 'warning');
+//JError::raiseNotice(100, 'Storage usage is at 90% of quota!');
+//var_dump($this->params);echo'<br /><br />';var_dump(JComponentHelper::getParams('com_usernotes'));
+
+if ($this->state->secured && $_SERVER['SERVER_PORT'] != 443) {
+	$hostname = php_uname('n');
+	//$hostname = str_replace('ehub','secure',$hostname);
+	$paths = explode('/',__FILE__);
+	//var_dump($hostname,$paths);var_dump($_SERVER);
+	echo '<div style="background-color:red;color:white;">';
+	echo 'WARNING: You do not have a secure connection!';
+	echo '<a href="https://'.$hostname.'/~'.$paths[2].$_SERVER['REQUEST_URI'].'">[connect securely]</a>';
+	echo '</div>';
+}
+
 ?>
 <div class="search">
 	<form name="sqry" onsubmit="return Oopim.performSearch(this,<?=$this->parentID?>)">

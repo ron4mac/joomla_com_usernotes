@@ -6,7 +6,7 @@ require_once JPATH_BASE . '/components/com_usernotes/views/notesview.php';
 /**
  * View class for a list of user schedules.
  */
-class UsernotesViewUsernotes extends UsernotesView
+class UsernotesViewGroupnotes extends UsernotesView
 {
-	protected $relm = 'user';
+	protected $relm = 'group';
 }

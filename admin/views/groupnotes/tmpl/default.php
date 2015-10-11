@@ -12,7 +12,7 @@ $listOrder	= $this->state('list.ordering');
 $listDirn	= $this->state('list.direction');
 $canDo		= UserNotesHelper::getActions();
 ?>
-<form action="<?php echo JRoute::_('index.php?option=com_usernotes&view=usernotes'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo JRoute::_('index.php?option=com_usernotes&view=groupnotes'); ?>" method="post" name="adminForm" id="adminForm">
 	<div id="j-sidebar-container" class="span2">
 		<?php echo $this->sidebar; ?>
 	</div>
@@ -23,13 +23,10 @@ $canDo		= UserNotesHelper::getActions();
 					<th width="1%"></th>
 					<th width="1%"><?php echo JHtml::_('myGrid.checkall'); ?></th>
 					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_USERNOTES_USERNAME', 'username', $listDirn, $listOrder); ?>
+						<?php echo JHtml::_('grid.sort', 'COM_USERNOTES_GROUPNAME', 'username', $listDirn, $listOrder); ?>
 					</th>
 					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_USERNOTES_FULLNAME', 'fullname', $listDirn, $listOrder); ?>
-					</th>
-					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_USERNOTES_USERID', 'userid', $listDirn, $listOrder); ?>
+						<?php echo JHtml::_('grid.sort', 'COM_USERNOTES_GROUPID', 'userid', $listDirn, $listOrder); ?>
 					</th>
 					<th width="30%">
 						&#160;
@@ -55,9 +52,6 @@ $canDo		= UserNotesHelper::getActions();
 					<td>
 						<?php echo $item['uname']; ?>
 						<a href="<?php echo JRoute::_('index.php?option=com_usernotes&view=events&uid=').$item['uid']; ?>">view</a>
-					</td>
-					<td>
-						<?php echo $item['name']; ?>
 					</td>
 					<td>
 						<?php echo $item['uid'] ?>

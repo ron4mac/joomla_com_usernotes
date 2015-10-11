@@ -49,10 +49,22 @@
 				showon="notes_type:2"
 			/>
 
+			<field name="secured" type="radio" class="btn-group"
+				default="0"
+				description="COM_USERSCHED_CALTYPE_DESC"
+				label="COM_USERSCHED_CALTYPE_LABEL"
+			>
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+
 		</fieldset>
 
 		<!-- Basic options. -->
-		<fieldset name="basic" label="COM_USERNOTES_FIELDSET_MORE_OPTIONS_LABEL">
+		<fieldset name="basic" label="COM_USERNOTES_FIELDSET_MORE_OPTIONS_LABEL" addfieldpath="/components/com_usernotes/models/fields">
+
+			<field name="maxUpload" type="GmkbValue" default="0" compdef="maxUpload" />
+			<field name="storQuota" type="GmkbValue" default="0" compdef="storQuota" />
 
 			<field name="show_feed_image" type="list"
 				description="COM_USERNOTES_FIELD_SHOW_FEED_IMAGE_DESC"

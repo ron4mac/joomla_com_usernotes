@@ -58,9 +58,22 @@ class UserNotesController extends JControllerLegacy
 
 	public function attach ()
 	{
+		$m = $this->getModel('usernote');
+		$notesid = $this->input->get('notesID', '', 'base64');
+		$cid = $this->input->post->get('cID', 0, 'int');
+		$files = $this->input->files->get('attm');
+		if (JDEBUG) {
+			$fdmp = print_r($files, true);
+			JLog::add("attach ... notesID: {$notesid}  note: {$cid}  file(s): {$fdmp}", JLog::INFO, 'com_usernotes');
+		}
+		$m->add_attached($cid, $files, $notesid);
+	}
+
+	public function sv_attach ()
+	{
 		$m = $this->getModel('usernotes');
-		$notesid = $this->input->get('notesID', '' ,'base64');
-		$cid = $this->input->post->get('cID', 0 ,'int');
+		$notesid = $this->input->get('notesID', '', 'base64');
+		$cid = $this->input->post->get('cID', 0, 'int');
 		$files = $this->input->files->get('attm');
 		if (JDEBUG) {
 			$fdmp = print_r($files, true);
@@ -71,9 +84,21 @@ class UserNotesController extends JControllerLegacy
 
 	public function detach ()
 	{
+		$m = $this->getModel('usernote');
+		$cid = $this->input->post->get('contentID', 0, 'int');
+		$file = $this->input->post->get('file', '', 'string');
+		if (JDEBUG) {
+			JLog::add("detach ... note: {$cid}  file: {$file}", JLog::INFO, 'com_usernotes');
+		}
+		$r = $m->deleteAttachment($cid, $file);
+		if ($r) echo $r;
+	}
+
+	public function sv_detach ()
+	{
 		$m = $this->getModel('usernotes');
-		$cid = $this->input->post->get('contentID', 0 ,'int');
-		$file = $this->input->post->get('file','','string');
+		$cid = $this->input->post->get('contentID', 0, 'int');
+		$file = $this->input->post->get('file', '', 'string');
 		if (JDEBUG) {
 			JLog::add("detach ... note: {$cid}  file: {$file}", JLog::INFO, 'com_usernotes');
 		}
@@ -83,9 +108,9 @@ class UserNotesController extends JControllerLegacy
 
 	public function attlist ()
 	{
-		$m = $this->getModel('usernotes');
-		$cid = $this->input->post->get('contentID', 0 ,'int');
-		$ined = $this->input->get('inedit', 0 ,'int');
+		$m = $this->getModel('usernote');
+		$cid = $this->input->post->get('contentID', 0, 'int');
+		$ined = $this->input->get('inedit', 0, 'int');
 		$atchs = $m->attachments($cid);
 		if ($atchs) {
 			echo JHtml::_('usernotes.att_list',$atchs,$cid,$ined);
@@ -94,7 +119,7 @@ class UserNotesController extends JControllerLegacy
 
 	public function cat_hier ()
 	{
-		$pid = $this->input->post->get('pID', 0 ,'int');
+		$pid = $this->input->post->get('pID', 0, 'int');
 		$m = $this->getModel('usernotes');
 		$hier = $m->get_item_hier(JFactory::getUser()->get('id'));
 		echo '<span>Move item to:</span><br />';
@@ -105,8 +130,8 @@ class UserNotesController extends JControllerLegacy
 
 	public function movitm ()
 	{
-		$iid = $this->input->post->get('iID', 0 ,'int');
-		$pid = $this->input->post->get('pID', 0 ,'int');
+		$iid = $this->input->post->get('iID', 0, 'int');
+		$pid = $this->input->post->get('pID', 0, 'int');
 		$m = $this->getModel('usernotes');
 		echo $m->moveItem($iid, $pid);
 	}

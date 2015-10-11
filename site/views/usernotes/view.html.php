@@ -16,11 +16,16 @@ class UserNotesViewUserNotes extends UserNotesViewBase
 		// Get view related request variables.
 
 		// Get model data.
-		$this->state = $this->get('State');
+		$this->state = $this->get('State');		//echo'<xmp>';var_dump($this->state->secured);echo'</xmp>';
 		$this->items = $this->get('Items');
-		$this->item = $this->getModel()->get('Item');
+		$this->item = $this->getModel()->getItem();		//var_dump($this->item);
+
+		$this->params = JFactory::getApplication()->getParams();
 
 		$this->parentID = $this->state->get('parent.id');
+		if (!$this->parentID) {
+			$this->posq = $this->get('Posq');
+		}
 		$this->getModel()->buildPathway($this->parentID);
 
 		// Check for errors.

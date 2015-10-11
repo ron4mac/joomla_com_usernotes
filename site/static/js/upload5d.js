@@ -106,7 +106,7 @@ Oopim.Upld5d = (function(){
 			// create progress bar
 			this.progress = progressDiv.appendChild(document.createElement("p"));
 			this.progress.appendChild(document.createTextNode(file.name));
-			this.progress.innerHTML = this.progress.innerHTML + '<img src="components/com_usernotes/static/imgs/redX.png" class="abortX" onclick="AbortUpload(this)" />';
+			this.progress.innerHTML = this.progress.innerHTML + '<img src="'+baseURL+'components/com_usernotes/static/imgs/redX.png" class="abortX" onclick="AbortUpload(this)" />';
 			this.progress._upld = this;
 
 			if (errM) {

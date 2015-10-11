@@ -1,14 +1,10 @@
 <?php
-/**
- * @package     Joomla.Administrator
- * @subpackage  com_usernotes
- *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
- */
-
 defined('_JEXEC') or die;
+
 JHtml::_('behavior.tabstate');
+
+$j_version = preg_replace('#[^0-9\.]#i','',JVERSION);
+define('USERNOTES_J30', version_compare($j_version,'3.0.0','>=') ? true : false);
 
 if (!JFactory::getUser()->authorise('core.manage', 'com_usernotes'))
 {

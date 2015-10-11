@@ -1,31 +1,10 @@
 <?php
-/**
- * @package     Joomla.Administrator
- * @subpackage  com_usernotes
- *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
- */
-
 defined('_JEXEC') or die;
 
-/**
- * UserNote controller class.
- *
- * @since  1.6
- */
 class UserNotesControllerUserNote extends JControllerForm
 {
-	/**
-	 * Method override to check if you can add a new record.
-	 *
-	 * @param   array  $data  An array of input data.
-	 *
-	 * @return  boolean
-	 *
-	 * @since   1.6
-	 */
-	protected function allowAdd($data = array())
+
+	protected function allowAdd ($data = array())
 	{
 		$user = JFactory::getUser();
 		$categoryId = JArrayHelper::getValue($data, 'catid', $this->input->getInt('filter_category_id'), 'int');

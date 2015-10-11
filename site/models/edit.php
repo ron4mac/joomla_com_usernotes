@@ -25,15 +25,17 @@ class UserNotesModelEdit extends JModelForm
 	{
 		$nid = (!empty($nid)) ? $nid : (int) $this->getState('usernote.id');
 		if (!$nid) return null;
+//		$secured = (bool)$this->state->get('parameters.menu')->get('secured') ? : false;
 		$data = null;
 		try
 		{
 			$db = $this->getDbo();
 			$query = $db->getQuery(true)
-				->select('n.*, c.serial_content, a.attached')
+				->select('n.*, c.serial_content'/*, a.attached'*/)
+//				->from(($secured?'secureds':'notes').' AS n')
 				->from('notes AS n')
 				->join('LEFT', 'content AS c on c.contentID = n.contentID')
-				->join('LEFT', 'attach AS a on a.contentID = n.contentID')
+			//	->join('LEFT', 'attach AS a on a.contentID = n.contentID')
 				->where('n.itemID = ' . (int) $nid);
 
 			$db->setQuery($query);		//echo'<pre>';var_dump($db->getQuery());echo'</pre>';
@@ -46,6 +48,9 @@ class UserNotesModelEdit extends JModelForm
 				if ($nm = @unserialize($data->serial_content)) {
 					$data->serial_content = $nm->rendered();
 				}
+				$db->setQuery('SELECT attached FROM fileatt WHERE contentID='.$data->contentID);
+				$data->attached = $db->loadRowList();
+				//echo'<xmp>';var_dump($data);echo'</xmp>';jexit();
 			}
 		}
 		catch (Exception $e)
@@ -75,33 +80,32 @@ class UserNotesModelEdit extends JModelForm
 		$db->execute();
 	}
 
-	protected function populateState ()
+	public function itemIsSecure ($nid)
 	{
-		// Initialize variables
-		$app = JFactory::getApplication();
-		$params = JComponentHelper::getParams('com_usernotes');
-		$input = $app->input;
-
-		// album ID
-		$nid = $input->get('nid', 0, 'INT');
-		$this->state->set('usernote.id', $nid);
-
-		// Load the parameters.
-		$this->setState('params', $params);
+		if (!$nid) return false;
+		$db = $this->getDbo();
+		$db->setQuery('SELECT secured FROM notes WHERE itemID='.$nid);
+		return $db->loadResult();
 	}
 
 	public function getForm ($data = array(), $loadData = true)
 	{
 		// Initialize variables
 		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $app->input;		//echo'<xmp>';var_dump($this->state);echo'</xmp>';
+//		$secured = (bool)$this->state->get('parameters.menu')->get('secured') ? : false;
 
 		if ($input->get('type','','cmd') == 'f') {
 			$src = 'com_usernotes.fold';
 			$nam = 'fold';
 		} else {
-			$src = 'com_usernotes.note';
-			$nam = 'note';
+			if (/*$secured ||*/ $data->secured) {
+				$src = 'com_usernotes.snote';
+				$nam = 'snote';
+			} else {
+				$src = 'com_usernotes.note';
+				$nam = 'note';
+			}
 		}
 
 		// get any data
@@ -126,4 +130,24 @@ class UserNotesModelEdit extends JModelForm
 	{
 		return $this->_data;
 	}
+
+	protected function populateState ()
+	{
+		// Initialize variables
+		$app = JFactory::getApplication();
+		$params = JComponentHelper::getParams('com_usernotes');
+		$input = $app->input;
+
+//		// menu params
+//		$mparams = $app->getParams();
+//		$this->state->set('secured', (bool)$mparams->get('secured', false));
+
+		// album ID
+		$nid = $input->get('nid', 0, 'INT');
+		$this->state->set('usernote.id', $nid);
+
+		// Load the parameters.
+		$this->setState('params', $params);
+	}
+
 }

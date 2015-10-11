@@ -7,6 +7,33 @@ abstract class UserNotesHelper
 	protected static $ownerID = null;
 	protected static $udp = null;
 
+	public static function addSubmenu ($vName)
+	{
+		JHtmlSidebar::addEntry(
+			JText::_('COM_USERNOTES_SUBMENU_USER'),
+			'index.php?option=com_usernotes',
+			$vName == 'user'
+		);
+		JHtmlSidebar::addEntry(
+			JText::_('COM_USERNOTES_SUBMENU_GROUP'),
+			'index.php?option=com_usernotes&view=groupnotes',
+			$vName == 'group'
+		);
+//		JHtmlSidebar::addEntry(
+//			JText::_('COM_USERNOTES_SUBMENU_SITE'),
+//			'index.php?option=com_usernotes&view=site',
+//			$vName == 'site'
+//		);
+	}
+
+	public static function getStorageBase ()
+	{
+		$dispatcher = JDispatcher::getInstance();
+		$results = $dispatcher->trigger('onRjuserDatapath', null);
+		$sdp = isset($results[0]) ? trim($results[0]) : '';
+		return $sdp ? $sdp : 'userstor';
+	}
+
 	public static function userDataPath ()
 	{
 		if (self::$udp) return self::$udp;
@@ -24,13 +51,69 @@ abstract class UserNotesHelper
 				break;
 		}
 
-		$dispatcher = JDispatcher::getInstance();
-		$results = $dispatcher->trigger('onRjuserDatapath', null);
-		$sdp = isset($results[0]) ? trim($results[0]) : '';
-		if (!$sdp) $sdp = 'userstor';
+		$sdp = self::getStorageBase();
 
 		self::$udp = $sdp.'/'.$ndir.'/'.$cmp;
 		return self::$udp;
+	}
+
+	public static function getDbPaths ($which, $dbname, $full=false, $cmp='')
+	{
+		$paths = array();
+		if (!$cmp) $cmp = JApplicationHelper::getComponentName();
+		switch ($which) {
+			case 'u':
+				$char1 = '@';
+				break;
+			case 'g':
+				$char1 = '_';
+				break;
+			default:
+				$char1 = '';
+				break;
+		}
+		$dpath = JPATH_SITE.'/'.self::getStorageBase().'/';
+		if (is_dir($dpath) && ($dh = opendir($dpath))) {
+			while (($file = readdir($dh)) !== false) {
+				if ($file[0]==$char1) {
+					$ptf = $dpath.$file.'/'.$cmp.'/'.$dbname.'.sql3';
+					if (file_exists($ptf))
+						$paths[] = $full ? $ptf : $file;
+					$ptf = $dpath.$file.'/'.$cmp.'/'.$dbname.'.db3';
+					if (file_exists($ptf))
+						$paths[] = $full ? $ptf : $file;
+				}
+			}
+			closedir($dh);
+		}
+		return $paths;
+	}
+
+	public static function getGroupTitle ($gid)
+	{
+		$db = JFactory::getDbo();
+		$db->setQuery('SELECT title FROM #__usergroups WHERE id='.$gid);
+		return $db->loadResult();
+	}
+
+	public static function hashCookieName ($v1=0, $v2=0)
+	{
+		$uid = JFactory::getUser()->get('id');
+		return md5(implode(':', array($uid, $v1, $v2)));
+	}
+
+	public static function doCrypt ($pass, $dat, $de=false)
+	{
+		$td = mcrypt_module_open(MCRYPT_3DES, '', MCRYPT_MODE_ECB, '');
+		$iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_DEV_RANDOM);
+		$ks = mcrypt_enc_get_key_size($td);
+		$key = substr($pass, 0, $ks);
+		mcrypt_generic_init($td, $key, $iv);
+		if ($de) { $retdat = trim(mdecrypt_generic($td, $dat)); }
+		else { $retdat = mcrypt_generic($td, $dat); }
+		mcrypt_generic_deinit($td);
+		mcrypt_module_close($td);
+		return $retdat;
 	}
 
 	public static function userAuth ($uid)
@@ -54,6 +137,21 @@ abstract class UserNotesHelper
 	{
 		if (is_null(self::$instanceType)) self::getTypeOwner();
 		return base64_encode(self::$instanceType.':'.self::$ownerID);
+	}
+
+	public static function getActions ()
+	{
+		$user = JFactory::getUser();
+		$result = new JObject;
+		$assetName = 'com_usernotes';
+
+		$actions = JAccess::getActions($assetName);
+
+		foreach ($actions as $action) {
+			$result->set($action->name,	$user->authorise($action->name, $assetName));
+		}
+
+		return $result;
 	}
 
 	// convert string in form n(K|M|G) to an integer value
@@ -95,6 +193,14 @@ abstract class UserNotesHelper
 		$pow = min($pow, count($units) - 1); 
 		$bytes /= pow(1024, $pow);
 		return round($bytes, $precision) . ' ' . $units[$pow];
+	}
+
+	// return the max file upload size as set by the php config
+	public static function phpMaxUp ()
+	{
+		$u = self::to_bytes(ini_get('upload_max_filesize'));
+		$p = self::to_bytes(ini_get('post_max_size'));
+		return min($p,$u);
 	}
 
 	//correctly format a string value from a table before showing it

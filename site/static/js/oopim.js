@@ -18,7 +18,7 @@ Oopim.aj_detach = function (cid,fn) {
 	if (!confirm("Are you sure you want to delete this attachment?")) return;
 	$.post(aBaseURL+"detach", { contentID: cid, file: fn },
 		function (data,status,xhr) {
-			console.log(xhr);
+			//console.log(xhr);
 			if (data) { alert(data); }
 			else { $("#attachments").load(aBaseURL+"attlist&inedit=1",{ contentID: cid }); }
 		}

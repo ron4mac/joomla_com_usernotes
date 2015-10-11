@@ -6,7 +6,8 @@ abstract class JHtmlUsernotes
 	public static function itemLink ($item)
 	{
 		$param = $item->isParent ? 'pid=' : 'view=usernote&nid=';
-		return JHtml::link(JRoute::_('index.php?option=com_usernotes&'.$param.$item->itemID), '<div class="menug '.($item->isParent?'foldm':'docum').'"></div>'.htmlspecialchars($item->title), array('class'=>'nav'));
+		$ttl = $item->secured ? base64_decode($item->title) : $item->title;
+		return JHtml::link(JRoute::_('index.php?option=com_usernotes&'.$param.$item->itemID), '<div class="menug '.($item->isParent?'foldm':'docum').($item->secured?' isecure':'').'"></div>'.htmlspecialchars($ttl), array('class'=>'nav'));
 	}
 
 	public static function prnActIcon ($id,$titl)
@@ -101,12 +102,13 @@ abstract class JHtmlUsernotes
 	public static function att_list ($atchs, $cid, $edt=false)
 	{
 		$html = '<span class="atchlbl">Attachments:</span>';
-		foreach ($atchs as $atch) {
+		foreach ($atchs as $atchr) {
+			$atch = $atchr[0];
 			if ($edt) {
 				$html .= '<br /><span><img src="'.JUri::base().'/components/com_usernotes/static/imgs/deletex.png" alt="delete attachment" onclick="Oopim.aj_detach('.$cid.',\''.$atch.'\');" />&nbsp;'.$atch.'</span>';
 			} else {
 				$html .= '<div data-afile="'.rawurlencode($atch).'" class="atchlink">';
-				$html .= '<a href="#" onclick="getAttach(event,this,true)" title="download file"><div class="downlink">&nbsp;</div></a><a href="#" onclick="getAttach(event,this,false)" title="view file">'.$atch.'</a>';
+				$html .= '<a href="#" class="noeffect" onclick="getAttach(event,this,true)" title="download file"><div class="downlink">&nbsp;</div></a><a href="#" class="noeffect" onclick="getAttach(event,this,false)" title="view file">'.$atch.'</a>';
 				$html .= '</div>';
 			}
 		}

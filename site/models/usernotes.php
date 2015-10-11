@@ -7,15 +7,18 @@ JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/use
 
 class UserNotesModelUserNotes extends JModelList
 {
-	public function __construct ($config = array())
+	protected $_storPath = null;
+
+	public function __construct ($config=array())
 	{
-		$dbFile = '/usernotes.db3';
-		$udbPath = UserNotesHelper::userDataPath().$dbFile;
+		$this->_storPath = UserNotesHelper::userDataPath();
+		$udbPath = $this->_storPath.'/usernotes.db3';
 		$doInit = !file_exists($udbPath);
 		
 		$option = array('driver'=>'sqlite', 'database'=>$udbPath);
-
 		$db = JDatabaseDriver::getInstance($option);
+		$db->connect();
+		$db->getConnection()->sqliteCreateFunction('b64d', 'base64_decode', 1);
 
 		if ($doInit) {
 			require_once JPATH_COMPONENT.'/helpers/db.php';
@@ -25,41 +28,36 @@ class UserNotesModelUserNotes extends JModelList
 		$config['dbo'] = $db;
 		parent::__construct($config);
 	}
-/*
-	public function getTitle ()
-	{
-		$pid = $this->getState('parent.id') ? : 0;
-	//	$db = parent::getDBO();
-		$db = $this->getDbo();
-		$db->setQuery('SELECT title FROM notes WHERE itemID='.$pid);
-		return $db->loadResult();
-	}
-*/
 
 	public function search ($sterm)
 	{
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$userID = JFactory::getUser()->get('id');
-		$db->setQuery("SELECT I.itemID,I.title,I.isParent,I.shared FROM notes AS I JOIN content AS C ON C.contentID=I.contentID "
-			."WHERE (I.ownerID == '".$userID."' OR I.shared) AND (C.serial_content LIKE \"%".$sterm."%\" OR I.title LIKE \"%".$sterm."%\")");
-		return $db->loadObjectList();
+		$db->setQuery("SELECT I.itemID,I.title,I.isParent,I.shared,I.secured FROM notes AS I JOIN content AS C ON C.contentID=I.contentID "
+			."WHERE I.secured IS NOT 1 AND (I.ownerID == '".$userID."' OR I.shared) AND (C.serial_content LIKE \"%".$sterm."%\" OR I.title LIKE \"%".$sterm."%\")");
+		$a1 = $db->loadObjectList();
+		$db->setQuery("SELECT I.itemID,I.title,I.isParent,I.shared,I.secured FROM notes AS I "
+			."WHERE I.secured IS 1 AND (I.ownerID == '".$userID."' OR I.shared) AND (b64d(I.title) LIKE \"%".$sterm."%\")");
+		$a2 = $db->loadObjectList();
+		return array_merge($a1, $a2);
 	}
 
 	public function buildPathway ($to)
 	{
 		$pw = JFactory::getApplication()->getPathWay();
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$crums = array();
 		while ($to) {
-			$db->setQuery('SELECT title,parentID FROM notes WHERE itemID='.$to);
+			$db->setQuery('SELECT title,parentID,secured FROM notes WHERE itemID='.$to);
 			$r = $db->loadAssoc();
+			if ($r['secured']) {
+				$r['title'] = base64_decode($r['title']);
+			}
 			array_unshift($crums, array($r['title'],'index.php?option=com_usernotes&pid='.$to));
 			$to = $r['parentID'];
 		}
 		foreach ($crums as $crum) {
-			$pw->addItem($crum[0],$crum[1]);
+			$pw->addItem($crum[0], $crum[1]);
 		}
 	}
 
@@ -67,7 +65,6 @@ class UserNotesModelUserNotes extends JModelList
 	{
 		$iid = (!empty($iid)) ? $iid : (int) $this->getState('parent.id');
 		if (!$iid) return false;
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$db->setQuery('SELECT * FROM notes WHERE itemID == '.$iid);
 		$data = $db->loadObject();
@@ -76,126 +73,51 @@ class UserNotesModelUserNotes extends JModelList
 
 	public function moveItem ($iid, $pid)
 	{
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$db->setQuery('UPDATE notes SET parentID = '.$pid.' WHERE itemID == '.$iid);
 		$db->execute();
 		return '';
 	}
 
-	private function buildBranch ($id,$ind,&$rows,&$tree)
+	private function buildBranch ($id, $ind, &$rows, &$tree)
 	{
 		foreach ($rows as $row) {
 			if ($row->parentID == $id) {
 				$tree[$row->itemID] = $ind.UserNotesHelper::fs_db($row->title);
-				$this->buildBranch($row->itemID,$ind.'-&nbsp;',$rows,$tree);
+				$this->buildBranch($row->itemID, $ind.'-&nbsp;', $rows, $tree);
 			}
 		}
 	}
-	
+
 	public function get_item_hier ($userID=0)
 	{
-	//	$db = parent::getDBO();
 		$db = $this->getDbo();
 		$db->setQuery('SELECT * FROM notes WHERE isParent == 1 AND (ownerID == '.$userID.' OR shared) ORDER BY parentID,title');
 		$rows = $db->loadObjectList();
 		$hier = array(0=>'&lt;'.'My Notes'.'&gt;');
-		$this->buildBranch(0,'-&nbsp;',$rows,$hier);
+		$this->buildBranch(0, '-&nbsp;', $rows, $hier);
 		return $hier;
 	}
 
-	public function attachments ($contentID=0)
+	// get storage use as a percentage of quota
+	public function getPosq ()
 	{
-	//	$db = parent::getDBO();
+		// get the DB file size
+		$dbsz = filesize($this->_storPath.'/usernotes.db3');
 		$db = $this->getDbo();
-		$db->transactionStart();
-		$db->setQuery('SELECT attached FROM attach WHERE contentID == '.$contentID);
-		$r = $db->loadResult();
-		return unserialize($r);
-	}
-
-	public function add_attached ($contentID=0, $files=NULL, $notesid=null)
-	{
-		if (!$contentID) return;
-		if (!$files) return;
-		$path = JPATH_BASE.'/'.UserNotesHelper::userDataPath().'/attach/'.$contentID;
-		$msg = '';
-		$fns = array();
-		foreach ($files as $file) {
-			if ($file['error'] == UPLOAD_ERR_OK) {
-				$tmp_name = $file['tmp_name'];
-				if (is_uploaded_file($tmp_name)) {
-					@mkdir($path);
-					$name = $file['name'];
-					move_uploaded_file($tmp_name, $path.'/'.$name);
-					$fns[] = $name;
-				}
-				else $msg .= 'failed to upload';
-			}
-			elseif ($file['error'] != UPLOAD_ERR_NO_FILE) {
-				$msg .= "Error: {$file['error']}";
-			}
-		}
-		if ($fns) {
-	//		$db = parent::getDBO();
-			$db = $this->getDbo();
-			$db->transactionStart();
-			$db->setQuery('SELECT attached FROM attach WHERE contentID == '.$contentID);
-			$r = $db->loadObject();
-			if ($r) {
-				$atch = unserialize($r->attached);
-				foreach ($fns as $fn) {
-					if (in_array($fn,$atch)) continue;
-					$atch[] = $fn;
-				}
-				$db->setQuery('UPDATE attach SET attached = '.$db->quote(serialize($atch)).' WHERE contentID == '.$contentID);
-				$db->execute();
-			} else {
-				$db->setQuery('INSERT INTO attach (contentID,attached) VALUES ('.$contentID.','.$db->quote(serialize($fns)).')');
-				$db->execute();
-			}
-			$db->transactionCommit();
-		}
-		if ($msg) { var_dump($contentID,$msg); }
-	}
-
-	public function del_attached ($contentID=0, $file=null)
-	{
-		if (!$contentID) return;
-		if (!$file) return;
-	//	$db = parent::getDBO();
-		$db = $this->getDbo();
-		$db->transactionStart();
-		$db->setQuery('SELECT attached FROM attach WHERE contentID == '.$contentID);
-		$r = $db->loadObject();
-		if ($r) {
-			$atchs = unserialize($r->attached);
-			foreach ($atchs as $k=>$atch) {
-				if ($atch == $file) {
-					unset($atchs[$k]);
-					break;
-				}
-			}
-			$db->setQuery('UPDATE attach SET attached = '.$db->quote(serialize($atchs)).' WHERE contentID == '.$contentID);
-			$db->execute();
-		} else {
-			return 'No attachments found';
-		}
-		$db->transactionCommit();
-		return false;
+		$atsz = $db->setQuery('SELECT totatt FROM attsizsum')->loadResult();
+		//echo UserNotesHelper::formatBytes($dbsz + $atsz);jexit();
+		return $dbsz + $atsz;
 	}
 
 	protected function getListQuery ()
 	{
 		$pid = $this->getState('parent.id') ? : 0;
-	//	$db = parent::getDBO();
+//		$secured = $this->getState('secured') ? : false;
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
-
-		$query->select('*');
-		$query->from('notes');
-		$query->where('parentID='.$pid);
-
+//		$query->select('*')->from($secured ? 'secureds' : 'notes')->where('parentID='.$pid);
+		$query->select('*')->from('notes')->where('parentID='.$pid);
 		return $query;
 	}
 
@@ -205,6 +127,11 @@ class UserNotesModelUserNotes extends JModelList
 		$app = JFactory::getApplication();
 		$params = JComponentHelper::getParams('com_usernotes');
 		$input = $app->input;
+
+		// menu params
+		$mparams = $app->getParams();
+		$this->setState('secured', (bool)$mparams->get('secured', false));
+		//echo'<xmp>';var_dump((bool)$mparams->get('secured', false));echo'</xmp>';
 
 		// album ID
 		$pid = $input->get('pid', 0, 'INT');

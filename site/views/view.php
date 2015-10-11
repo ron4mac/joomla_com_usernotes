@@ -40,6 +40,9 @@ class UserNotesViewBase extends JViewLegacy
 		// Get a notes instance identifier for ajax/upload
 		$this->notesID = UserNotesHelper::getInstanceID();
 
-		$this->attached = @unserialize($this->item->attached);
+	//	$this->attached = @unserialize($this->item->attached);
+		if (isset($this->item->attached)) {
+			$this->attached = $this->item->attached;
+		}
 	}
 }

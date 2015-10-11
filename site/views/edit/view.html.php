@@ -6,8 +6,11 @@ include_once JPATH_COMPONENT.'/views/view.php';
 class UserNotesViewEdit extends UserNotesViewBase
 {
 	protected $type;
+	protected $pid;
 	protected $state;
 	protected $params;
+	protected $isecure;
+	protected $ephrase;
 
 	protected $smallDevice = false;
 
@@ -17,18 +20,40 @@ class UserNotesViewEdit extends UserNotesViewBase
 
 		// Get view related request variables.
 		$this->type = $app->input->get('type','','cmd');
+		$this->pid = $app->input->get('pid',0,'int');
 
 		// Get model data.
+		$m = $this->getModel();
 		$this->state = $this->get('State');
-		$model = $this->getModel();
-		$item = $model->getItem($app->input->get('nid',0,'int'));
+		$this->isecure = $m->itemIsSecure($this->pid);
+		$item = $m->getItem($app->input->get('nid',0,'int'));	//echo'<xmp>';var_dump($item);echo'</xmp>';jexit();
+
+		if ($item && (int)$item->secured) {
+			$item->title = base64_decode($item->title);
+			if ($item->contentID) {
+				$cookn = UserNotesHelper::hashCookieName($item->itemID, $item->contentID);
+				$cookv = $app->input->cookie->getBase64($cookn);
+				setcookie($cookn, '', time() - 3600);
+				$item->ephrase = UserNotesHelper::doCrypt($item->itemID.'-@:'.$item->contentID, base64_decode($cookv), true);
+				$item->serial_content = UserNotesHelper::doCrypt($item->ephrase, base64_decode($item->serial_content), true);
+			}
+		}
+
 		if (!$item) {
-			$item = (object) array('itemID'=>0,'parentID'=>$app->input->get('pid',0,'int'),'contentID'=>null,'checked_out'=>null);
+			$item = (object) array('itemID'=>0,'parentID'=>$this->pid,'contentID'=>null,'checked_out'=>null,'secured'=>($this->isecure?'1':null));
 		} else {
-			$model->checkOut($item->itemID);
+			$m->checkOut($item->itemID);
 		}
 		$this->item = $item;
-		$this->form = $model->getForm($item);
+		$this->form = $m->getForm($item);
+
+		if ($this->type == 'f') {
+			if ($this->isecure) {
+				$this->form->removeField('maksec');
+			} else {
+				$this->form->removeField('pissec');
+			}
+		}	//echo'<xmp>';var_dump($this->form);jexit();
 
 		// Check for errors.
 		// @TODO: Maybe this could go into JComponentHelper::raiseErrors($this->get('Errors'))
