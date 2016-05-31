@@ -1,10 +1,4 @@
 <?php
-/**
- * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
- * @license    GNU General Public License version 3 or later; see LICENSE.txt
- */
 defined('_JEXEC') or die;
 
 require_once JPATH_BASE . '/components/com_usernotes/helpers/usernotes.php';
@@ -12,7 +6,7 @@ require_once JPATH_BASE . '/components/com_usernotes/helpers/usernotes.php';
 /**
  * View class for a list of user schedules.
  */
-class UsernotesView extends JViewLegacy
+class UsernotesViewUsernotes extends JViewLegacy
 {
 	protected $items;
 	protected $pagination;
@@ -26,11 +20,8 @@ class UsernotesView extends JViewLegacy
 		$this->items		= $this->get('Items');
 		$this->pagination	= $this->get('Pagination');
 		$this->state		= $this->get('State');	//var_dump($this->state);
-		$this->filterForm    = $this->get('FilterForm');
-		$this->activeFilters = $this->get('ActiveFilters');
 
-		//UserNotesHelper::addSubmenu($this->relm);
-		$this->addSubmenu($this->relm);
+		UserNotesHelper::addSubmenu('user');
 
 		// Check for errors.
 		//		if (count($errors = $this->get('Errors'))) {
@@ -43,29 +34,6 @@ class UsernotesView extends JViewLegacy
 		parent::display($tpl);
 	}
 
-
-	/**
-	 * Add submenu items
-	 */
-	protected function addSubmenu ($vName)
-	{
-		JHtmlSidebar::addEntry(
-			JText::_('COM_USERNOTES_SUBMENU_USER'),
-			'index.php?option=com_usernotes',
-			$vName == 'user'
-		);
-		JHtmlSidebar::addEntry(
-			JText::_('COM_USERNOTES_SUBMENU_GROUP'),
-			'index.php?option=com_usernotes&view=groupnotes',
-			$vName == 'group'
-		);
-//		JHtmlSidebar::addEntry(
-//			JText::_('COM_USERNOTES_SUBMENU_SITE'),
-//			'index.php?option=com_usernotes&view=site',
-//			$vName == 'site'
-//		);
-	}
-
 	/**
 	 * Add the page title and toolbar.
 	 *
@@ -75,7 +43,7 @@ class UsernotesView extends JViewLegacy
 	{
 		$canDo	= UserNotesHelper::getActions();
 
-		JToolBarHelper::title(JText::_('COM_USERNOTES_MENU').': '.JText::_('COM_USERNOTES_MANAGER_'.strtoupper($this->relm)), 'stack usernotes');
+		JToolBarHelper::title(JText::_('COM_USERNOTES_MENU').' : '.JText::_('COM_USERNOTES_MANAGER_UNOTES'), 'stack usernotes');
 
 		JToolBarHelper::deleteList(JText::_('COM_USERNOTES_MANAGER_DELETEOK'));
 		//JToolBarHelper::trash('usernotes.trash');
@@ -83,8 +51,6 @@ class UsernotesView extends JViewLegacy
 	//	if ($canDo->get('core.edit.state')) {
 	//		JToolBarHelper::custom('notes.reset', 'refresh.png', 'refresh_f2.png', 'JUSERSCHED_RESET', false);
 	//	}
-
-		JToolBarHelper::custom('convertDb', 'wrench', '', 'Convert database');
 
 		JToolBarHelper::divider();
 		if ($canDo->get('core.admin')) {

@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package    com_usernotes
+ *
+ * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @license    GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
 include_once JPATH_COMPONENT.'/classes/note_class.php';
@@ -21,30 +27,6 @@ class UserNotesModelUserNote extends JModelItem
 
 		$config['dbo'] = $db;
 		parent::__construct($config);
-	}
-
-	public function buildPathway ($to, $extra=null)
-	{	//echo'<xmp>';var_dump($this);echo'</xmp>';jexit();
-		$pw = JFactory::getApplication()->getPathWay();
-//		$ntbl = (bool)$this->getState('parameters.menu')->get('secured', false) ? 'secureds' : 'notes';
-		$ntbl = 'notes';
-	//	$db = parent::getDBO();
-		$db = $this->getDbo();
-		$crums = array();
-		while ($to) {
-			$db->setQuery('SELECT title,isParent,parentID,secured FROM '.$ntbl.' WHERE itemID='.$to);
-			$r = $db->loadAssoc();
-			$cpth = $r['isParent'] ? ('index.php?option=com_usernotes&pid='.$to) : '';
-			if ($r['secured']) {
-				$r['title'] = base64_decode($r['title']);
-			}
-			array_unshift($crums, array($r['title'],$cpth));
-			$to = $r['parentID'];
-		}
-		foreach ($crums as $crum) {
-			$pw->addItem($crum[0],$crum[1]);
-		}
-		if ($extra) $pw->addItem($extra[0],$extra[1]);
 	}
 
 	public function &getItem ($pk = null)

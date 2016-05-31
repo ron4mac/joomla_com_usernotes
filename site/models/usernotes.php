@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package    com_usernotes
+ *
+ * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @license    GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
 use Joomla\Registry\Registry;
@@ -42,25 +48,6 @@ class UserNotesModelUserNotes extends JModelList
 		return array_merge($a1, $a2);
 	}
 
-	public function buildPathway ($to)
-	{
-		$pw = JFactory::getApplication()->getPathWay();
-		$db = $this->getDbo();
-		$crums = array();
-		while ($to) {
-			$db->setQuery('SELECT title,parentID,secured FROM notes WHERE itemID='.$to);
-			$r = $db->loadAssoc();
-			if ($r['secured']) {
-				$r['title'] = base64_decode($r['title']);
-			}
-			array_unshift($crums, array($r['title'],'index.php?option=com_usernotes&pid='.$to));
-			$to = $r['parentID'];
-		}
-		foreach ($crums as $crum) {
-			$pw->addItem($crum[0], $crum[1]);
-		}
-	}
-
 	public function getItem ($iid=null)
 	{
 		$iid = (!empty($iid)) ? $iid : (int) $this->getState('parent.id');
@@ -83,6 +70,7 @@ class UserNotesModelUserNotes extends JModelList
 	{
 		foreach ($rows as $row) {
 			if ($row->parentID == $id) {
+				if ($row->secured) { $row->title = base64_decode($row->title); }
 				$tree[$row->itemID] = $ind.UserNotesHelper::fs_db($row->title);
 				$this->buildBranch($row->itemID, $ind.'-&nbsp;', $rows, $tree);
 			}
@@ -99,14 +87,16 @@ class UserNotesModelUserNotes extends JModelList
 		return $hier;
 	}
 
-	// get storage use as a percentage of quota
-	public function getPosq ()
+	// get storage useage in bytes
+	public function getStorSize ()
 	{
 		// get the DB file size
 		$dbsz = filesize($this->_storPath.'/usernotes.db3');
+
+		// get total of attachment sizes
 		$db = $this->getDbo();
 		$atsz = $db->setQuery('SELECT totatt FROM attsizsum')->loadResult();
-		//echo UserNotesHelper::formatBytes($dbsz + $atsz);jexit();
+
 		return $dbsz + $atsz;
 	}
 
@@ -145,6 +135,6 @@ class UserNotesModelUserNotes extends JModelList
 		$this->setState('list.start'.$pid, $limitstart);
 
 		// Load the parameters.
-		$this->setState('params', $params);
+		$this->setState('cparams', $params);
 	}
 }

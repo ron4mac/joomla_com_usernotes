@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package    com_usernotes
+ *
+ * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @license    GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
 define('ITM_CAN_EDIT', 1);
@@ -26,6 +32,27 @@ class UserNotesViewBase extends JViewLegacy
 		$this->userID = JFactory::getUser()->get('id');
 	}
 
+
+	protected function buildPathway ($to)
+	{
+		$db = $this->getModel()->getDbo();
+		$pw = JFactory::getApplication()->getPathWay();
+		$crums = array();
+		while ($to) {
+			$db->setQuery('SELECT title,parentID,secured FROM notes WHERE itemID='.$to);
+			$r = $db->loadAssoc();
+			if ($r['secured']) {
+				$r['title'] = base64_decode($r['title']);
+			}
+			array_unshift($crums, array($r['title'],'index.php?option=com_usernotes&pid='.$to));
+			$to = $r['parentID'];
+		}
+		foreach ($crums as $crum) {
+			$pw->addItem($crum[0], $crum[1]);
+		}
+	}
+
+
 	protected function _prepareDocument()
 	{
 		if ($this->userID) {
@@ -45,4 +72,5 @@ class UserNotesViewBase extends JViewLegacy
 			$this->attached = $this->item->attached;
 		}
 	}
+
 }

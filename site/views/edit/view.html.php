@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package    com_usernotes
+ *
+ * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @license    GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
 include_once JPATH_COMPONENT.'/views/view.php';
@@ -28,13 +34,23 @@ class UserNotesViewEdit extends UserNotesViewBase
 		$this->isecure = $m->itemIsSecure($this->pid);
 		$item = $m->getItem($app->input->get('nid',0,'int'));	//echo'<xmp>';var_dump($item);echo'</xmp>';jexit();
 
+		// Construct the breadcrumb
+		$this->buildPathway($item ? $item->itemID : $this->pid);
+
 		if ($item && (int)$item->secured) {
 			$item->title = base64_decode($item->title);
 			if ($item->contentID) {
 				$cookn = UserNotesHelper::hashCookieName($item->itemID, $item->contentID);
 				$cookv = $app->input->cookie->getBase64($cookn);
-				setcookie($cookn, '', time() - 3600);
-				$item->ephrase = UserNotesHelper::doCrypt($item->itemID.'-@:'.$item->contentID, base64_decode($cookv), true);
+				if ($cookv) {
+					setcookie($cookn, '', time() - 3600);
+					$item->ephrase = UserNotesHelper::doCrypt($item->itemID.'-@:'.$item->contentID, base64_decode($cookv), true);
+				} elseif ($ephrase = $app->input->post->get('ephrase','','string')) {
+					$item->ephrase = $ephrase;
+				} else {
+					$this->item = $item;
+					return parent::display('ephrase');
+				}
 				$item->serial_content = UserNotesHelper::doCrypt($item->ephrase, base64_decode($item->serial_content), true);
 			}
 		}
@@ -54,6 +70,7 @@ class UserNotesViewEdit extends UserNotesViewBase
 				$this->form->removeField('pissec');
 			}
 		}	//echo'<xmp>';var_dump($this->form);jexit();
+		$this->form->setFieldAttribute('ephrase', 'type', 'password');
 
 		// Check for errors.
 		// @TODO: Maybe this could go into JComponentHelper::raiseErrors($this->get('Errors'))

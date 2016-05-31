@@ -1,6 +1,10 @@
 <?php
-
-// No direct access to this file
+/**
+ * @package    com_usernotes
+ *
+ * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @license    GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die('Restricted access');
 ?>
 <h1>User Notes Startup Screen</h1>

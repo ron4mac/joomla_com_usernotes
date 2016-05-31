@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package    com_usernotes
+ *
+ * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @license    GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
 class UserNotesControllerUserNote extends JControllerForm
@@ -37,7 +43,7 @@ class UserNotesControllerUserNote extends JControllerForm
 	 *
 	 * @since   1.6
 	 */
-	protected function allowEdit($data = array(), $key = 'id')
+	protected function allowEdit ($data = array(), $key = 'id')
 	{
 		$user = JFactory::getUser();
 		$recordId = (int) isset($data[$key]) ? $data[$key] : 0;
@@ -69,7 +75,7 @@ class UserNotesControllerUserNote extends JControllerForm
 	 *
 	 * @since   2.5
 	 */
-	public function batch($model = null)
+	public function batch ($model = null)
 	{
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
@@ -92,7 +98,7 @@ class UserNotesControllerUserNote extends JControllerForm
 	 *
 	 * @since   3.1
 	 */
-	protected function postSaveHook(JModelLegacy $model, $validData = array())
+	protected function postSaveHook (JModelLegacy $model, $validData = array())
 	{
 
 	}

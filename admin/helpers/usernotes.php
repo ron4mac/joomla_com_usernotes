@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package    com_usernotes
+ *
+ * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @license    GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
 abstract class UserNotesHelper
@@ -7,6 +13,7 @@ abstract class UserNotesHelper
 	protected static $ownerID = null;
 	protected static $udp = null;
 
+/*
 	public static function addSubmenu ($vName)
 	{
 		JHtmlSidebar::addEntry(
@@ -25,6 +32,7 @@ abstract class UserNotesHelper
 //			$vName == 'site'
 //		);
 	}
+*/
 
 	public static function getStorageBase ()
 	{
@@ -185,14 +193,14 @@ abstract class UserNotesHelper
 		return $val.$sizm;
 	}
 
-	public static function formatBytes ($bytes, $precision=2)
+	public static function formatBytes ($bytes, $precision=2, $sep=' ')
 	{
 		$units = array('B', 'KB', 'MB', 'GB', 'TB');
 		$bytes = max($bytes, 0);
 		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
 		$pow = min($pow, count($units) - 1); 
 		$bytes /= pow(1024, $pow);
-		return round($bytes, $precision) . ' ' . $units[$pow];
+		return round($bytes, $precision) . $sep . $units[$pow];
 	}
 
 	// return the max file upload size as set by the php config

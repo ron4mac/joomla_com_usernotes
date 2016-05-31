@@ -1,5 +1,12 @@
 <?php
+/**
+ * @package    com_usernotes
+ *
+ * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @license    GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
+
 JHtml::stylesheet('components/com_usernotes/static/css/oopim.css');
 JHtml::_('jquery.framework', false);
 $jdoc = JFactory::getDocument();

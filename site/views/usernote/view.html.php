@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package    com_usernotes
+ *
+ * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @license    GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
 include_once JPATH_COMPONENT.'/views/view.php';
@@ -18,7 +24,9 @@ class UserNotesViewUserNote extends UserNotesViewBase
 		// Get model data.
 		$this->state = $this->get('State');
 		$this->item = $this->get('Item');	//var_dump($this->item);
-		$this->getModel()->buildPathway($this->item->itemID);
+
+		// Construct the breadcrumb
+		$this->buildPathway($this->item->itemID);
 
 //		if ($this->state->secured && !$app->input->post->get('ephrase','','string')) {
 		if ($this->item->secured && !$app->input->post->get('ephrase','','string')) {
@@ -31,7 +39,7 @@ class UserNotesViewUserNote extends UserNotesViewBase
 			$ephrase = $app->input->post->get('ephrase','','string');
 			$this->item->serial_content = UserNotesHelper::doCrypt($ephrase, base64_decode($this->item->serial_content), true);
 			$cookv = UserNotesHelper::doCrypt($this->item->itemID.'-@:'.$this->item->contentID, $ephrase);
-			setcookie($cookn, base64_encode($cookv));
+			setcookie($cookn, base64_encode($cookv), 0, '', '', true);
 		}
 
 		// Check for errors.
@@ -46,7 +54,7 @@ class UserNotesViewUserNote extends UserNotesViewBase
 		// Get the current menu item
 		$this->params = $app->getParams();
 		// Meld the params
-		if (!$this->params->get('maxUpload')) $this->params->set('maxUpload', $cparams->get('maxUpload'));
+		if (!$this->params->get('maxUpload')) $this->params->set('maxUpload', $cparams->get('maxUpload', UserNotesHelper::phpMaxUp()));
 
 		// establish the max file upload size
 		$this->maxUploadBytes = min($this->params->get('maxUpload'), UserNotesHelper::phpMaxUp());

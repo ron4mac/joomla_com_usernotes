@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package    com_usernotes
+ *
+ * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @license    GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
 //JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
@@ -82,7 +88,7 @@ class UserNotesControllerEdit extends JControllerForm
 
 		$model->storeFolder($data, $user->get('id'));
 
-		$this->setRedirect(JRoute::_('index.php?option=com_usernotes&id=' . $data['id'], false));
+		$this->setRedirect(JRoute::_('index.php?option=com_usernotes&id=' . $data['pid'], false));
 	}
 
 	public function deleteItem ()

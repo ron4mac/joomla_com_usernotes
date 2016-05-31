@@ -1,5 +1,12 @@
 <?php
+/**
+ * @package    com_usernotes
+ *
+ * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @license    GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
+
 JHtml::stylesheet('components/com_usernotes/static/css/oopim.css');
 JHtml::stylesheet('components/com_usernotes/static/css/pumenu.css');
 JHtml::_('jquery.framework', false);
@@ -18,7 +25,7 @@ $jdoc->addScript('components/com_usernotes/static/js/oopim.js');
 $jdoc->addScript('components/com_usernotes/static/js/pumenu.js');
 $jdoc->addScript('components/com_usernotes/static/js/upload5d.js');
 $jdoc->addScript('components/com_usernotes/static/js/notesview.js');
-
+//var_dump($this->item);
 $itemID = $this->item->itemID;
 $prning = ($this->state->get('task', 0) === 'printNote');
 //echo'<xmp>';var_dump($prning,$this->state->get('task', 0));echo'</xmp>';
@@ -26,7 +33,7 @@ if ($prning) echo '<button type="button" class="btn btn-primary" onclick="window
 ?>
 <div id="container">
 	<div id="body">
-		<h3><?=$this->item->title?></h3>
+		<h3><?php if ($this->item->secured) echo'<span class="icon-unlock" style="font-size:.8em;opacity:0.5"></span>'; ?><?=$this->item->title?></h3>
 		<div id="note"><?=$this->item->serial_content?></div>
 	</div>
 <?php if (!$prning): ?>

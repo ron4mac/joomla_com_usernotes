@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package    com_usernotes
+ *
+ * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @license    GNU General Public License version 3 or later; see LICENSE.txt
+ */
 defined('_JEXEC') or die;
 
 abstract class JHtmlUsernotes
@@ -17,11 +23,13 @@ abstract class JHtmlUsernotes
 	}
 	public static function newActIcon ($id,$titl)
 	{
-		return JHtml::link('index.php?option=com_usernotes&task=edit.addNote&pid='.$id, self::ico('icon-file-plus'), array('title'=>$titl,'class'=>'nav act-left'));
+//		return JHtml::link('index.php?option=com_usernotes&task=edit.addNote&pid='.$id, self::ico('icon-file-plus'), array('title'=>$titl,'class'=>'nav act-left'));
+		return JHtml::link(JRoute::_('index.php?option=com_usernotes&task=edit.addNote&pid='.$id), self::ico('icon-file-plus'), array('title'=>$titl,'class'=>'nav act-left'));
 	}
 	public static function edtActIcon ($id,$titl)
 	{
-		return JHtml::link('index.php?option=com_usernotes&task=edit.editNote&nid='.$id, self::ico('icon-edit'), array('title'=>$titl,'class'=>'nav act-left'));
+//		return JHtml::link('index.php?option=com_usernotes&task=edit.editNote&nid='.$id, self::ico('icon-edit'), array('title'=>$titl,'class'=>'nav act-left'));
+		return JHtml::link(JRoute::_('index.php?option=com_usernotes&task=edit.editNote&nid='.$id), self::ico('icon-edit'), array('title'=>$titl,'class'=>'nav act-left'));
 	}
 	public static function movActIcon ($id,$titl)
 	{
