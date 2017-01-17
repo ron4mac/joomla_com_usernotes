@@ -1,7 +1,6 @@
 <?php
 /**
  * @package    com_usernotes
- *
  * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
