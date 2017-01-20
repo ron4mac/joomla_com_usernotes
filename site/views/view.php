@@ -26,7 +26,7 @@ class UserNotesViewBase extends JViewLegacy
 	protected $footMsg;
 	protected $attached;
 
-	public function __construct($config = array())
+	public function __construct ($config = array())
 	{
 		parent::__construct($config);
 		$this->userID = JFactory::getUser()->get('id');
@@ -36,7 +36,7 @@ class UserNotesViewBase extends JViewLegacy
 	protected function buildPathway ($to)
 	{
 		$db = $this->getModel()->getDbo();
-		$pw = JFactory::getApplication()->getPathWay();
+		$pw = JFactory::getApplication()->getPathway();
 		$crums = array();
 		while ($to) {
 			$db->setQuery('SELECT title,parentID,secured FROM notes WHERE itemID='.$to);
@@ -53,7 +53,7 @@ class UserNotesViewBase extends JViewLegacy
 	}
 
 
-	protected function _prepareDocument()
+	protected function _prepareDocument ($ePhrase = false)
 	{
 		if ($this->userID) {
 			if (UserNotesHelper::userAuth($this->userID) > 1) {
@@ -64,12 +64,14 @@ class UserNotesViewBase extends JViewLegacy
 				}
 			}
 		}
-		// Get a notes instance identifier for ajax/upload
-		$this->notesID = UserNotesHelper::getInstanceID();
 
-	//	$this->attached = @unserialize($this->item->attached);
-		if (isset($this->item->attached)) {
-			$this->attached = $this->item->attached;
+		if (!$ePhrase) {
+			// Get a notes instance identifier for ajax/upload
+			$this->notesID = UserNotesHelper::getInstanceID();
+
+			if (isset($this->item->attached)) {
+				$this->attached = $this->item->attached;
+			}
 		}
 	}
 

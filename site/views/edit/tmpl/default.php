@@ -11,7 +11,6 @@ JHtml::stylesheet('components/com_usernotes/static/css/oopim.css');
 JHtml::_('jquery.framework', false);
 JHtml::_('behavior.keepalive');
 JHtml::_('bootstrap.tooltip');
-//JHtml::_('behavior.formvalidation');	//before J3.4
 JHTML::_('behavior.formvalidator');
 $jdoc = JFactory::getDocument();
 $jdoc->addScript('components/com_usernotes/static/js/oopim.js');
@@ -26,6 +25,7 @@ var contentID = '.($this->item->contentID?:0).';
 $task = $this->type == 'f' ? 'edit.saveFolder' : 'edit.saveNote';
 $lgnd = $this->type == 'f' ? '_F' : '';
 //var_dump($this->form);
+echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 ?>
 <div class="unote-edit">
 	<form action="" method="post" name="adminForm" id="adminForm" class="form-validate">

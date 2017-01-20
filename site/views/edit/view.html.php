@@ -32,7 +32,7 @@ class UserNotesViewEdit extends UserNotesViewBase
 		$m = $this->getModel();
 		$this->state = $this->get('State');
 		$this->isecure = $m->itemIsSecure($this->pid);
-		$item = $m->getItem($app->input->get('nid',0,'int'));	//echo'<xmp>';var_dump($item);echo'</xmp>';jexit();
+		$item = $m->getItem($app->input->get('nid',0,'int'));
 
 		// Construct the breadcrumb
 		$this->buildPathway($item ? $item->itemID : $this->pid);
@@ -69,7 +69,7 @@ class UserNotesViewEdit extends UserNotesViewBase
 			} else {
 				$this->form->removeField('pissec');
 			}
-		}	//echo'<xmp>';var_dump($this->form);jexit();
+		}
 		$this->form->setFieldAttribute('ephrase', 'type', 'password');
 
 		// Check for errors.
@@ -89,4 +89,5 @@ class UserNotesViewEdit extends UserNotesViewBase
 
 		return parent::display($tpl);
 	}
+
 }

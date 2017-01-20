@@ -13,7 +13,6 @@ class UserNotesViewSearch extends UserNotesViewBase
 {
 	protected $state;
 	protected $items;
-
 	protected $smallDevice = false;
 
 	public function display ($tpl = null)
@@ -42,9 +41,11 @@ class UserNotesViewSearch extends UserNotesViewBase
 		return parent::display($tpl);
 	}
 
+
 	protected function _prepareDocument()
 	{
 		$this->access = 15;
 		$this->attached = false;
 	}
+
 }

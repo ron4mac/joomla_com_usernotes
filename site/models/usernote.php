@@ -29,10 +29,10 @@ class UserNotesModelUserNote extends JModelItem
 		parent::__construct($config);
 	}
 
+
 	public function &getItem ($pk = null)
 	{
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState('usernote.id');
-//		$secured = $this->getState('secured') ? : false;
 
 		if ($this->_item === null)
 		{
@@ -46,25 +46,23 @@ class UserNotesModelUserNote extends JModelItem
 				$db = $this->getDbo();
 				$query = $db->getQuery(true)
 					->select('n.*, c.serial_content'/*, a.attached'*/)
-//					->from(($secured?'secureds':'notes').' AS n')
 					->from('notes AS n')
 					->join('LEFT', 'content AS c on c.contentID = n.contentID')
 				//	->join('LEFT', 'attach AS a on a.contentID = n.contentID')
 					->where('n.itemID = ' . (int) $pk);
 
-				$db->setQuery($query);		//echo'<pre>';var_dump($db->getQuery());echo'</pre>';
+				$db->setQuery($query);
 
-				$data = $db->loadObject();		//echo'<xmp>';var_dump($data);echo'</xmp>';	jexit();
+				$data = $db->loadObject();
 
 				if (empty($data)) {
 					JError::raiseError(404, JText::_('COM_USERNOTES_ERROR_FEED_NOT_FOUND'));
 				} else {
-					if ($nm = @unserialize($data->serial_content)) {	//var_dump($nm);
+					if ($nm = @unserialize($data->serial_content)) {
 						$data->serial_content = $nm->rendered();
 					}
 					$db->setQuery('SELECT attached FROM fileatt WHERE contentID='.$data->contentID);
 					$data->attached = $db->loadRowList();
-					//echo'<xmp>';var_dump($data);echo'</xmp>';jexit();
 				}
 
 				if ($data->secured) {
@@ -82,30 +80,30 @@ class UserNotesModelUserNote extends JModelItem
 		return $this->_item[$pk];
 	}
 
-	public function storeNote ($note, $user)
+
+	public function storeNote (JInput $data, $user)
 	{
-//		$ntbl = $note['ephrase'] ? 'secureds' : 'notes';
-		$ntbl = 'notes';
+		$iid = $data->getInt('itemID');
 		$secured = 0;
-		if (isset($note['ephrase'])) {
+		$ephrase = $data->getString('ephrase', null);
+		$ntitl = trim($data->getString('title'));
+		$ncont = $data->getHtml('serial_content');
+		if ($ephrase) {
 			$secured = 1;
-			$ephrase = $note['ephrase'];
-			$ntitl = base64_encode($note['title']);
-			$ncont = base64_encode(UserNotesHelper::doCrypt($ephrase, $note['serial_content']));
-		} else {
-			$ntitl = $note['title'];
-			$ncont = $note['serial_content'];
+			$ntitl = base64_encode($ntitl);
+			$ncont = base64_encode(UserNotesHelper::doCrypt($ephrase, $ncont));
 		}
+
 		try
 		{
 			$db = $this->getDbo();
-			if ($note['itemID']) {
+			if ($iid) {
 				$q = $db->getQuery(true);
-				$q->update('content')->set('serial_content='.$db->quote($ncont))->where('contentID='.$note['contentID']);
+				$q->update('content')->set('serial_content='.$db->quote($ncont))->where('contentID='.$data->getInt('contentID'));
 				$db->setQuery($q);
 				$db->execute();
 				$q = $db->getQuery(true);
-				$q->update($ntbl)->set('title='.$db->quote($ntitl))->where('itemID='.$note['itemID']);
+				$q->update('notes')->set('title='.$db->quote($ntitl))->where('itemID='.$iid);
 				$db->setQuery($q);
 				$db->execute();
 			} else {
@@ -115,8 +113,8 @@ class UserNotesModelUserNote extends JModelItem
 				$db->execute();
 				$cid = $db->insertid();
 				$q = $db->getQuery(true);
-				$q->insert($ntbl)->columns('ownerID,shared,isParent,title,contentID,parentID,secured')
-								->values(implode(',',array($user,1,0,$db->quote($ntitl),$cid,$note['parentID'],$secured)));
+				$q->insert('notes')->columns('ownerID,shared,isParent,title,contentID,parentID,secured')
+								->values(implode(',',array($user,1,0,$db->quote($ntitl),$cid,$data->getInt('parentID'),$secured)));
 				$db->setQuery($q);
 				$db->execute();
 			}
@@ -127,36 +125,43 @@ class UserNotesModelUserNote extends JModelItem
 		}
 	}
 
-	public function storeFolder ($fold, $user)
+
+	public function storeFolder ($data, $user)
 	{
+		$iid = $data->getInt('itemID');
+		$ftitl = trim($data->getString('title'));
+		$sec = 0;
+		$pid = 0;
 		try
 		{
 			$db = $this->getDbo();
-			if ($fold['itemID']) {
+			if ($iid) {
 				$q = $db->getQuery(true);
-				$q->update('notes')->set('title='.$db->quote($fold['title']))->where('itemID='.$fold['itemID']);
+				$q->update('notes')->set('title='.$db->quote($ftitl))->where('itemID='.$iid);
 				$db->setQuery($q);
 				$db->execute();
+				$pid = $iid;
 			} else {
-				if ($fold['maksec'] || $fold['pissec']) {
+				$fpid = $data->getInt('parentID');
+				if ($data->getInt('maksec',0) || $data->getInt('pissec',0)) {
 					$sec = 1;
-					$ttl = base64_encode($fold['title']);
-				} else {
-					$sec = 0;
-					$ttl = $fold['title'];
+					$ttl = base64_encode($ftitl);
 				}
 				$q = $db->getQuery(true);
 				$q->insert('notes')->columns('ownerID,shared,isParent,title,contentID,parentID,secured')
-									->values(implode(',',array($user,1,1,$db->quote($ttl),0,$fold['parentID'],$sec)));
+									->values(implode(',',array($user,1,1,$db->quote($ftitl),0,$fpid,$sec)));
 				$db->setQuery($q);
 				$db->execute();
+				$pid = $db->insertid();
 			}
 		}
 		catch (Exception $e)
 		{
 			$this->setError($e);
 		}
+		return $pid;
 	}
+
 
 	public function add_attached ($contentID=0, $files=NULL, $notesid=null)
 	{
@@ -204,6 +209,7 @@ class UserNotesModelUserNote extends JModelItem
 		if ($msg) { var_dump($contentID,$msg); }
 	}
 
+
 	public function attachments ($contentID=0)
 	{
 		if (!$contentID) return false;
@@ -218,6 +224,7 @@ class UserNotesModelUserNote extends JModelItem
 			$this->setError($e);
 		}
 	}
+
 
 	public function deleteAttachment ($contentID=0, $file=null)
 	{
@@ -239,6 +246,7 @@ class UserNotesModelUserNote extends JModelItem
 		return false;
 	}
 
+
 	public function deleteAttachments ($contentID=0)
 	{
 		if (!$contentID) return;
@@ -248,7 +256,6 @@ class UserNotesModelUserNote extends JModelItem
 			$db = $this->getDbo();
 			$db->setQuery('SELECT contentID,attached FROM fileatt WHERE contentID='.$contentID);
 			$atts = $db->loadRowList();
-			//echo'<xmp>';var_dump($atts);jexit();
 			foreach ($atts as $att) {
 				unlink($this->_storPath.'/attach/'.$contentID.'/'.$att[1]);
 			}
@@ -264,15 +271,14 @@ class UserNotesModelUserNote extends JModelItem
 		return false;
 	}
 
+
 	public function deleteItem ($iid)
-	{	//echo'<xmp>';var_dump($this);echo'</xmp>';jexit();
-//		$ntbl = (bool)$this->state->get('parameters.menu')->get('secured') ? 'secureds' : 'notes';
-		$ntbl = 'notes';
+	{
 		try
 		{
 			$db = $this->getDbo();
 			$q = $db->getQuery(true);
-			$q->select('contentID,isParent,parentID')->from($ntbl)->where('itemID='.$iid);
+			$q->select('contentID,isParent,parentID')->from('notes')->where('itemID='.$iid);
 			$db->setQuery($q);
 			$itm = $db->loadObject();
 			if ($itm->isParent) {
@@ -284,7 +290,7 @@ class UserNotesModelUserNote extends JModelItem
 				$db->execute();
 				$this->deleteAttachments($itm->contentID);
 			}
-			$db->setQuery('DELETE FROM '.$ntbl.' WHERE itemID='.$iid);
+			$db->setQuery('DELETE FROM notes WHERE itemID='.$iid);
 			$db->execute();
 			return $itm->parentID;
 		}
@@ -294,6 +300,7 @@ class UserNotesModelUserNote extends JModelItem
 		}
 		return false;
 	}
+
 
 	private function deleteFolder ($iid)
 	{
@@ -311,6 +318,7 @@ class UserNotesModelUserNote extends JModelItem
 			$this->setError($e);
 		}
 	}
+
 
 	protected function populateState ()
 	{
@@ -330,4 +338,5 @@ class UserNotesModelUserNote extends JModelItem
 		// Load the parameters.
 		$this->setState('params', $params);
 	}
+
 }

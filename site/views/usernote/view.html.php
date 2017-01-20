@@ -19,21 +19,18 @@ class UserNotesViewUserNote extends UserNotesViewBase
 	{
 		$app  = JFactory::getApplication();
 
-		// Get view related request variables.
-
 		// Get model data.
 		$this->state = $this->get('State');
-		$this->item = $this->get('Item');	//var_dump($this->item);
+		$this->item = $this->get('Item');
 
 		// Construct the breadcrumb
 		$this->buildPathway($this->item->itemID);
 
-//		if ($this->state->secured && !$app->input->post->get('ephrase','','string')) {
 		if ($this->item->secured && !$app->input->post->get('ephrase','','string')) {
+			$this->_prepareDocument(true);
 			return parent::display('ephrase');
 		}
-	//echo'<xmp>';var_dump($app->input->post->get('ephrase','','string'), $this->item, UserNotesHelper::hashCookieName($this->item->itemID, $this->item->contentID));echo'</xmp>';
-//		if ($this->state->secured) {
+
 		if ($this->item->secured) {
 			$cookn = UserNotesHelper::hashCookieName($this->item->itemID, $this->item->contentID);
 			$ephrase = $app->input->post->get('ephrase','','string');
@@ -66,4 +63,5 @@ class UserNotesViewUserNote extends UserNotesViewBase
 
 		return parent::display($tpl);
 	}
+
 }

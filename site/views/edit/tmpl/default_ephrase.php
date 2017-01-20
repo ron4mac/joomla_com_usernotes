@@ -26,7 +26,7 @@ $itemID = $this->item->itemID;
 		<div class="ephrase">
 			<form action="" method="POST">
 				<label for="ephrase"><?=JText::_('');?>Encryption Phrase:</label>
-				<input name="ephrase" type="text" id="ephrase" size=30 />
+				<input name="ephrase" type="password" id="ephrase" size=30 />
 				<button type="submit" class="btn btn-primary">Submit</button>
 			</form>
 		</div>

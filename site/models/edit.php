@@ -31,14 +31,12 @@ class UserNotesModelEdit extends JModelForm
 	{
 		$nid = (!empty($nid)) ? $nid : (int) $this->getState('usernote.id');
 		if (!$nid) return null;
-//		$secured = (bool)$this->state->get('parameters.menu')->get('secured') ? : false;
 		$data = null;
 		try
 		{
 			$db = $this->getDbo();
 			$query = $db->getQuery(true)
 				->select('n.*, c.serial_content'/*, a.attached'*/)
-//				->from(($secured?'secureds':'notes').' AS n')
 				->from('notes AS n')
 				->join('LEFT', 'content AS c on c.contentID = n.contentID')
 			//	->join('LEFT', 'attach AS a on a.contentID = n.contentID')
@@ -51,17 +49,21 @@ class UserNotesModelEdit extends JModelForm
 			if (empty($data)) {
 				JError::raiseError(404, JText::_('COM_USERNOTES_ERROR_FEED_NOT_FOUND'));
 			} else {
-				if ($nm = @unserialize($data->serial_content)) {
-					$data->serial_content = $nm->rendered();
+				if ($data->serial_content) {
+					if ($nm = @unserialize($data->serial_content)) {
+						$data->serial_content = $nm->rendered();
+					}
 				}
-				$db->setQuery('SELECT attached FROM fileatt WHERE contentID='.$data->contentID);
-				$data->attached = $db->loadRowList();
+				if ($data->contentID) {
+					$db->setQuery('SELECT attached FROM fileatt WHERE contentID='.$data->contentID);
+					$data->attached = $db->loadRowList();
+				}
 				//echo'<xmp>';var_dump($data);echo'</xmp>';jexit();
 			}
 		}
-		catch (Exception $e)
+		catch (JDatabaseExceptionExecuting $e)
 		{
-			$this->setError($e);
+			$this->setError($e->getQuery());
 		}
 		return $data;
 	}
@@ -98,14 +100,13 @@ class UserNotesModelEdit extends JModelForm
 	{
 		// Initialize variables
 		$app = JFactory::getApplication();
-		$input = $app->input;		//echo'<xmp>';var_dump($this->state);echo'</xmp>';
-//		$secured = (bool)$this->state->get('parameters.menu')->get('secured') ? : false;
+		$input = $app->input;
 
 		if ($input->get('type','','cmd') == 'f') {
 			$src = 'com_usernotes.fold';
 			$nam = 'fold';
 		} else {
-			if (/*$secured ||*/ $data->secured) {
+			if ($data->secured) {
 				$src = 'com_usernotes.snote';
 				$nam = 'snote';
 			} else {

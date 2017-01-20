@@ -46,14 +46,9 @@ if ($this->state->secured && $_SERVER['SERVER_PORT'] != 443) {
 	echo '<a href="https://'.$securl.$_SERVER['REQUEST_URI'].'" style="color:yellow">[connect securely]</a>';
 	echo '</div>';
 }
-
+echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
+echo JHtml::_('usernotes.searchField', $this->parentID);
 ?>
-<div class="search">
-	<form name="sqry" onsubmit="return Oopim.performSearch(this,<?=$this->parentID?>)">
-		<input type="hidden" name="task" value="search" />
-		<input type="search" name="sterm" results="10" autosave="oopim_notes" placeholder="Search..." />
-	</form>
-</div>
 <div id="container" style="margin-top:1em;">
 	<div id="body">
 	<ul id="itemsList">

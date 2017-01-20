@@ -18,7 +18,9 @@ var notesID = "'.urlencode($this->notesID).'";
 var parentID = '.$this->item->parentID.';
 var contentID = '.$this->item->contentID.';
 ');
+$jdoc->addScript('components/com_usernotes/static/js/oopim.js');
 $itemID = $this->item->itemID;
+echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 ?>
 <div id="container">
 	<div id="body">
@@ -26,12 +28,21 @@ $itemID = $this->item->itemID;
 		<div class="ephrase">
 			<form action="" method="POST">
 				<label for="ephrase"><?=JText::_('');?>Encryption Phrase:</label>
-				<input name="ephrase" type="text" id="ephrase" size=30 />
+				<input name="ephrase" type="password" id="ephrase" size=30 />
 				<button type="submit" class="btn btn-primary">Submit</button>
 			</form>
 		</div>
 	</div>
 	<div class="footer">
+		<?php
+			echo JHtml::_('usernotes.prnActIcon',$itemID,'Print note');
+		if ($this->access & ITM_CAN_EDIT) {
+			echo JHtml::_('usernotes.movActIcon',$itemID,'Move note');
+		}
+		if ($this->access & ITM_CAN_DELE) {
+			echo JHtml::_('usernotes.delActIcon',$itemID,'Delete note');
+		}
+		?>
 		&nbsp;<?=$this->footMsg?>
 	</div>
 </div>

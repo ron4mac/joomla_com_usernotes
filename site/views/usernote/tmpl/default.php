@@ -30,6 +30,7 @@ $itemID = $this->item->itemID;
 $prning = ($this->state->get('task', 0) === 'printNote');
 //echo'<xmp>';var_dump($prning,$this->state->get('task', 0));echo'</xmp>';
 if ($prning) echo '<button type="button" class="btn btn-primary" onclick="window.close();window.history.back();">'.JText::_('Done with Printing.').'</button>';
+if (!$prning) echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 ?>
 <div id="container">
 	<div id="body">

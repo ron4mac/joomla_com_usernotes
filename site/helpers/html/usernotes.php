@@ -13,23 +13,35 @@ abstract class JHtmlUsernotes
 	{
 		$param = $item->isParent ? 'pid=' : 'view=usernote&nid=';
 		$ttl = $item->secured ? base64_decode($item->title) : $item->title;
-		return JHtml::link(JRoute::_('index.php?option=com_usernotes&'.$param.$item->itemID), '<div class="menug '.($item->isParent?'foldm':'docum').($item->secured?' isecure':'').'"></div>'.htmlspecialchars($ttl), array('class'=>'nav'));
+		return JHtml::link(
+				JRoute::_('index.php?option=com_usernotes&'.$param.$item->itemID),
+				'<div class="menug '.($item->isParent?'foldm':'docum').($item->secured?' isecure':'').'"></div>'.htmlspecialchars($ttl),
+				array('class'=>'nav')
+			);
 	}
-
 	public static function prnActIcon ($id,$titl)
 	{
-//		return JHtml::link('index.php?option=com_usernotes&task=printNote&nid='.$id, self::ico('icon-print'), array('title'=>$titl,'class'=>'nav act-left','target'=>'_blank'));
-		return JHtml::link('index.php?option=com_usernotes&task=printNote&nid='.$id, self::ico('icon-print'), array('title'=>$titl,'class'=>'nav act-left','onclick'=>'printNote(event,this);return false;'));
+		return JHtml::link(
+				'index.php?option=com_usernotes&task=printNote&nid='.$id,
+				self::ico('icon-print'),
+				array('title'=>$titl,'class'=>'nav act-left','onclick'=>'printNote(event,this);return false;')
+			);
 	}
 	public static function newActIcon ($id,$titl)
 	{
-//		return JHtml::link('index.php?option=com_usernotes&task=edit.addNote&pid='.$id, self::ico('icon-file-plus'), array('title'=>$titl,'class'=>'nav act-left'));
-		return JHtml::link(JRoute::_('index.php?option=com_usernotes&task=edit.addNote&pid='.$id), self::ico('icon-file-plus'), array('title'=>$titl,'class'=>'nav act-left'));
+		return JHtml::link(
+				JRoute::_('index.php?option=com_usernotes&task=edit.addNote&pid='.$id),
+				self::ico('icon-file-plus'),
+				array('title'=>$titl,'class'=>'nav act-left')
+			);
 	}
 	public static function edtActIcon ($id,$titl)
 	{
-//		return JHtml::link('index.php?option=com_usernotes&task=edit.editNote&nid='.$id, self::ico('icon-edit'), array('title'=>$titl,'class'=>'nav act-left'));
-		return JHtml::link(JRoute::_('index.php?option=com_usernotes&task=edit.editNote&nid='.$id), self::ico('icon-edit'), array('title'=>$titl,'class'=>'nav act-left'));
+		return JHtml::link(
+				JRoute::_('index.php?option=com_usernotes&task=edit.editNote&nid='.$id),
+				self::ico('icon-edit'),
+				array('title'=>$titl,'class'=>'nav act-left')
+			);
 	}
 	public static function movActIcon ($id,$titl)
 	{
@@ -41,27 +53,55 @@ abstract class JHtmlUsernotes
 	}
 	public static function delActIcon ($id,$titl)
 	{
-		return JHtml::link('index.php?option=com_usernotes&task=edit.deleteItem&iid='.$id, self::ico('icon-file-minus idang'), array('title'=>$titl,'class'=>'nav act-right sure','data-suremsg'=>'delete this item'));
+		return JHtml::link(
+				JRoute::_('index.php?option=com_usernotes&task=edit.deleteItem&iid='.$id),
+				self::ico('icon-file-minus idang'),
+				array('title'=>$titl,'class'=>'nav act-right sure','data-suremsg'=>'delete this item')
+			);
 	}
 	public static function fNewActIcon ($id,$titl)
 	{
-		return JHtml::link('index.php?option=com_usernotes&task=edit.addFolder&type=f&pid='.$id, self::ico('icon-folder-plus-2'), array('title'=>$titl,'class'=>'nav act-left'));
+		return JHtml::link(
+				JRoute::_('index.php?option=com_usernotes&task=edit.addFolder&type=f&pid='.$id),
+				self::ico('icon-folder-plus-2'),
+				array('title'=>$titl,'class'=>'nav act-left')
+			);
 	}
 	public static function fEdtActIcon ($id,$titl)
 	{
-		return JHtml::link('index.php?option=com_usernotes&task=edit.editFolder&type=f&nid='.$id, self::ico('icon-edit'), array('title'=>$titl,'class'=>'nav act-right'));
+		return JHtml::link(
+				JRoute::_('index.php?option=com_usernotes&task=edit.editFolder&type=f&nid='.$id),
+				self::ico('icon-edit'),
+				array('title'=>$titl,'class'=>'nav act-right')
+			);
 	}
 	public static function fDelActIcon ($id,$titl)
 	{
-		return JHtml::link('index.php?option=com_usernotes&task=edit.deleteItem&iid='.$id, self::ico('icon-folder-remove idang'), array('title'=>$titl,'class'=>'nav act-right sure','data-suremsg'=>'delete this folder'));
+		return JHtml::link(
+				JRoute::_('index.php?option=com_usernotes&task=edit.deleteItem&iid='.$id),
+				self::ico('icon-folder-remove idang'),
+				array('title'=>$titl,'class'=>'nav act-right sure','data-suremsg'=>'delete this folder')
+			);
 	}
 	public static function toolActIcon ($id,$titl)
 	{
 		return '<a href="#" title="Utility tools" class="act-left" onclick="toolMenu(event);">'.self::ico('icon-wrench').'</a>';
 	}
-	public static function srchActIcon ($id,$titl)
+//	public static function srchActIcon ($id,$titl)
+//	{
+//		return '<a href="#" title="Search" class="dbsrch" onclick="return Oopim.performSearch(this.parentNode,'.$id.');">'.self::ico('icon-search').'</a>';
+//	}
+
+	public static function searchField ($pid)
 	{
-		return '<a href="#" title="Search" class="dbsrch" onclick="return Oopim.performSearch(this.parentNode,'.$id.');">'.self::ico('icon-search').'</a>';
+		return <<<EOD
+<div class="search">
+	<form name="sqry" onsubmit="return Oopim.performSearch(this,{$pid})">
+		<input type="hidden" name="task" value="search" />
+		<input type="search" name="sterm" results="10" autosave="oopim_notes" placeholder="Search..." />
+	</form>
+</div>
+EOD;
 	}
 
 	public static function form_dropdown ($name = '', $options = array(), $selected = array(), $extra = '')
