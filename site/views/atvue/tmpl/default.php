@@ -10,14 +10,11 @@ defined('_JEXEC') or die('Restricted access');
 if (file_exists($this->fpath)) {
 	$doc = JFactory::getDocument();
 	if ($this->down) {
-		$doc->setMimeEncoding(/*$this->mime*//*'application/octet-stream'*/'application/download');
+		$doc->setMimeEncoding('application/download');
 		header("Pragma: public");
 		header("Expires: 0"); 
 		header("Cache-Control: must-revalidate, post-check=0, pre-check=0"); 
 		header("Cache-Control: private",false); // required for certain browsers 
-//header("Content-Type: application/force-download");
-//header("Content-Type: application/octet-stream");
-//header("Content-Type: application/download");
 		header('Content-Disposition: attachment; filename="'.$this->fnam.'"');
 		header("Content-Transfer-Encoding: binary");
 	} else {

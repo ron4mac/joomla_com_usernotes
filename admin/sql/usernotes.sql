@@ -20,16 +20,5 @@ CREATE TABLE fileatt (
 	fsize INTEGER,
 	attached TEXT
 	);
-#CREATE TABLE secureds(
-	itemID INTEGER PRIMARY KEY NOT NULL,
-	ownerID INTEGER NOT NULL,
-	shared INTEGER DEFAULT 0,
-	isParent INTEGER DEFAULT 0,
-	title TEXT,
-	contentID INTEGER,
-	parentID INTEGER NOT NULL DEFAULT 0,
-	checked_out INTEGER DEFAULT 0,
-	checked_out_time DATETIME DEFAULT NULL
-	);
 CREATE VIEW attsizsum AS SELECT SUM(fsize) AS totatt FROM fileatt;
-COMMIT
+COMMIT;

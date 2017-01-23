@@ -13,27 +13,6 @@ abstract class UserNotesHelper
 	protected static $ownerID = null;
 	protected static $udp = null;
 
-/*
-	public static function addSubmenu ($vName)
-	{
-		JHtmlSidebar::addEntry(
-			JText::_('COM_USERNOTES_SUBMENU_USER'),
-			'index.php?option=com_usernotes',
-			$vName == 'user'
-		);
-		JHtmlSidebar::addEntry(
-			JText::_('COM_USERNOTES_SUBMENU_GROUP'),
-			'index.php?option=com_usernotes&view=groupnotes',
-			$vName == 'group'
-		);
-//		JHtmlSidebar::addEntry(
-//			JText::_('COM_USERNOTES_SUBMENU_SITE'),
-//			'index.php?option=com_usernotes&view=site',
-//			$vName == 'site'
-//		);
-	}
-*/
-
 	public static function getStorageBase ()
 	{
 		$dispatcher = JDispatcher::getInstance();
@@ -41,6 +20,7 @@ abstract class UserNotesHelper
 		$sdp = isset($results[0]) ? trim($results[0]) : '';
 		return $sdp ? $sdp : 'userstor';
 	}
+
 
 	public static function userDataPath ()
 	{
@@ -64,6 +44,7 @@ abstract class UserNotesHelper
 		self::$udp = $sdp.'/'.$ndir.'/'.$cmp;
 		return self::$udp;
 	}
+
 
 	public static function getDbPaths ($which, $dbname, $full=false, $cmp='')
 	{
@@ -97,6 +78,7 @@ abstract class UserNotesHelper
 		return $paths;
 	}
 
+
 	public static function getGroupTitle ($gid)
 	{
 		$db = JFactory::getDbo();
@@ -104,11 +86,13 @@ abstract class UserNotesHelper
 		return $db->loadResult();
 	}
 
+
 	public static function hashCookieName ($v1=0, $v2=0)
 	{
 		$uid = JFactory::getUser()->get('id');
 		return md5(implode(':', array($uid, $v1, $v2)));
 	}
+
 
 	public static function doCrypt ($pass, $dat, $de=false)
 	{
@@ -124,12 +108,13 @@ abstract class UserNotesHelper
 		return $retdat;
 	}
 
+
 	public static function userAuth ($uid)
 	{
 		self::getTypeOwner();
 		$user = JFactory::getUser();
 		$uid = $user->get('id');
-		$ugrps = $user->get('groups');	//var_dump('ug:',$ugrps);
+		$ugrps = $user->get('groups');
 		switch (self::$instanceType) {
 			case 0:
 				return $uid == self::$ownerID ? 2 : 0;
@@ -141,11 +126,13 @@ abstract class UserNotesHelper
 		}
 	}
 
+
 	public static function getInstanceID ()
 	{
 		if (is_null(self::$instanceType)) self::getTypeOwner();
 		return base64_encode(self::$instanceType.':'.self::$ownerID);
 	}
+
 
 	public static function getActions ()
 	{
@@ -162,11 +149,13 @@ abstract class UserNotesHelper
 		return $result;
 	}
 
+
 	// convert string in form n(K|M|G) to an integer value
 	public static function to_bytes ($val)
 	{
 		$val = trim($val);
 		$last = strtolower($val[strlen($val)-1]);
+		$val = (int) $val;
 		switch($last) {
 			case 'g': $val *= 1024;
 			case 'm': $val *= 1024;
@@ -174,6 +163,7 @@ abstract class UserNotesHelper
 		}
 		return $val;
 	}
+
 
 	// convert integer value to n(K|M|G) string
 	public static function to_KMG ($val=0)
@@ -193,6 +183,7 @@ abstract class UserNotesHelper
 		return $val.$sizm;
 	}
 
+
 	public static function formatBytes ($bytes, $precision=2, $sep=' ')
 	{
 		$units = array('B', 'KB', 'MB', 'GB', 'TB');
@@ -203,6 +194,7 @@ abstract class UserNotesHelper
 		return round($bytes, $precision) . $sep . $units[$pow];
 	}
 
+
 	// return the max file upload size as set by the php config
 	public static function phpMaxUp ()
 	{
@@ -211,11 +203,13 @@ abstract class UserNotesHelper
 		return min($p,$u);
 	}
 
+
 	//correctly format a string value from a table before showing it
 	public static function fs_db ($value)
 	{
 		return htmlspecialchars(stripslashes($value));
 	}
+
 
 	private static function getTypeOwner ()
 	{
@@ -242,7 +236,6 @@ abstract class UserNotesHelper
 						break;
 				}
 			}
-		//var_dump(self::$instanceType,self::$ownerID);
 		}
 	}
 

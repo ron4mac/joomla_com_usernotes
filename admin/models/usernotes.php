@@ -15,14 +15,15 @@ class UsernotesModelUsernotes extends JModelList
 	protected $relm = 'u';
 	protected $_total = -1;
 
-	public function __construct($config = array())
+	public function __construct ($config = array())
 	{   
 		$config['filter_fields'] = array('fullname', 'username', 'userid');
 		parent::__construct($config);
 	}
 
+
 	public function getItems ()
-	{	//return array();
+	{
 		// Get a storage key.
 		$store = $this->getStoreId('list');
 
@@ -48,7 +49,6 @@ class UsernotesModelUsernotes extends JModelList
 		$limit = $this->getState('list.limit');
 		$listOrder = $this->getState('list.ordering');
 		$listDirn = $this->getState('list.direction');
-	//	echo $listOrder;echo $listDirn;
 
 		foreach ($unotes as $key => $row) {
 			$name[$key]  = $row['name'];
@@ -78,6 +78,7 @@ class UsernotesModelUsernotes extends JModelList
 		return $this->cache[$store];
 	}
 
+
 	public function getTotal ()
 	{
 		// Get a storage key.
@@ -96,6 +97,7 @@ class UsernotesModelUsernotes extends JModelList
 
 		return $this->cache[$store];
 	}
+
 
 	protected function populateState ($ordering = null, $direction = null) {
 		parent::populateState('username', 'ASC');

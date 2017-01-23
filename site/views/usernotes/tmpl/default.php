@@ -46,7 +46,9 @@ if ($this->state->secured && $_SERVER['SERVER_PORT'] != 443) {
 	echo '<a href="https://'.$securl.$_SERVER['REQUEST_URI'].'" style="color:yellow">[connect securely]</a>';
 	echo '</div>';
 }
+// accommodate targeted breadcrumb module
 echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
+// display the search field
 echo JHtml::_('usernotes.searchField', $this->parentID);
 ?>
 <div id="container" style="margin-top:1em;">

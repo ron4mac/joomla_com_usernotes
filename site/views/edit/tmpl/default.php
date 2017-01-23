@@ -24,7 +24,7 @@ var contentID = '.($this->item->contentID?:0).';
 
 $task = $this->type == 'f' ? 'edit.saveFolder' : 'edit.saveNote';
 $lgnd = $this->type == 'f' ? '_F' : '';
-//var_dump($this->form);
+// accommodate targeted breadcrumb module
 echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 ?>
 <div class="unote-edit">
@@ -33,11 +33,9 @@ echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 		<span class="unote-buttons">
 			<input type="reset" value="Reset" class="btn" />
 			<button type="button" class="btn" onclick="Joomla.submitbutton('edit.cancelEdit')"><?= JText::_('JCANCEL') ?></button>
-		<!--	<button type="button" class="btn btn-primary validate" onclick="Joomla.submitbutton('<?=$task?>')"><?= JText::_('JSAVE') ?></button> -->
 			<button type="submit" class="btn btn-primary validate"><?= JText::_('JSAVE') ?></button>
 		</span>
 		<fieldset class="adminform" style="clear:both">
-			<!-- <legend><?=JText::_((is_array($this->item)?'COM_USERNOTES_EDIT_FORM_CREATE':'COM_USERNOTES_EDIT_FORM_EDIT').$lgnd); ?></legend> -->
 			<ul class="adminformlist">
 	<? foreach ($this->form->getFieldset() as $field) {
 		if ($field->fieldname == 'maksec' && $this->item->itemID) continue;

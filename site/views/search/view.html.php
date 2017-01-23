@@ -42,7 +42,7 @@ class UserNotesViewSearch extends UserNotesViewBase
 	}
 
 
-	protected function _prepareDocument()
+	protected function _prepareDocument($ePhrase = false)
 	{
 		$this->access = 15;
 		$this->attached = false;

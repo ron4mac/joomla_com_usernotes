@@ -37,4 +37,5 @@ class UserNotesViewAtvue extends JViewLegacy
 
 		return parent::display($tpl);
 	}
+
 }

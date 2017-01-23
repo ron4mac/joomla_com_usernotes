@@ -21,6 +21,7 @@ class UserNotesController extends JControllerLegacy
 		$this->uid = JFactory::getUser()->get('id');
 	}
 
+
 	public function display ($cachable = false, $urlparams = false)
 	{
 		if ($auth = UserNotesHelper::userAuth($this->uid)) {
@@ -33,6 +34,7 @@ class UserNotesController extends JControllerLegacy
 		}
 	}
 
+
 	public function begin ()
 	{
 		if (!$this->uid) return;
@@ -44,12 +46,14 @@ class UserNotesController extends JControllerLegacy
 		$this->setRedirect(JRoute::_('index.php?option=com_usernotes', false));
 	}
 
+
 	public function search ()
 	{
 		$view = $this->getView('search', 'html');
 		$view->setModel($this->getModel('usernotes'), true);
 		$view->display();
 	}
+
 
 	public function printNote ()
 	{
@@ -60,13 +64,14 @@ class UserNotesController extends JControllerLegacy
 		$view->display();
 	}
 
+
 /** ajax calls **/
 
 	public function attach ()
 	{
 		$m = $this->getModel('usernote');
-		$notesid = $this->input->get('notesID', '', 'base64');
-		$cid = $this->input->post->get('cID', 0, 'int');
+		$notesid = $this->input->getBase64('notesID', '');
+		$cid = $this->input->post->getInt('cID', 0);
 		$files = $this->input->files->get('attm');
 		if (JDEBUG) {
 			$fdmp = print_r($files, true);
@@ -75,24 +80,12 @@ class UserNotesController extends JControllerLegacy
 		$m->add_attached($cid, $files, $notesid);
 	}
 
-	public function sv_attach ()
-	{
-		$m = $this->getModel('usernotes');
-		$notesid = $this->input->get('notesID', '', 'base64');
-		$cid = $this->input->post->get('cID', 0, 'int');
-		$files = $this->input->files->get('attm');
-		if (JDEBUG) {
-			$fdmp = print_r($files, true);
-			JLog::add("attach ... notesID: {$notesid}  note: {$cid}  file(s): {$fdmp}", JLog::INFO, 'com_usernotes');
-		}
-		$m->add_attached($cid, $files, $notesid);
-	}
 
 	public function detach ()
 	{
 		$m = $this->getModel('usernote');
-		$cid = $this->input->post->get('contentID', 0, 'int');
-		$file = $this->input->post->get('file', '', 'string');
+		$cid = $this->input->post->getInt('contentID', 0);
+		$file = $this->input->post->getString('file', '');
 		if (JDEBUG) {
 			JLog::add("detach ... note: {$cid}  file: {$file}", JLog::INFO, 'com_usernotes');
 		}
@@ -100,32 +93,22 @@ class UserNotesController extends JControllerLegacy
 		if ($r) echo $r;
 	}
 
-	public function sv_detach ()
-	{
-		$m = $this->getModel('usernotes');
-		$cid = $this->input->post->get('contentID', 0, 'int');
-		$file = $this->input->post->get('file', '', 'string');
-		if (JDEBUG) {
-			JLog::add("detach ... note: {$cid}  file: {$file}", JLog::INFO, 'com_usernotes');
-		}
-		$r = $m->del_attached($cid, $file);
-		if ($r) echo $r;
-	}
 
 	public function attlist ()
 	{
 		$m = $this->getModel('usernote');
-		$cid = $this->input->post->get('contentID', 0, 'int');
-		$ined = $this->input->get('inedit', 0, 'int');
+		$cid = $this->input->post->getInt('contentID', 0);
+		$ined = $this->input->getInt('inedit', 0);
 		$atchs = $m->attachments($cid);
 		if ($atchs) {
 			echo JHtml::_('usernotes.att_list',$atchs,$cid,$ined);
 		} else echo '';
 	}
 
+
 	public function cat_hier ()
 	{
-		$pid = $this->input->post->get('pID', 0, 'int');
+		$pid = $this->input->post->getInt('pID', 0);
 		$m = $this->getModel('usernotes');
 		$hier = $m->get_item_hier(JFactory::getUser()->get('id'));
 		echo '<span>Move item to:</span><br />';
@@ -134,28 +117,31 @@ class UserNotesController extends JControllerLegacy
 		echo JHtml::_('usernotes.form_button', 'cancel','Cancel','style="float:right" onclick="doMove(false)"');
 	}
 
+
 	public function movitm ()
 	{
-		$iid = $this->input->post->get('iID', 0, 'int');
-		$pid = $this->input->post->get('pID', 0, 'int');
+		$iid = $this->input->post->getInt('iID', 0);
+		$pid = $this->input->post->getInt('pID', 0);
 		$m = $this->getModel('usernotes');
 		echo $m->moveItem($iid, $pid);
 	}
 
+
 	public function tool ()
 	{
-		$act = $this->input->post('mnuact');
-		$iid = $this->input->post('iID');
-		$cid = $this->input->post('cID');
+		$act = $this->input->post->getCmd('mnuact','');
+		$iid = $this->input->post->getInt('iID', 0);
+		$cid = $this->input->post->getInt('cID', 0);
 		$this->load->model('content_model','mycmodel');
 		$ictnt = $this->mycmodel->get_item($cid, $this->enty_item);
 		//call_user_func_array(array($ictnt, $act), array($iid, $cid));
 		call_user_func(array($ictnt, $act), $cid);
 	}
 
+
 	public function ajitem ()
 	{
-		$id = $this->input->post('iID');
+		$id = $this->input->post->getInt('iID', 0);
 		$this->load->model($this->enty_base.'_model','mymodel');
 		$item = $this->mymodel->get_item($id);
 		$this->load->model($this->enty_item.'_model','myimodel');

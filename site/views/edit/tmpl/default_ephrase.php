@@ -19,6 +19,8 @@ var parentID = '.$this->item->parentID.';
 var contentID = '.$this->item->contentID.';
 ');
 $itemID = $this->item->itemID;
+// accommodate targeted breadcrumb module
+echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 ?>
 <div id="container">
 	<div id="body">

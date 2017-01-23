@@ -9,8 +9,6 @@ defined('_JEXEC') or die;
 
 include_once JPATH_COMPONENT.'/classes/note_class.php';
 
-use Joomla\Registry\Registry;
-
 JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 
 class UserNotesModelUserNote extends JModelItem
@@ -34,13 +32,11 @@ class UserNotesModelUserNote extends JModelItem
 	{
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState('usernote.id');
 
-		if ($this->_item === null)
-		{
+		if ($this->_item === null) {
 			$this->_item = array();
 		}
 
-		if (!isset($this->_item[$pk]))
-		{
+		if (!isset($this->_item[$pk])) {
 			try
 			{
 				$db = $this->getDbo();
@@ -48,7 +44,6 @@ class UserNotesModelUserNote extends JModelItem
 					->select('n.*, c.serial_content'/*, a.attached'*/)
 					->from('notes AS n')
 					->join('LEFT', 'content AS c on c.contentID = n.contentID')
-				//	->join('LEFT', 'attach AS a on a.contentID = n.contentID')
 					->where('n.itemID = ' . (int) $pk);
 
 				$db->setQuery($query);
@@ -87,7 +82,7 @@ class UserNotesModelUserNote extends JModelItem
 		$secured = 0;
 		$ephrase = $data->getString('ephrase', null);
 		$ntitl = trim($data->getString('title'));
-		$ncont = $data->getHtml('serial_content');
+		$ncont = JComponentHelper::filterText($data->getRaw('serial_content'));
 		if ($ephrase) {
 			$secured = 1;
 			$ntitl = base64_encode($ntitl);
@@ -206,7 +201,7 @@ class UserNotesModelUserNote extends JModelItem
 				$this->setError($e);
 			}
 		}
-		if ($msg) { var_dump($contentID,$msg); }
+		if ($msg) { $this->setError("[cid:{$contentID}] " . $msg); }
 	}
 
 

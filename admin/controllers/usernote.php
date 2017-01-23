@@ -16,22 +16,19 @@ class UserNotesControllerUserNote extends JControllerForm
 		$categoryId = JArrayHelper::getValue($data, 'catid', $this->input->getInt('filter_category_id'), 'int');
 		$allow = null;
 
-		if ($categoryId)
-		{
+		if ($categoryId) {
 			// If the category has been passed in the URL check it.
 			$allow = $user->authorise('core.create', $this->option . '.category.' . $categoryId);
 		}
 
-		if ($allow === null)
-		{
+		if ($allow === null) {
 			// In the absence of better information, revert to the component permissions.
 			return parent::allowAdd($data);
-		}
-		else
-		{
+		} else {
 			return $allow;
 		}
 	}
+
 
 	/**
 	 * Method to check if you can edit a record.
@@ -49,22 +46,19 @@ class UserNotesControllerUserNote extends JControllerForm
 		$recordId = (int) isset($data[$key]) ? $data[$key] : 0;
 		$categoryId = 0;
 
-		if ($recordId)
-		{
+		if ($recordId) {
 			$categoryId = (int) $this->getModel()->getItem($recordId)->catid;
 		}
 
-		if ($categoryId)
-		{
+		if ($categoryId) {
 			// The category has been set. Check the category permissions.
 			return $user->authorise('core.edit', $this->option . '.category.' . $categoryId);
-		}
-		else
-		{
+		} else {
 			// Since there is no asset tracking, revert to the component permissions.
 			return parent::allowEdit($data, $key);
 		}
 	}
+
 
 	/**
 	 * Method to run batch operations.
@@ -88,6 +82,7 @@ class UserNotesControllerUserNote extends JControllerForm
 		return parent::batch($model);
 	}
 
+
 	/**
 	 * Function that allows child controller access to model data after the data has been saved.
 	 *
@@ -102,4 +97,5 @@ class UserNotesControllerUserNote extends JControllerForm
 	{
 
 	}
+
 }

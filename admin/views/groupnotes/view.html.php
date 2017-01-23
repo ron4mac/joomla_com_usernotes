@@ -10,7 +10,7 @@ defined('_JEXEC') or die;
 require_once JPATH_BASE . '/components/com_usernotes/views/notesview.php';
 
 /**
- * View class for a list of user schedules.
+ * View class for a list of user notes.
  */
 class UsernotesViewGroupnotes extends UsernotesView
 {

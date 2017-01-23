@@ -12,7 +12,7 @@ JHtml::_('jquery.framework', false);
 $jdoc = JFactory::getDocument();
 $jdoc->addScript('components/com_usernotes/static/js/oopim.js');
 $jdoc->addScript('components/com_usernotes/static/js/notesview.js');
-echo JHtml::_('usernotes.searchField', $this->parentID);
+echo JHtml::_('usernotes.searchField', !empty($this->parentID) ? $this->parentID : 0);
 ?>
 <div id="container" style="margin-top:1em;">
 	<div id="body">

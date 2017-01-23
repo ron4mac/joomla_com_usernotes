@@ -7,7 +7,6 @@
  */
 defined('_JEXEC') or die;
 
-//JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 JLoader::register('JHtmlUsernotes', JPATH_COMPONENT . '/helpers/html/usernotes.php');
 
 class UserNotesControllerEdit extends JControllerForm
@@ -53,7 +52,6 @@ class UserNotesControllerEdit extends JControllerForm
 		$iid = $formData->getInt('itemID');
 		$pid = $formData->getInt('parentID');
 		$isp = $formData->getInt('isParent');
-	//	echo'<xmp>';var_dump($iid,$pid,$isp,$formData);echo'</xmp>';jexit();
 
 		// could check-in note (that was checked out)
 		if ($iid) $this->getModel()->checkIn($iid);
@@ -74,7 +72,6 @@ class UserNotesControllerEdit extends JControllerForm
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-		$app = JFactory::getApplication();
 		$user = JFactory::getUser();
 		$model = $this->getModel('usernote');
 
@@ -94,13 +91,11 @@ class UserNotesControllerEdit extends JControllerForm
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-		$app = JFactory::getApplication();
 		$user = JFactory::getUser();
 		$model = $this->getModel('usernote');
 
 		// Get the data from POST
 		$formData = new JInput($this->input->post->get('jform', array(), 'array'));
-	//	$data['pid'] = $this->input->post->get('pid', 0, 'int');
 
 		$pid = $model->storeFolder($formData, $user->get('id'));
 

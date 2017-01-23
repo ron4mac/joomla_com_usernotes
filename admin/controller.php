@@ -12,18 +12,6 @@ JLoader::register('UserNotesHelperDb', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/d
 
 class UserNotesController extends JControllerLegacy
 {
-/*
-	public function display ($cachable = false, $urlparams = array())
-	{
-		require_once JPATH_COMPONENT . '/helpers/usernotes.php';
-
-		$view   = $this->input->get('view', 'usernotes');
-		$layout = $this->input->get('layout', 'default');
-		$id     = $this->input->getInt('id');
-
-		return parent::display();
-	}
-*/
 
 	public function convertDb ()
 	{

@@ -135,6 +135,7 @@ div.footer {
 	border-top: 1px solid #DDD;
 	padding-top: 4px;
 	background-color:#F8FDCE;
+	clear: both;
 }
 
 code {

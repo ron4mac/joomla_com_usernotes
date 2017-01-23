@@ -10,10 +10,7 @@ defined('_JEXEC') or die;
 define('ITM_CAN_EDIT', 1);
 define('ITM_CAN_DELE', 2);
 define('ITM_CAN_CREA', 4);
-
 define('IS_SMALL_DEVICE', 0);
-
-use Joomla\Registry\Registry;
 
 JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 

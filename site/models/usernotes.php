@@ -7,8 +7,6 @@
  */
 defined('_JEXEC') or die;
 
-use Joomla\Registry\Registry;
-
 JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 
 class UserNotesModelUserNotes extends JModelList
@@ -35,6 +33,7 @@ class UserNotesModelUserNotes extends JModelList
 		parent::__construct($config);
 	}
 
+
 	public function search ($sterm)
 	{
 		$db = $this->getDbo();
@@ -48,6 +47,7 @@ class UserNotesModelUserNotes extends JModelList
 		return array_merge($a1, $a2);
 	}
 
+
 	public function getItem ($iid=null)
 	{
 		$iid = (!empty($iid)) ? $iid : (int) $this->getState('parent.id');
@@ -58,6 +58,7 @@ class UserNotesModelUserNotes extends JModelList
 		return $data;
 	}
 
+
 	public function moveItem ($iid, $pid)
 	{
 		$db = $this->getDbo();
@@ -65,6 +66,7 @@ class UserNotesModelUserNotes extends JModelList
 		$db->execute();
 		return '';
 	}
+
 
 	private function buildBranch ($id, $ind, &$rows, &$tree)
 	{
@@ -77,6 +79,7 @@ class UserNotesModelUserNotes extends JModelList
 		}
 	}
 
+
 	public function get_item_hier ($userID=0)
 	{
 		$db = $this->getDbo();
@@ -86,6 +89,7 @@ class UserNotesModelUserNotes extends JModelList
 		$this->buildBranch(0, '-&nbsp;', $rows, $hier);
 		return $hier;
 	}
+
 
 	// get storage useage in bytes
 	public function getStorSize ()
@@ -100,16 +104,16 @@ class UserNotesModelUserNotes extends JModelList
 		return $dbsz + $atsz;
 	}
 
+
 	protected function getListQuery ()
 	{
 		$pid = $this->getState('parent.id') ? : 0;
-//		$secured = $this->getState('secured') ? : false;
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
-//		$query->select('*')->from($secured ? 'secureds' : 'notes')->where('parentID='.$pid);
 		$query->select('*')->from('notes')->where('parentID='.$pid);
 		return $query;
 	}
+
 
 	protected function populateState ($ordering = null, $direction = null)
 	{
@@ -121,7 +125,6 @@ class UserNotesModelUserNotes extends JModelList
 		// menu params
 		$mparams = $app->getParams();
 		$this->setState('secured', (bool)$mparams->get('secured', false));
-		//echo'<xmp>';var_dump((bool)$mparams->get('secured', false));echo'</xmp>';
 
 		// album ID
 		$pid = $input->get('pid', 0, 'INT');
@@ -137,4 +140,5 @@ class UserNotesModelUserNotes extends JModelList
 		// Load the parameters.
 		$this->setState('cparams', $params);
 	}
+
 }

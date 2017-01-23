@@ -12,11 +12,9 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.multiselect');
 
-//var_dump('vdf',$this);jexit();
-
-$listOrder	= $this->state('list.ordering');
-$listDirn	= $this->state('list.direction');
-$canDo		= UserNotesHelper::getActions();
+$listOrder = $this->state('list.ordering');
+$listDirn = $this->state('list.direction');
+$canDo = UserNotesHelper::getActions();
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_usernotes&view=groupnotes'); ?>" method="post" name="adminForm" id="adminForm">
 	<div id="j-sidebar-container" class="span2">

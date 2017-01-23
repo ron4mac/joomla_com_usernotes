@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="3.4" method="upgrade">
+<extension type="component" version="3.3" method="upgrade">
 	<name>com_usernotes</name>
 	<author>Ron Crans</author>
 	<creationDate>June 2015</creationDate>
@@ -7,7 +7,8 @@
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@jrjconline.net</authorEmail>
 	<authorUrl>rjconline.net</authorUrl>
-	<version>1.0.10</version>
+	<version>1.0.11</version>
+	<updater jver="3\.[3456789]" pver="5.2" />
 	<description>COM_USERNOTES_XML_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
 	<files folder="site">

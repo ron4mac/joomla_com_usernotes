@@ -17,4 +17,5 @@ abstract class UserNotesHelperDb
 			if ($exec[0] != '#') $db->setQuery($exec)->execute();
 		}
 	}
+
 }

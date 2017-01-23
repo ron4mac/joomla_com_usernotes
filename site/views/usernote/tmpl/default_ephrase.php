@@ -20,6 +20,7 @@ var contentID = '.$this->item->contentID.';
 ');
 $jdoc->addScript('components/com_usernotes/static/js/oopim.js');
 $itemID = $this->item->itemID;
+// accommodate targeted breadcrumb module
 echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 ?>
 <div id="container">
