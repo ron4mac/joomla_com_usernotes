@@ -21,4 +21,4 @@ CREATE TABLE fileatt (
 	attached TEXT
 	);
 CREATE VIEW attsizsum AS SELECT SUM(fsize) AS totatt FROM fileatt;
-COMMIT;
+COMMIT

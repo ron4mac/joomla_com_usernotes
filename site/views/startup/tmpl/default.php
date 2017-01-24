@@ -13,7 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 	<p><?=JText::_('Please be patient and give me a few weeks to figure out what to do here.');?></p>
 </div> 
 <div>
-	<form>
+	<form action="<?php echo JRoute::_('index.php?option=com_usernotes')?>" method="POST">
 		<button type="submit"><?=JText::_('Start My Notes Collection');?></button>
 		<input type="hidden" name="task" value="begin" />
 	</form>
