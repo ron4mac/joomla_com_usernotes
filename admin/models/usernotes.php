@@ -99,7 +99,8 @@ class UsernotesModelUsernotes extends JModelList
 	}
 
 
-	protected function populateState ($ordering = null, $direction = null) {
+	protected function populateState ($ordering = null, $direction = null)
+	{
 		parent::populateState('username', 'ASC');
 	}
 

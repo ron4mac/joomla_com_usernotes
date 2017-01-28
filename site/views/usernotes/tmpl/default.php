@@ -12,6 +12,11 @@ JHtml::_('jquery.framework', false);
 $jdoc = JFactory::getDocument();
 $jdoc->addScript('components/com_usernotes/static/js/oopim.js');
 $jdoc->addScript('components/com_usernotes/static/js/notesview.js');
+$jslang = array(
+		'no_sterm' => JText::_('COM_USERNOTES_NO_STERM')
+	);
+$jdoc->addScriptDeclaration('Oopim.L = '.json_encode($jslang).';
+');
 
 if (/*$this->state->secured*/ $this->item && $this->item->secured && $_SERVER['SERVER_PORT'] != 443) {
 	//JError::raiseNotice(100, 'You do not have a secure connection!', 'error');
@@ -28,22 +33,16 @@ if (isset($this->posq)) {
 	}
 	JFactory::getApplication()->enqueueMessage($msg, $svty);
 }
-//JFactory::getApplication()->enqueueMessage('<span style="color:red">'.JText::_('Storage usage is at 90% of quota!').'</span>', 'warning');
-//JError::raiseNotice(100, 'Storage usage is at 90% of quota!');
-//var_dump($this->params);echo'<br /><br />';var_dump(JComponentHelper::getParams('com_usernotes'));
 
 if ($this->state->secured && $_SERVER['SERVER_PORT'] != 443) {
 	$securl = $this->cparams->get('secureurl','');
 	if (!$securl) {
-		$hostname = php_uname('n');
-		$hostaddr = $_SERVER['SERVER_ADDR'];
-		$paths = explode('/',__FILE__);
-		$securl = $hostaddr.'/~'.$paths[2];
+		$securl = substr(strstr(dirname(JUri::root()), '://'), 3);
 	}
 	//var_dump($hostname,$paths);var_dump($_SERVER);
 	echo '<div style="background-color:red;color:white;">';
-	echo 'WARNING: You do not have a secure connection!';
-	echo '<a href="https://'.$securl.$_SERVER['REQUEST_URI'].'" style="color:yellow">[connect securely]</a>';
+	echo JText::_('COM_USERNOTES_NOTICE_INSECURE');
+	echo ' <a href="https://'.$securl.$_SERVER['REQUEST_URI'].'" style="color:yellow">'.JText::_('COM_USERNOTES_CONNECT_SECURELY').'</a>';
 	echo '</div>';
 }
 // accommodate targeted breadcrumb module

@@ -27,6 +27,7 @@ class UserNotesViewUserNote extends UserNotesViewBase
 		$this->buildPathway($this->item->itemID);
 
 		if ($this->item->secured && !$app->input->post->get('ephrase','','string')) {
+			$this->form = $this->get('Form');
 			$this->_prepareDocument(true);
 			return parent::display('ephrase');
 		}

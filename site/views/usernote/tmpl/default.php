@@ -11,6 +11,20 @@ JHtml::stylesheet('components/com_usernotes/static/css/oopim.css');
 JHtml::stylesheet('components/com_usernotes/static/css/pumenu.css');
 JHtml::_('jquery.framework', false);
 $jdoc = JFactory::getDocument();
+$jdoc->addScript('components/com_usernotes/static/js/oopim.js');
+$jdoc->addScript('components/com_usernotes/static/js/pumenu.js');
+$jdoc->addScript('components/com_usernotes/static/js/upload5d.js');
+$jdoc->addScript('components/com_usernotes/static/js/notesview.js');
+$jslang = array(
+		'ru_sure' => JText::_('COM_USERNOTES_RU_SURE')
+	);
+$jsvars = array(
+	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=',
+	'itemID' => $this->item->itemID,
+	'notesID' => urlencode($this->notesID),
+	'parentID' => $this->item->parentID,
+	'contentID' => ($this->item->contentID?:0)
+);
 $jdoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=";
 var itemID = '.$this->item->itemID.';
@@ -20,16 +34,14 @@ var contentID = '.$this->item->contentID.';
 var upldDestURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'";
 var fup_payload = {task:"attach", cID:'.$this->item->contentID.'};
 var uploadMaxFilesize = '.$this->maxUploadBytes.';
+	Oopim.L = '.json_encode($jslang).';
+	Oopim.V = '.json_encode($jsvars).';
 ');
-$jdoc->addScript('components/com_usernotes/static/js/oopim.js');
-$jdoc->addScript('components/com_usernotes/static/js/pumenu.js');
-$jdoc->addScript('components/com_usernotes/static/js/upload5d.js');
-$jdoc->addScript('components/com_usernotes/static/js/notesview.js');
 //var_dump($this->item);
 $itemID = $this->item->itemID;
 $prning = ($this->state->get('task', 0) === 'printNote');
 //echo'<xmp>';var_dump($prning,$this->state->get('task', 0));echo'</xmp>';
-if ($prning) echo '<button type="button" class="btn btn-primary" onclick="window.close();window.history.back();">'.JText::_('Done with Printing.').'</button>';
+if ($prning) echo '<button type="button" class="btn btn-primary" onclick="window.close();window.history.back();">'.JText::_('COM_USERNORES_PRNDONE').'</button>';
 // if not printing, accommodate targeted breadcrumb module
 if (!$prning) echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 ?>
@@ -46,15 +58,15 @@ if (!$prning) echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 	</div>
 	<div class="footer">
 		<?php
-			echo JHtml::_('usernotes.prnActIcon',$itemID,'Print note');
+			echo JHtml::_('usernotes.prnActIcon',$itemID,JText::_('COM_USERNOTES_PRNNOTE'));
 		if ($this->access & ITM_CAN_EDIT) {
-			echo JHtml::_('usernotes.edtActIcon',$itemID,'Edit note');
-			echo JHtml::_('usernotes.attActIcon',$itemID,'Add attachment');
-			echo JHtml::_('usernotes.movActIcon',$itemID,'Move note');
-			echo JHtml::_('usernotes.toolActIcon',$itemID,'Special tools');
+			echo JHtml::_('usernotes.edtActIcon',$itemID,JText::_('COM_USERNOTES_EDTNOTE'));
+			echo JHtml::_('usernotes.attActIcon',$itemID,JText::_('COM_USERNOTES_ADDATCH'));
+			echo JHtml::_('usernotes.movActIcon',$itemID,JText::_('COM_USERNOTES_MOVNOTE'));
+			echo JHtml::_('usernotes.toolActIcon',$itemID,JText::_('COM_USERNOTES_SPCTOOL'));
 		}
 		if ($this->access & ITM_CAN_DELE) {
-			echo JHtml::_('usernotes.delActIcon',$itemID,'Delete note');
+			echo JHtml::_('usernotes.delActIcon',$itemID,JText::_('COM_USERNOTES_DELNOTE'));
 		}
 		?>
 		&nbsp;<?=$this->footMsg?>
@@ -64,17 +76,17 @@ if (!$prning) echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 <?php if ($this->access & ITM_CAN_EDIT) : ?>
 <div id="putmenu" class="pum" style="display:none" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
 	<ul id="spum">
-		<li><a href="#" onclick="toolAct(event,'dofrac')" title="Make HTML fractions from text">Fractionize</a></li>
-		<li><a href="#" onclick="toolAct(event,'unfrac')" title="Return HTML fractions to text">un-Fractionize</a></li>
+		<li><a href="#" onclick="Oopim.toolAct(event,'dofrac')" title="<?=JText::_('COM_USERNOTES_DOFRACT');?>"><?=JText::_('COM_USERNOTES_DOFRACTZ');?></a></li>
+		<li><a href="#" onclick="Oopim.toolAct(event,'unfrac')" title="<?=JText::_('COM_USERNOTES_UNFRACT');?>"><?=JText::_('COM_USERNOTES_UNFRACT');?></a></li>
 <?php if ($this->attached): ?>
-		<li><a href="#" onclick="toolAct(event,'delatts')" title="Delete all attachments" data-sure="delete all attachments"><?=JText::_('Delete attachments');?></a></li>
+		<li><a href="#" onclick="Oopim.toolAct(event,'delatts')" title="<?=JText::_('COM_USERNOTES_DELAATTS');?>" data-sure="<?=strtolower(JText::_('COM_USERNOTES_DELAATTS'));?>"><?=JText::_('COM_USERNOTES_DEL_ATTS');?></a></li>
 <?php endif; ?>
 	</ul>
 </div>
 <div id="filupld" class="uplddlog" style="display:none;">
-	<span style="color:#36C;">Max file upload size: <?=UserNotesHelper::formatBytes($this->maxUploadBytes)?></span>
+	<span style="color:#36C;"><?=JText::_('COM_USERNOTES_MAXUPLD');?> <?=UserNotesHelper::formatBytes($this->maxUploadBytes)?></span>
 	<input type="file" id="upload_field" name="attm[]" multiple="multiple" />
-	<div id="dropArea">Or drop files here</div>
+	<div id="dropArea"><?=JText::_('COM_USERNOTES_DROPFILS');?></div>
 	<div id="result"></div>
 	<div id="totprogress"></div>
 	<div id="fprogress"></div>

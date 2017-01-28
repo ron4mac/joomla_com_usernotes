@@ -19,14 +19,15 @@ class UserNotesViewSearch extends UserNotesViewBase
 	{
 		$app = JFactory::getApplication();
 		// add to the bread crumb
-		$app->getPathWay()->addItem('Search','');
+		$app->getPathWay()->addItem(JText::_('COM_USERNOTES_SEARCH'),'');
 
 		// Get view related request variables.
 		$sterm = $app->input->getString('sterm');
 
 		// Get model data.
-		$m = $this->getModel();		//var_dump($sterm);
-		$items = $m->search($sterm);	//var_dump($items);
+		$m = $this->getModel();
+		$items = $m->search($sterm);
+		$m->addItemPaths($items);
 
 		// Check for errors.
 		// @TODO: Maybe this could go into JComponentHelper::raiseErrors($this->get('Errors'))

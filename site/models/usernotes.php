@@ -48,6 +48,26 @@ class UserNotesModelUserNotes extends JModelList
 	}
 
 
+	public function addItemPaths (&$items)
+	{
+		$db = $this->getDbo();
+		foreach ($items as &$item) {
+			$to = $item->itemID;
+			$path = array();
+			while ($to) {
+				$db->setQuery('SELECT title,parentID,secured FROM notes WHERE itemID='.$to);
+				$r = $db->loadAssoc();
+				if ($r['secured']) {
+					$r['title'] = base64_decode($r['title']);
+				}
+				array_unshift($path, $r['title']);
+				$to = $r['parentID'];
+			}
+			$item->lPath = implode(' :: ', $path);
+		}
+	}
+
+
 	public function getItem ($iid=null)
 	{
 		$iid = (!empty($iid)) ? $iid : (int) $this->getState('parent.id');

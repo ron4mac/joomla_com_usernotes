@@ -49,7 +49,7 @@ Oopim.Upld5d = (function(){
 	function NextInQueue(decr,tag) {
 		if (decr) {
 			if (! --inPrg) {
-				if (typeof(fup_done == 'function')) fup_done(errCnt);
+				if (typeof(Oopim.fup_done == 'function')) Oopim.fup_done(errCnt);
 				total2do = totalDone = errCnt = 0;
 				if (responses) { console.log(responses); }
 			}

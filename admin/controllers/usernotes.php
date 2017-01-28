@@ -16,6 +16,7 @@ class UserNotesControllerUserNotes extends JControllerAdmin
 		return $model;
 	}
 
+
 	protected function postDeleteHook (JModelLegacy $model, $ids = null)
 	{
 	}

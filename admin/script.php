@@ -6,42 +6,44 @@
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
- 
+
 class com_usernotesInstallerScript
 {
-	function install ($parent) 
+	function install ($parent)
 	{
 		$parent->getParent()->setRedirectURL('index.php?option=com_usernotes');
 	}
 
-	function uninstall ($parent) 
+
+	function uninstall ($parent)
 	{
 	}
 
-	function update ($parent) 
+
+	function update ($parent)
 	{
 	}
 
-	function preflight ($type, $parent) 
+
+	function preflight ($type, $parent)
 	{
 		$this->release = $parent->get('manifest')->version;
 	}
 
-	function postflight ($type, $parent) 
+
+	function postflight ($type, $parent)
 	{
 		$params['version'] = $this->release;
 		$this->setParams($params, true);
 		if ($type == 'install') {
-			$params['user_canskin'] = '0';
-			$params['user_canalert'] = '0';
-			$params['user_recurrevt'] = '0';
-			$params['grp_canskin'] = '0';
-			$params['grp_canalert'] = '0';
-			$params['grp_recurrevt'] = '0';
-			$params['show_versions'] = '1';
+			$params['storQuota'] = 268435456;
+			$params['maxUpload'] = 4194304;
+			$params['standard_skin'] = '';
+			$params['show_version'] = 0;
 			$this->setParams($params);
 		}
 	}
+
 
 	private function setParams ($param_array, $replace=false)
 	{
@@ -61,4 +63,5 @@ class com_usernotesInstallerScript
 			$db->execute();
 		}
 	}
+
 }

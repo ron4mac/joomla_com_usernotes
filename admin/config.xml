@@ -2,20 +2,24 @@
 <config>
 
 	<fieldset name="component" addfieldpath="/administrator/components/com_usernotes/models/fields">
+
 		<field name="storQuota" type="GmkbValue"
 			label="COM_USERNOTES_CONFIG_QUOTA_LABEL"
 			description="COM_USERNOTES_CONFIG_QUOTA_DESC"
 			default="0"
 			compdef="268435456" />
+
 		<field name="maxUpload" type="GmkbValue"
 			label="COM_USERNOTES_CONFIG_MAXUPLD_LABEL"
 			description="COM_USERNOTES_CONFIG_MAXUPLD_DESC"
 			default="0"
 			compdef="4194304" />
+
 		<field name="secureurl" type="text"
 			label="COM_USERNOTES_CONFIG_SECURL_LABEL"
 			description="COM_USERNOTES_CONFIG_SECURL_DESC"
 			default="" />
+
 		<field name="standard_skin" type="list" default=""
 			label="COM_USERNOTES_CONFIG_SKIN_LABEL"
 			description="COM_USERNOTES_CONFIG_SKIN_DESC"
@@ -25,8 +29,9 @@
 			<option value="_glossy">Glossy</option>
 			<option value="_classic">Classic</option>
 		</field>
+
 		<field
-			name="show_versions"
+			name="show_version"
 			type="radio"
 			class="btn-group btn-group-yesno"
 			default="0"
@@ -36,9 +41,11 @@
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
+
 	</fieldset>
 
 	<fieldset name="permissions" label="JCONFIG_PERMISSIONS_LABEL" description="JCONFIG_PERMISSIONS_DESC">
+
 		<field
 			name="rules"
 			type="rules"
@@ -47,6 +54,7 @@
 			validate="rules"
 			component="com_usernotes"
 			section="component" />
+
 	</fieldset>
 
 </config>

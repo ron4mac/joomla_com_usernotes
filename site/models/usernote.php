@@ -158,6 +158,19 @@ class UserNotesModelUserNote extends JModelItem
 	}
 
 
+	public function getForm ($data = array(), $loadData = true)
+	{
+		// Get the encryption phrase form.
+		$form = JForm::getInstance('com_usernotes.ephrase', JPATH_COMPONENT.'/models/forms/ephrase.xml');
+
+		if (empty($form)) {
+			return false;
+		}
+
+		return $form;
+	}
+
+
 	public function add_attached ($contentID=0, $files=NULL, $notesid=null)
 	{
 		if (!$contentID || !$files) return;

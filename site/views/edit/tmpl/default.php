@@ -8,18 +8,32 @@
 defined('_JEXEC') or die;
 
 JHtml::stylesheet('components/com_usernotes/static/css/oopim.css');
-JHtml::_('jquery.framework', false);
+JHtml::_('jquery.framework', true);
 JHtml::_('behavior.keepalive');
 JHtml::_('bootstrap.tooltip');
-JHTML::_('behavior.formvalidator');
+JHtml::_('behavior.formvalidator');
 $jdoc = JFactory::getDocument();
 $jdoc->addScript('components/com_usernotes/static/js/oopim.js');
+// Build values for javascript use
+$jsvars = array(
+	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=',
+	'itemID' => $this->item->itemID,
+	'notesID' => urlencode($this->notesID),
+	'parentID' => $this->item->parentID,
+	'contentID' => ($this->item->contentID?:0)
+);
+$jslang = array(
+		'sure_del_att' => JText::_('COM_USERNOTES_SURE_DEL_ATT'),
+		'ru_sure' => JText::_('COM_USERNOTES_RU_SURE')
+	);
 $jdoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=";
 var itemID = '.$this->item->itemID.';
 var notesID = "'.urlencode($this->notesID).'";
 var parentID = '.$this->item->parentID.';
 var contentID = '.($this->item->contentID?:0).';
+	Oopim.L = '.json_encode($jslang).';
+	Oopim.V = '.json_encode($jsvars).';
 ');
 
 $task = $this->type == 'f' ? 'edit.saveFolder' : 'edit.saveNote';
@@ -29,24 +43,24 @@ echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 ?>
 <div class="unote-edit">
 	<form action="" method="post" name="adminForm" id="adminForm" class="form-validate">
-		<input type="hidden" name="task" value="<?=$task?>" />
 		<span class="unote-buttons">
 			<input type="reset" value="Reset" class="btn" />
 			<button type="button" class="btn" onclick="Joomla.submitbutton('edit.cancelEdit')"><?= JText::_('JCANCEL') ?></button>
 			<button type="submit" class="btn btn-primary validate"><?= JText::_('JSAVE') ?></button>
 		</span>
 		<fieldset class="adminform" style="clear:both">
-			<ul class="adminformlist">
-	<? foreach ($this->form->getFieldset() as $field) {
+			<div class="adminformlist">
+	<?php foreach ($this->form->getFieldset() as $field) {
 		if ($field->fieldname == 'maksec' && $this->item->itemID) continue;
 		if ($field->fieldname == 'maksec') {
-			echo '<li>'.$field->input.$field->label.'</li>'."\n";
+			echo '<div>'.$field->input.$field->label.'</div>'."\n";
 			continue;
-			} ?>
-				<li><?=$field->label?><?=$field->input?></li>
-	<? } ?>
-			</ul>
+			}
+		echo $this->form->renderField($field->fieldname);
+		} ?>
+			</div>
 		</fieldset>
+		<input type="hidden" name="task" value="<?=$task?>" />
 		<?php echo JHtml::_('form.token'); ?>
 	</form>
 	<?php if (isset($this->attached) && $this->attached): ?>

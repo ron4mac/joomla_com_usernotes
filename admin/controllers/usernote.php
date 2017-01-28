@@ -30,16 +30,6 @@ class UserNotesControllerUserNote extends JControllerForm
 	}
 
 
-	/**
-	 * Method to check if you can edit a record.
-	 *
-	 * @param   array   $data  An array of input data.
-	 * @param   string  $key   The name of the key for the primary key.
-	 *
-	 * @return  boolean
-	 *
-	 * @since   1.6
-	 */
 	protected function allowEdit ($data = array(), $key = 'id')
 	{
 		$user = JFactory::getUser();
@@ -60,15 +50,6 @@ class UserNotesControllerUserNote extends JControllerForm
 	}
 
 
-	/**
-	 * Method to run batch operations.
-	 *
-	 * @param   object  $model  The model.
-	 *
-	 * @return  boolean   True if successful, false otherwise and internal error is set.
-	 *
-	 * @since   2.5
-	 */
 	public function batch ($model = null)
 	{
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
@@ -83,16 +64,6 @@ class UserNotesControllerUserNote extends JControllerForm
 	}
 
 
-	/**
-	 * Function that allows child controller access to model data after the data has been saved.
-	 *
-	 * @param   JModelLegacy  $model      The data model object.
-	 * @param   array         $validData  The validated data.
-	 *
-	 * @return  void
-	 *
-	 * @since   3.1
-	 */
 	protected function postSaveHook (JModelLegacy $model, $validData = array())
 	{
 

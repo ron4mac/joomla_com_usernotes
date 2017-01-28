@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fieldset name="ephrase">
+		<field name="ephrase"
+			type="password"
+			label="COM_USERNOTES_FIELD_EPHRASE_LABEL"
+			description="COM_USERNOTES_FIELD_EPHRASE_DESC"
+			required="true"
+			size="30"
+		/>
+	</fieldset>
+</form>

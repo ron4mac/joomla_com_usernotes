@@ -10,7 +10,7 @@ defined('_JEXEC') or die;
 require_once JPATH_BASE . '/components/com_usernotes/helpers/usernotes.php';
 
 /**
- * View class for a list of user schedules.
+ * View class for a list of user notes.
  */
 class UsernotesView extends JViewLegacy
 {
@@ -23,10 +23,10 @@ class UsernotesView extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
-		$this->items		= $this->get('Items');
-		$this->pagination	= $this->get('Pagination');
-		$this->state		= $this->get('State');	//var_dump($this->state);
-		$this->filterForm    = $this->get('FilterForm');
+		$this->items = $this->get('Items');
+		$this->pagination = $this->get('Pagination');
+		$this->state = $this->get('State');	//var_dump($this->state);
+		$this->filterForm = $this->get('FilterForm');
 		$this->activeFilters = $this->get('ActiveFilters');
 
 		//UserNotesHelper::addSubmenu($this->relm);
@@ -66,14 +66,10 @@ class UsernotesView extends JViewLegacy
 //		);
 	}
 
-	/**
-	 * Add the page title and toolbar.
-	 *
-	 * @since	1.6
-	 */
-	protected function addToolbar()
+
+	protected function addToolbar ()
 	{
-		$canDo	= UserNotesHelper::getActions();
+		$canDo = UserNotesHelper::getActions();
 
 		JToolBarHelper::title(JText::_('COM_USERNOTES_MENU').': '.JText::_('COM_USERNOTES_MANAGER_'.strtoupper($this->relm)), 'stack usernotes');
 
@@ -93,6 +89,7 @@ class UsernotesView extends JViewLegacy
 		JToolBarHelper::divider();
 		JToolBarHelper::help('user_schedulers', true);
 	}
+
 
 	protected function state ($vari, $set=false, $val='', $glb=false)
 	{

@@ -20,6 +20,7 @@ abstract class UserNotesHelperDb
 		}
 	}
 
+
 	public static function convertDb ($udbPath)
 	{
 		if (!file_exists($udbPath)) return;
