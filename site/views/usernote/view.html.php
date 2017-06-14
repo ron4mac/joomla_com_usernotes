@@ -35,9 +35,9 @@ class UserNotesViewUserNote extends UserNotesViewBase
 		if ($this->item->secured) {
 			$cookn = UserNotesHelper::hashCookieName($this->item->itemID, $this->item->contentID);
 			$ephrase = $app->input->post->get('ephrase','','string');
-			$this->item->serial_content = UserNotesHelper::doCrypt($ephrase, base64_decode($this->item->serial_content), true);
+			$this->item->serial_content = UserNotesHelper::doCrypt($ephrase, $this->item->serial_content, true, $this->item->secured);
 			$cookv = UserNotesHelper::doCrypt($this->item->itemID.'-@:'.$this->item->contentID, $ephrase);
-			setcookie($cookn, base64_encode($cookv), 0, '', '', true);
+			setcookie($cookn, $cookv, 0, '', '', true);
 		}
 
 		// Check for errors.

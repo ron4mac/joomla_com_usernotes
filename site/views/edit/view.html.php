@@ -44,14 +44,14 @@ class UserNotesViewEdit extends UserNotesViewBase
 				$cookv = $app->input->cookie->getBase64($cookn);
 				if ($cookv) {
 					setcookie($cookn, '', time() - 3600);
-					$item->ephrase = UserNotesHelper::doCrypt($item->itemID.'-@:'.$item->contentID, base64_decode($cookv), true);
+					$item->ephrase = UserNotesHelper::doCrypt($item->itemID.'-@:'.$item->contentID, $cookv, true);
 				} elseif ($ephrase = $app->input->post->get('ephrase','','string')) {
 					$item->ephrase = $ephrase;
 				} else {
 					$this->item = $item;
 					return parent::display('ephrase');
 				}
-				$item->serial_content = UserNotesHelper::doCrypt($item->ephrase, base64_decode($item->serial_content), true);
+				$item->serial_content = UserNotesHelper::doCrypt($item->ephrase, $item->serial_content, true, (int)$item->secured);
 			}
 		}
 

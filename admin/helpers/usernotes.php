@@ -94,20 +94,64 @@ abstract class UserNotesHelper
 	}
 
 
-	public static function doCrypt ($pass, $dat, $de=false)
+	public static function doCrypt ($pass, $dat, $de=false, $sm = 2)
 	{
-		$td = mcrypt_module_open(MCRYPT_3DES, '', MCRYPT_MODE_ECB, '');
-		$iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_DEV_RANDOM);
-		$ks = mcrypt_enc_get_key_size($td);
+		if ($sm == 2) {	// use OpenSSL
+			if ($de) {
+				return self::decrypt($dat, $pass);
+			} else {
+				return self::encrypt($dat, $pass);
+			}
+		}
+		$td = @mcrypt_module_open(MCRYPT_3DES, '', MCRYPT_MODE_ECB, '');
+		$iv = @mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_DEV_RANDOM);
+		$ks = @mcrypt_enc_get_key_size($td);
 		$key = substr($pass, 0, $ks);
-		mcrypt_generic_init($td, $key, $iv);
-		if ($de) { $retdat = trim(mdecrypt_generic($td, $dat)); }
-		else { $retdat = mcrypt_generic($td, $dat); }
-		mcrypt_generic_deinit($td);
-		mcrypt_module_close($td);
+		@mcrypt_generic_init($td, $key, $iv);
+		if ($de) { $retdat = trim(@mdecrypt_generic($td, base64_decode($dat))); }
+		else { $retdat = base64_encode(@mcrypt_generic($td, $dat)); }
+		@mcrypt_generic_deinit($td);
+		@mcrypt_module_close($td);
 		return $retdat;
 	}
 
+	// ======================= Alternate encryption method using openssl
+	const METHOD = 'aes-256-ctr';
+
+	private static function encrypt ($message, $key)
+	{
+		$nonceSize = openssl_cipher_iv_length(self::METHOD);
+		$nonce = openssl_random_pseudo_bytes($nonceSize);
+
+		$ciphertext = openssl_encrypt(
+			$message,
+			self::METHOD,
+			$key,
+			OPENSSL_RAW_DATA,
+			$nonce
+		);
+
+		return base64_encode($nonce.$ciphertext);
+	}
+
+	private static function decrypt ($message, $key)
+	{
+		$message = base64_decode($message);
+		$nonceSize = openssl_cipher_iv_length(self::METHOD);
+		$nonce = mb_substr($message, 0, $nonceSize, '8bit');
+		$ciphertext = mb_substr($message, $nonceSize, null, '8bit');
+
+		$plaintext = openssl_decrypt(
+			$ciphertext,
+			self::METHOD,
+			$key,
+			OPENSSL_RAW_DATA,
+			$nonce
+		);
+
+		return $plaintext;
+	}
+	// =======================
 
 	public static function userAuth ($uid)
 	{

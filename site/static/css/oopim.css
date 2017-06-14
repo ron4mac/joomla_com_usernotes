@@ -178,6 +178,13 @@ p.footer{
 	-webkit-box-shadow: 0 0 8px #D0D0D0;
 }
 
+#note table, #note tr, #note td, #note th {
+	border: 1px solid #BBB;
+}
+#note td, #note th {
+	padding: 4px 6px;
+}
+
 .addattach
 {
 	background-image: url('../imgs/attach_add.png');

@@ -84,9 +84,9 @@ class UserNotesModelUserNote extends JModelItem
 		$ntitl = trim($data->getString('title'));
 		$ncont = JComponentHelper::filterText($data->getRaw('serial_content'));
 		if ($ephrase) {
-			$secured = 1;
+			$secured = 2;	// use OpenSSL
 			$ntitl = base64_encode($ntitl);
-			$ncont = base64_encode(UserNotesHelper::doCrypt($ephrase, $ncont));
+			$ncont = UserNotesHelper::doCrypt($ephrase, $ncont);
 		}
 
 		try

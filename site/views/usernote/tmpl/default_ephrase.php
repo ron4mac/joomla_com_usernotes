@@ -28,7 +28,7 @@ echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 		<h3><span class="icon-lock" style="font-size:.8em;opacity:0.5"></span><?=$this->item->title?></h3>
 		<div class="ephrase">
 			<form action="" method="post" class="form-validate">
-				<?php echo $this->form->renderFieldset()?>
+				<?php echo $this->form->renderFieldset('ephrase')?>
 				<button type="submit" class="btn btn-primary"><?=JText::_('JSUBMIT');?></button>
 			</form>
 		</div>

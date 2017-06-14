@@ -7,7 +7,7 @@
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@jrjconline.net</authorEmail>
 	<authorUrl>rjconline.net</authorUrl>
-	<version>1.1.1</version>
+	<version>1.1.2</version>
 	<updater jver="3\.[3456789]" pver="5.2" />
 	<description>COM_USERNOTES_XML_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
