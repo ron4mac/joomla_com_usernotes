@@ -15,6 +15,13 @@ header.navigation-bar {
 	margin-bottom: 16px;
 }
 
+.verdisp {
+	margin-left: 10px;
+	margin-top: -10px;
+	font-size: .8em;
+	opacity: 0.6;
+}
+
 div.crumbs {
 	padding: 0 10px;
 	display: inline-block;

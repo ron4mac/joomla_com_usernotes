@@ -73,3 +73,8 @@ echo JHtml::_('usernotes.searchField', $this->parentID);
 		?>
 	</div>
 </div>
+<?php if ($this->cparams->get('show_version',0) && !$this->parentID): ?>
+<div class="verdisp">
+	Version: <?php echo $this->cparams->get('version'); ?>
+</div>
+<?php endif; ?>

@@ -113,8 +113,8 @@ class UserNotesController extends JControllerLegacy
 		$hier = $m->get_item_hier(JFactory::getUser()->get('id'));
 		echo '<span>Move item to:</span><br />';
 		echo JHtml::_('usernotes.form_dropdown', 'moveTo', $hier, $pid, 'id="moveTo"');
-		echo '<br /><hr />'.JHtml::_('usernotes.form_button', 'moveto','Move','style="float:right" onclick="doMove(true)"');
-		echo JHtml::_('usernotes.form_button', 'cancel','Cancel','style="float:right" onclick="doMove(false)"');
+		echo '<br /><hr />'.JHtml::_('usernotes.form_button', 'moveto','Move','style="float:right" onclick="Oopim.doMove(true)"');
+		echo JHtml::_('usernotes.form_button', 'cancel','Cancel','style="float:right" onclick="Oopim.doMove(false)"');
 	}
 
 

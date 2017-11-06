@@ -9,8 +9,8 @@ defined('_JEXEC') or die('Restricted access');
 ?>
 <h1>User Notes Startup Screen</h1>
 <div>
-	<p><?=JText::_('Great!!! So you want to try this out, do you...');?></p>
-	<p><?=JText::_('Please be patient and give me a few weeks to figure out what to do here.');?></p>
+	<p><?=JText::_('COM_USERNOTES_START1');?></p>
+	<p><?=sprintf(JText::_('COM_USERNOTES_START2'), $this->quota, $this->maxfs);?></p>
 </div> 
 <div>
 	<form action="<?php echo JRoute::_('index.php?option=com_usernotes')?>" method="POST">

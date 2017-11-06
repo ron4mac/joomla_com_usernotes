@@ -66,7 +66,7 @@ class UserNotesViewEdit extends UserNotesViewBase
 		if ($this->type == 'f') {
 			if ($this->isecure) {
 				$this->form->removeField('maksec');
-			} else {
+			} elseif (!(int)$item->secured) {
 				$this->form->removeField('pissec');
 			}
 		}

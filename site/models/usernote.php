@@ -98,7 +98,7 @@ class UserNotesModelUserNote extends JModelItem
 				$db->setQuery($q);
 				$db->execute();
 				$q = $db->getQuery(true);
-				$q->update('notes')->set('title='.$db->quote($ntitl))->where('itemID='.$iid);
+				$q->update('notes')->set('title='.$db->quote($ntitl).', secured='.$secured)->where('itemID='.$iid);
 				$db->setQuery($q);
 				$db->execute();
 			} else {
@@ -131,6 +131,9 @@ class UserNotesModelUserNote extends JModelItem
 		{
 			$db = $this->getDbo();
 			if ($iid) {
+				if ($data->getInt('pissec',0)) {
+					$ftitl = base64_encode($ftitl);
+				}
 				$q = $db->getQuery(true);
 				$q->update('notes')->set('title='.$db->quote($ftitl))->where('itemID='.$iid);
 				$db->setQuery($q);
@@ -140,7 +143,7 @@ class UserNotesModelUserNote extends JModelItem
 				$fpid = $data->getInt('parentID');
 				if ($data->getInt('maksec',0) || $data->getInt('pissec',0)) {
 					$sec = 1;
-					$ttl = base64_encode($ftitl);
+					$ftitl = base64_encode($ftitl);
 				}
 				$q = $db->getQuery(true);
 				$q->insert('notes')->columns('ownerID,shared,isParent,title,contentID,parentID,secured')

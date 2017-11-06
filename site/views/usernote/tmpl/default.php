@@ -41,7 +41,7 @@ var uploadMaxFilesize = '.$this->maxUploadBytes.';
 $itemID = $this->item->itemID;
 $prning = ($this->state->get('task', 0) === 'printNote');
 //echo'<xmp>';var_dump($prning,$this->state->get('task', 0));echo'</xmp>';
-if ($prning) echo '<button type="button" class="btn btn-primary" onclick="window.close();window.history.back();">'.JText::_('COM_USERNORES_PRNDONE').'</button>';
+if ($prning) echo '<button type="button" class="btn btn-primary" onclick="window.close();window.history.back();">'.JText::_('COM_USERNOTES_PRNDONE').'</button>';
 // if not printing, accommodate targeted breadcrumb module
 if (!$prning) echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 ?>
