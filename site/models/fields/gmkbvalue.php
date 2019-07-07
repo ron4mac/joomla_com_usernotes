@@ -25,7 +25,7 @@ class JFormFieldGmkbValue extends JFormField
 
 		// create the component default display
 		list($cdv,$cdm) = $this->num2gmkv($defsiz);
-		$mc = array('KB','MB','GB');
+		$mc = array('KiB','MiB','GiB');
 		$compdef = $cdv.$mc[$cdm];
 
 		// class='required' for client side validation
@@ -48,9 +48,9 @@ class JFormFieldGmkbValue extends JFormField
 		$html[] = '<span class="input-gmkb'.($this->value ? '' : ' hidden').'">';
 		$html[] = '<input type="text" class="input-medium" id="' . $this->id . '_name" value="' . $uplsiz .'" style="width:4em;text-align:right" />';
 		$html[] = '<select id="' . $this->id . '_gmkb" onchange="unotes_doGmkb(this)" style="width:5em">';
-		$html[] = '<option value="1024"'.($uplsizm==0?' selected="selected"':'').'>KB</option>';
-		$html[] = '<option value="1048576"'.($uplsizm==1?' selected="selected"':'').'>MB</option>';
-		$html[] = '<option value="1073741824"'.($uplsizm==2?' selected="selected"':'').'>GB</option>';
+		$html[] = '<option value="1024"'.($uplsizm==0?' selected="selected"':'').'>KiB</option>';
+		$html[] = '<option value="1048576"'.($uplsizm==1?' selected="selected"':'').'>MiB</option>';
+		$html[] = '<option value="1073741824"'.($uplsizm==2?' selected="selected"':'').'>GiB</option>';
 		$html[] = '</select>';
 		$html[] = '<input type="hidden" class="gmkb-valu" id="' . $this->id . '_id"' . $class . ' name="' . $this->name . '" value="' . $this->value . '" />';
 		$html[] = '</span>';

@@ -77,7 +77,8 @@ class UserNotesController extends JControllerLegacy
 			$fdmp = print_r($files, true);
 			JLog::add("attach ... notesID: {$notesid}  note: {$cid}  file(s): {$fdmp}", JLog::INFO, 'com_usernotes');
 		}
-		$m->add_attached($cid, $files, $notesid);
+		$msg = $m->add_attached($cid, $files, $notesid);
+		if ($msg) { header($_SERVER['SERVER_PROTOCOL'].' 500 '.$msg); jexit(); }
 	}
 
 
@@ -101,7 +102,7 @@ class UserNotesController extends JControllerLegacy
 		$ined = $this->input->getInt('inedit', 0);
 		$atchs = $m->attachments($cid);
 		if ($atchs) {
-			echo JHtml::_('usernotes.att_list',$atchs,$cid,$ined);
+			echo JHtml::_('usernotes.att_list', $atchs, $cid, $ined);
 		} else echo '';
 	}
 
@@ -113,8 +114,8 @@ class UserNotesController extends JControllerLegacy
 		$hier = $m->get_item_hier(JFactory::getUser()->get('id'));
 		echo '<span>Move item to:</span><br />';
 		echo JHtml::_('usernotes.form_dropdown', 'moveTo', $hier, $pid, 'id="moveTo"');
-		echo '<br /><hr />'.JHtml::_('usernotes.form_button', 'moveto','Move','style="float:right" onclick="Oopim.doMove(true)"');
-		echo JHtml::_('usernotes.form_button', 'cancel','Cancel','style="float:right" onclick="Oopim.doMove(false)"');
+		echo '<br /><hr />'.JHtml::_('usernotes.form_button', 'moveto', 'Move', 'style="float:right" onclick="Oopim.doMove(true)"');
+		echo JHtml::_('usernotes.form_button', 'cancel', 'Cancel', 'style="float:right" onclick="Oopim.doMove(false)"');
 	}
 
 
@@ -132,7 +133,7 @@ class UserNotesController extends JControllerLegacy
 		$act = $this->input->post->getCmd('mnuact','');
 		$iid = $this->input->post->getInt('iID', 0);
 		$cid = $this->input->post->getInt('cID', 0);
-		$this->load->model('content_model','mycmodel');
+		$this->load->model('content_model', 'mycmodel');
 		$ictnt = $this->mycmodel->get_item($cid, $this->enty_item);
 		//call_user_func_array(array($ictnt, $act), array($iid, $cid));
 		call_user_func(array($ictnt, $act), $cid);

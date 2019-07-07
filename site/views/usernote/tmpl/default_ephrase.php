@@ -35,12 +35,12 @@ echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 	</div>
 	<div class="footer">
 		<?php
-			echo JHtml::_('usernotes.prnActIcon',$itemID,'Print note');
+			echo JHtml::_('usernotes.prnActIcon', $itemID, JText::_('COM_USERNOTES_PRNNOTE'));
 		if ($this->access & ITM_CAN_EDIT) {
-			echo JHtml::_('usernotes.movActIcon',$itemID,'Move note');
+			echo JHtml::_('usernotes.movActIcon', $itemID, JText::_('COM_USERNOTES_MOVNOTE'));
 		}
 		if ($this->access & ITM_CAN_DELE) {
-			echo JHtml::_('usernotes.delActIcon',$itemID,'Delete note');
+			echo JHtml::_('usernotes.delActIcon', $itemID, JText::_('COM_USERNOTES_DELNOTE'));
 		}
 		?>
 		&nbsp;<?=$this->footMsg?>

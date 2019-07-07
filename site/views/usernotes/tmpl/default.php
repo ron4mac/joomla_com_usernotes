@@ -13,7 +13,8 @@ $jdoc = JFactory::getDocument();
 $jdoc->addScript('components/com_usernotes/static/js/oopim.js');
 $jdoc->addScript('components/com_usernotes/static/js/notesview.js');
 $jslang = array(
-		'no_sterm' => JText::_('COM_USERNOTES_NO_STERM')
+		'no_sterm' => JText::_('COM_USERNOTES_NO_STERM'),
+		'ru_sure' => JText::_('COM_USERNOTES_RU_SURE')
 	);
 $jdoc->addScriptDeclaration('Oopim.L = '.json_encode($jslang).';
 ');
@@ -62,13 +63,13 @@ echo JHtml::_('usernotes.searchField', $this->parentID);
 	</div>
 	<div class="footer">
 		<?php if ($this->access & ITM_CAN_CREA) : ?>
-		<?=JHtml::_('usernotes.newActIcon',$this->parentID,'Add new note')?><?=JHtml::_('usernotes.fNewActIcon',$this->parentID.'&type=f','Add new folder')?>
+		<?=JHtml::_('usernotes.newActIcon',$this->parentID, JText::_('COM_USERNOTES_EDIT_FORM_CREATE'))?><?=JHtml::_('usernotes.fNewActIcon', $this->parentID.'&type=f',JText::_('COM_USERNOTES_EDIT_FORM_CREATE_F'))?>
 		<?php else : ?>
 		&nbsp;
 		<?php endif;?>
 		<?php if ($this->parentID) {
-			if ($this->access & ITM_CAN_DELE) echo JHtml::_('usernotes.fDelActIcon',$this->parentID,'Delete this folder');
-			if ($this->access & ITM_CAN_EDIT) echo JHtml::_('usernotes.fEdtActIcon',$this->parentID,'Edit this folder');
+			if ($this->access & ITM_CAN_DELE) echo JHtml::_('usernotes.fDelActIcon', $this->parentID,JText::_('COM_USERNOTES_EDIT_FORM_DELETE_F'));
+			if ($this->access & ITM_CAN_EDIT) echo JHtml::_('usernotes.fEdtActIcon', $this->parentID,JText::_('COM_USERNOTES_EDIT_FORM_EDIT_F'));
 			}
 		?>
 	</div>

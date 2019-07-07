@@ -1,9 +1,8 @@
 <?php
 /**
- * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
- * @license    GNU General Public License version 3 or later; see LICENSE.txt
+ * @package			com_usernotes
+ * @copyright		Copyright (C) 2016 RJCreations - All rights reserved.
+ * @license			GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
@@ -14,7 +13,7 @@ class Note_model
 	public $rawtxt = '';
 	public $format = 0;
 
-    public function __construct ($raw=NULL,$fmt=0)
+	public function __construct ($raw = NULL, $fmt = 0)
 	{
 		if ($raw)
 			$this->rawtxt = $raw;
@@ -58,7 +57,7 @@ class Secured_model
 	public $rawtxt = '';
 	public $ephrase = '';
 
-    function __construct ($raw=NULL)
+	function __construct ($raw = NULL)
 	{
 		if ($raw) {
 			$ephrase = JFactory::getApplication()->input->post->get('ephrase','','string');
@@ -73,7 +72,7 @@ class Secured_model
 		return $this->rawtxt;
 	}
 
-	function rendered ($addHtml=false)
+	function rendered ($addHtml = false)
 	{
 		$this->ephrase = JFactory::getApplication()->input->post->get('ephrase','','string');	//var_dump($this->ephrase);
 		if (!$this->ephrase) return '';
@@ -83,7 +82,7 @@ class Secured_model
 		return '<pre>'.$odat.'</pre>';
 	}
 
-	private function doCrypt ($de,$pass,$dat)
+	private function doCrypt ($de, $pass, $dat)
 	{
 		$td = mcrypt_module_open(MCRYPT_3DES, '', MCRYPT_MODE_ECB, '');
 		$iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_DEV_RANDOM);

@@ -98,9 +98,9 @@ Oopim.Upld5d = (function(){
 			};
 
 			if (typeof(fup_ftypes) == 'object' && fup_ftypes.indexOf(file.type) < 0) {
-				errM = 'Cannot upload a file of this type. ('+file.type+')';
+				errM = Oopim.sprintf(Oopim.L.fbadtyp, file.type);
 			} else if (file.size > uploadMaxFilesize) {
-				errM = 'File is larger than max size allowed.';
+				errM = Oopim.L.fsz2big;
 			}
 
 			// create progress bar

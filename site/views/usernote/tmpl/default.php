@@ -16,7 +16,9 @@ $jdoc->addScript('components/com_usernotes/static/js/pumenu.js');
 $jdoc->addScript('components/com_usernotes/static/js/upload5d.js');
 $jdoc->addScript('components/com_usernotes/static/js/notesview.js');
 $jslang = array(
-		'ru_sure' => JText::_('COM_USERNOTES_RU_SURE')
+		'ru_sure' => JText::_('COM_USERNOTES_RU_SURE'),
+		'fsz2big' => JText::_('COM_USERNOTES_FSZ2BIG'),
+		'fbadtyp' => JText::_('COM_USERNOTES_FBADTYP')
 	);
 $jsvars = array(
 	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=',

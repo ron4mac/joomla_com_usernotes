@@ -56,8 +56,7 @@ class UserNotesModelUserNote extends JModelItem
 					if ($nm = @unserialize($data->serial_content)) {
 						$data->serial_content = $nm->rendered();
 					}
-					$db->setQuery('SELECT attached FROM fileatt WHERE contentID='.$data->contentID);
-					$data->attached = $db->loadRowList();
+					$data->attached = $this->attachments($data->contentID);
 				}
 
 				if ($data->secured) {
@@ -189,10 +188,10 @@ class UserNotesModelUserNote extends JModelItem
 					move_uploaded_file($tmp_name, $path.'/'.$name);
 					$fns[] = $name;
 				}
-				else $msg .= 'failed to upload';
+				else $msg .= JText::_('COM_USERNOTES_NOUPLOAD');
 			}
 			elseif ($file['error'] != UPLOAD_ERR_NO_FILE) {
-				$msg .= "Error: {$file['error']}";
+				$msg .= sprintf(JText::_('COM_USERNOTES_UPLOADERR'), $file['error']);
 			}
 		}
 		if ($fns) {
@@ -214,10 +213,10 @@ class UserNotesModelUserNote extends JModelItem
 			}
 			catch (Exception $e)
 			{
-				$this->setError($e);
+				$msg = $e->getMessage();
 			}
 		}
-		if ($msg) { $this->setError("[cid:{$contentID}] " . $msg); }
+		return $msg;
 	}
 
 

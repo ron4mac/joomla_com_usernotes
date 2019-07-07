@@ -47,18 +47,18 @@ abstract class JHtmlUsernotes
 	}
 	public static function movActIcon ($id, $titl)
 	{
-		return '<a href="#" title="Move note" class="act-left" onclick="Oopim.moveTo(event)">'.self::ico('icon-move').'</a>';
+		return '<a href="#" title="'.$titl.'" class="act-left" onclick="Oopim.moveTo(event)">'.self::ico('icon-move').'</a>';
 	}
 	public static function attActIcon ($id, $titl)
 	{
-		return '<a href="#" title="Add attachment" class="act-left" onclick="Oopim.addAttach(event)">'.self::ico('icon-attachment').'</a>';
+		return '<a href="#" title="'.$titl.'" class="act-left" onclick="Oopim.addAttach(event)">'.self::ico('icon-attachment').'</a>';
 	}
 	public static function delActIcon ($id, $titl)
 	{
 		return JHtml::link(
 				JRoute::_('index.php?option=com_usernotes&task=edit.deleteItem&iid='.$id),
 				self::ico('icon-file-minus idang'),
-				array('title'=>$titl,'class'=>'nav act-right sure','data-suremsg'=>'delete this item')
+				array('title'=>$titl,'class'=>'nav act-right sure','data-suremsg'=>strtolower($titl))
 			);
 	}
 	public static function fNewActIcon ($id, $titl)
@@ -82,12 +82,12 @@ abstract class JHtmlUsernotes
 		return JHtml::link(
 				JRoute::_('index.php?option=com_usernotes&task=edit.deleteItem&iid='.$id),
 				self::ico('icon-folder-remove idang'),
-				array('title'=>$titl,'class'=>'nav act-right sure','data-suremsg'=>'delete this folder')
+				array('title'=>$titl,'class'=>'nav act-right sure','data-suremsg'=>strtolower($titl))
 			);
 	}
 	public static function toolActIcon ($id, $titl)
 	{
-		return '<a href="#" title="Utility tools" class="act-left" onclick="Oopim.toolMenu(event);">'.self::ico('icon-wrench').'</a>';
+		return '<a href="#" title="'.$titl.'" class="act-left" onclick="Oopim.toolMenu(event);">'.self::ico('icon-wrench').'</a>';
 	}
 //	public static function srchActIcon ($id, $titl)
 //	{
@@ -156,10 +156,10 @@ EOD;
 		foreach ($atchs as $atchr) {
 			$atch = $atchr[0];
 			if ($edt) {
-				$html .= '<br /><span><img src="'.JUri::base().'/components/com_usernotes/static/imgs/deletex.png" alt="delete attachment" onclick="Oopim.aj_detach('.$cid.',\''.$atch.'\');" />&nbsp;'.$atch.'</span>';
+				$html .= '<br /><span><img src="'.JUri::base().'/components/com_usernotes/static/imgs/deletex.png" title="'.JText::_('COM_USERNOTES_DEL_ATT').'" alt="delete attachment" onclick="Oopim.aj_detach('.$cid.',\''.$atch.'\');" />&nbsp;'.$atch.'</span>';
 			} else {
 				$html .= '<div data-afile="'.rawurlencode($atch).'" class="atchlink">';
-				$html .= '<a href="#" class="noeffect" onclick="OOopim.getAttach(event,this,true)" title="download file"><div class="downlink">&nbsp;</div></a><a href="#" class="noeffect" onclick="Oopim.getAttach(event,this,false)" title="view file">'.$atch.'</a>';
+				$html .= '<a href="#" class="noeffect" onclick="Oopim.getAttach(event,this,true)" title="'.JText::_('COM_USERNOTES_DOWNFIL').'"><div class="downlink">&nbsp;</div></a><a href="#" class="noeffect" onclick="Oopim.getAttach(event,this,false)" title="'.JText::_('COM_USERNOTES_VIEWFIL').'">'.$atch.'</a>';
 				$html .= '</div>';
 			}
 		}
