@@ -2,10 +2,12 @@
 /**
  * @package    com_usernotes
  *
- * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
+
+use Joomla\Event\Dispatcher as EventDispatcher;
 
 abstract class UserNotesHelper
 {
@@ -15,8 +17,8 @@ abstract class UserNotesHelper
 
 	public static function getStorageBase ()
 	{
-		$dispatcher = JDispatcher::getInstance();
-		$results = $dispatcher->trigger('onRjuserDatapath', null);
+		$dispatcher = new EventDispatcher();
+		$results = $dispatcher->triggerEvent('onRjuserDatapath', null);
 		$sdp = isset($results[0]) ? trim($results[0]) : '';
 		return $sdp ? $sdp : 'userstor';
 	}
@@ -182,12 +184,10 @@ abstract class UserNotesHelper
 	{
 		$user = JFactory::getUser();
 		$result = new JObject;
-		$assetName = 'com_usernotes';
 
-		$actions = JAccess::getActions($assetName);
-
+		$actions = JAccess::getActionsFromFile(JPATH_ADMINISTRATOR . '/components/com_usernotes/access.xml');
 		foreach ($actions as $action) {
-			$result->set($action->name,	$user->authorise($action->name, $assetName));
+			$result->set($action->name,	$user->authorise($action->name, 'com_usernotes'));
 		}
 
 		return $result;
