@@ -2,14 +2,14 @@
 /**
  * @package    com_usernotes
  *
- * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
 include_once JPATH_COMPONENT.'/views/view.php';
 
-class UserNotesViewUserNotes extends UserNotesViewBase
+class UsernotesViewUsernotes extends UsernotesViewBase
 {
 	protected $state;
 	protected $items;

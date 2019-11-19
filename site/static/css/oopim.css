@@ -100,10 +100,13 @@ div.foldm.isecure {
 
 a.act-left {
 	margin-left: 12px;
+	display: inline-flex;
 }
 a.act-right {
 	float: right;
-	margin-right: 12px;;
+	margin-right: 12px;
+	display: inline-flex;
+
 }
 
 .ttlfield {

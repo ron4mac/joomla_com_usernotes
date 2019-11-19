@@ -2,7 +2,7 @@
 /**
  * @package    com_usernotes
  *
- * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -42,7 +42,7 @@ $lgnd = $this->type == 'f' ? '_F' : '';
 echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 ?>
 <div class="unote-edit">
-	<form action="" method="post" name="adminForm" id="adminForm" class="form-validate">
+	<form action="<?=JRoute::_('index.php?option=com_usernotes&view=edit&Itemid='.$this->itemId, false)?>" method="post" name="adminForm" id="adminForm" class="form-validate" data-cancel="edit.cancelEdit">
 		<span class="unote-buttons">
 			<input type="reset" value="Reset" class="btn" />
 			<button type="button" class="btn" onclick="Joomla.submitbutton('edit.cancelEdit')"><?= JText::_('JCANCEL') ?></button>
@@ -61,6 +61,7 @@ echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 			</div>
 		</fieldset>
 		<input type="hidden" name="task" value="<?=$task?>" />
+		<input type="hidden" name="Itemid" value="<?=$this->itemId?>" />
 		<?php echo JHtml::_('form.token'); ?>
 	</form>
 	<?php if (isset($this->attached) && $this->attached): ?>

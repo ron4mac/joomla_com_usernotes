@@ -2,12 +2,12 @@
 /**
  * @package    com_usernotes
  *
- * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die('Restricted access');
  
-class UserNotesViewAtvue extends JViewLegacy
+class UsernotesViewAtvue extends JViewLegacy
 {
 	// nothing to do here
 }

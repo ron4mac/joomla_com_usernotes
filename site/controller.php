@@ -2,7 +2,7 @@
 /**
  * @package    com_usernotes
  *
- * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -12,13 +12,16 @@ JLoader::register('JHtmlUsernotes', JPATH_COMPONENT . '/helpers/html/usernotes.p
 
 class UserNotesController extends JControllerLegacy
 {
+	protected $default_view = 'usernotes';
 	protected $uid;
+	protected $mnuItm;
 
 	public function __construct ($config = array())
 	{
 		parent::__construct($config);
 		if (JDEBUG) { JLog::addLogger(array('text_file'=>'com_usernotes.log.php'), JLog::ALL, array('com_usernotes')); }
 		$this->uid = JFactory::getUser()->get('id');
+		$this->mnuItm = $this->input->getInt('Itemid', 0);
 	}
 
 
@@ -27,7 +30,11 @@ class UserNotesController extends JControllerLegacy
 		if ($auth = UserNotesHelper::userAuth($this->uid)) {
 			if (($auth > 1) && !file_exists(UserNotesHelper::userDataPath())) {
 				$this->input->set('view', 'startup');
+				$view = $this->getView('startup','html');
+			} else {
+				$view = $this->getView('usernotes','html');
 			}
+			$view->itemId = $this->mnuItm;
 			return parent::display($cachable, $urlparams);
 		} else {
 			$this->setRedirect('index.php');
@@ -43,7 +50,8 @@ class UserNotesController extends JControllerLegacy
 		mkdir($udp.'/attach', 0777, true);
 		file_put_contents($udp.'/index.html', $htm);
 		file_put_contents($udp.'/attach/index.html', $htm);
-		$this->setRedirect(JRoute::_('index.php?option=com_usernotes', false));
+	//	$this->setRedirect(JRoute::_('index.php?option=com_usernotes&view=usernotes&Itemid='.$this->mnuItm, false));
+		$this->setRedirect(JRoute::_('index.php?option=com_usernotes&Itemid='.$this->mnuItm, false));
 	}
 
 
