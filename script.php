@@ -1,8 +1,7 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -24,7 +23,11 @@ class com_usernotesInstallerScript
 
 	function preflight ($type, $parent) 
 	{
-		$this->release = $parent->getManifest()->version;
+		if (method_exists($parent,'getManifest')) {
+			$this->release = $parent->getManifest->version;
+		} else {
+			$this->release = $parent->get('manifest')->version;
+		}
 	}
 
 	function postflight ($type, $parent) 
