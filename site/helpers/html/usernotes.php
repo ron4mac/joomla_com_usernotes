@@ -2,7 +2,7 @@
 /**
  * @package    com_usernotes
  *
- * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -16,7 +16,7 @@ abstract class JHtmlUsernotes
 		$attrs = array('class'=>'nav');
 		if (isset($item->lPath)) $attrs['title'] = $item->lPath;
 		return JHtml::link(
-				JRoute::_('index.php?option=com_usernotes&'.$param.$item->itemID),
+				self::aiUrl($param.$item->itemID),
 				'<div class="menug '.($item->isParent?'foldm':'docum').($item->secured?' isecure':'').'"></div>'.htmlspecialchars($ttl),
 				$attrs
 			);
@@ -24,7 +24,7 @@ abstract class JHtmlUsernotes
 	public static function prnActIcon ($id, $titl)
 	{
 		return JHtml::link(
-				'index.php?option=com_usernotes&task=printNote&nid='.$id,
+				self::aiUrl('task=printNote&nid='.$id),
 				self::ico('icon-print'),
 				array('title'=>$titl,'class'=>'nav act-left','onclick'=>'Oopim.printNote(event,this);return false;')
 			);
@@ -32,7 +32,7 @@ abstract class JHtmlUsernotes
 	public static function newActIcon ($id, $titl)
 	{
 		return JHtml::link(
-				JRoute::_('index.php?option=com_usernotes&task=edit.addNote&pid='.$id),
+				self::aiUrl('task=edit.addNote&pid='.$id),
 				self::ico('icon-file-plus'),
 				array('title'=>$titl,'class'=>'nav act-left')
 			);
@@ -40,7 +40,7 @@ abstract class JHtmlUsernotes
 	public static function edtActIcon ($id, $titl)
 	{
 		return JHtml::link(
-				JRoute::_('index.php?option=com_usernotes&task=edit.editNote&nid='.$id),
+				self::aiUrl('task=edit.editNote&nid='.$id),
 				self::ico('icon-edit'),
 				array('title'=>$titl,'class'=>'nav act-left')
 			);
@@ -56,7 +56,7 @@ abstract class JHtmlUsernotes
 	public static function delActIcon ($id, $titl)
 	{
 		return JHtml::link(
-				JRoute::_('index.php?option=com_usernotes&task=edit.deleteItem&iid='.$id),
+				self::aiUrl('task=edit.deleteItem&iid='.$id),
 				self::ico('icon-file-minus idang'),
 				array('title'=>$titl,'class'=>'nav act-right sure','data-suremsg'=>strtolower($titl))
 			);
@@ -64,7 +64,7 @@ abstract class JHtmlUsernotes
 	public static function fNewActIcon ($id, $titl)
 	{
 		return JHtml::link(
-				JRoute::_('index.php?option=com_usernotes&task=edit.addFolder&type=f&pid='.$id),
+				self::aiUrl('task=edit.addFolder&type=f&pid='.$id),
 				self::ico('icon-folder-plus-2'),
 				array('title'=>$titl,'class'=>'nav act-left')
 			);
@@ -72,7 +72,7 @@ abstract class JHtmlUsernotes
 	public static function fEdtActIcon ($id, $titl)
 	{
 		return JHtml::link(
-				JRoute::_('index.php?option=com_usernotes&task=edit.editFolder&type=f&nid='.$id),
+				self::aiUrl('task=edit.editFolder&type=f&nid='.$id),
 				self::ico('icon-edit'),
 				array('title'=>$titl,'class'=>'nav act-right')
 			);
@@ -80,7 +80,7 @@ abstract class JHtmlUsernotes
 	public static function fDelActIcon ($id, $titl)
 	{
 		return JHtml::link(
-				JRoute::_('index.php?option=com_usernotes&task=edit.deleteItem&iid='.$id),
+				self::aiUrl('task=edit.deleteItem&iid='.$id),
 				self::ico('icon-folder-remove idang'),
 				array('title'=>$titl,'class'=>'nav act-right sure','data-suremsg'=>strtolower($titl))
 			);
@@ -96,7 +96,7 @@ abstract class JHtmlUsernotes
 
 	public static function searchField ($pid)
 	{
-		$fact = JRoute::_('index.php?option=com_usernotes');
+		$fact = self::aiUrl('');
 		return <<<EOD
 <div class="search">
 	<form name="sqry" action="{$fact}" method="POST" onsubmit="return Oopim.performSearch(this,{$pid})">
@@ -190,6 +190,27 @@ EOD;
 			$att .= $key . '="' . $val . '" ';
 		}
 		return $att;
+	}
+
+	private static function aiUrl ($prms, $xml=false)
+	{
+		static $mnuId = 0;
+
+		if (!$mnuId) {
+			$mnuId = JFactory::getApplication()->input->getInt('Itemid', 0);
+		}
+		$url = JRoute::_('index.php?option=com_usernotes'.($prms?('&'.$prms):'').'&Itemid='.$mnuId, $xml);
+		return $url;
+	}
+
+	private static function mnuId ()
+	{
+		static $mnuId = 0;
+
+		if (!$mnuId) {
+			$mnuId = JFactory::getApplication()->input->getInt('Itemid', 0);
+		}
+		return $mnuId;
 	}
 
 	private static function form_prep ($str = '', $field_name = '')

@@ -2,7 +2,7 @@
 /**
  * @package    com_usernotes
  *
- * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die('Restricted access');
@@ -13,7 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 	<p><?=sprintf(JText::_('COM_USERNOTES_START2'), $this->quota, $this->maxfs);?></p>
 </div> 
 <div>
-	<form action="<?php echo JRoute::_('index.php?option=com_usernotes')?>" method="POST">
+	<form action="<?=JRoute::_('index.php?option=com_usernotes&Itemid='.$this->itemId, false)?>" method="POST">
 		<button type="submit"><?=JText::_('Start My Notes Collection');?></button>
 		<input type="hidden" name="task" value="begin" />
 	</form>

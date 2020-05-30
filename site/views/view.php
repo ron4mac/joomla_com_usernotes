@@ -2,7 +2,7 @@
 /**
  * @package    com_usernotes
  *
- * @copyright  Copyright (C) 2016 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -14,7 +14,7 @@ define('IS_SMALL_DEVICE', 0);
 
 JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 
-class UserNotesViewBase extends JViewLegacy
+class UsernotesViewBase extends JViewLegacy
 {
 	protected $userID;
 	protected $notesID;
@@ -27,6 +27,9 @@ class UserNotesViewBase extends JViewLegacy
 	{
 		parent::__construct($config);
 		$this->userID = JFactory::getUser()->get('id');
+		if (empty($this->itemId)) {
+			$this->itemId = JFactory::getApplication()->input->getInt('Itemid', 0);
+		}
 	}
 
 
