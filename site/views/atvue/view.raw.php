@@ -1,12 +1,13 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die('Restricted access');
  
+use Joomla\CMS\Factory;
+
 JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 
 class UsernotesViewAtvue extends JViewLegacy
@@ -16,9 +17,11 @@ class UsernotesViewAtvue extends JViewLegacy
 	protected $mime;
 	protected $down = false;
 
+
 	public function display ($tpl = null)
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
+		$this->jDoc = Factory::getDocument();
 
 		// Get view related request variables.
 		$this->down = $app->input->get('down',0,'int');
@@ -37,5 +40,6 @@ class UsernotesViewAtvue extends JViewLegacy
 
 		return parent::display($tpl);
 	}
+
 
 }

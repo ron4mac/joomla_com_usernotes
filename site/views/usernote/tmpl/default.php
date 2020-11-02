@@ -1,8 +1,7 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -10,30 +9,33 @@ defined('_JEXEC') or die;
 JHtml::stylesheet('components/com_usernotes/static/css/oopim.css');
 JHtml::stylesheet('components/com_usernotes/static/css/pumenu.css');
 JHtml::_('jquery.framework', false);
-$jdoc = JFactory::getDocument();
-$jdoc->addScript('components/com_usernotes/static/js/oopim.js');
-$jdoc->addScript('components/com_usernotes/static/js/pumenu.js');
-$jdoc->addScript('components/com_usernotes/static/js/upload5d.js');
-$jdoc->addScript('components/com_usernotes/static/js/notesview.js');
-$jslang = array(
+
+$this->jDoc->addScript('components/com_usernotes/static/js/oopim.js');
+$this->jDoc->addScript('components/com_usernotes/static/js/pumenu.js');
+$this->jDoc->addScript('components/com_usernotes/static/js/upload5d.js');
+$this->jDoc->addScript('components/com_usernotes/static/js/notesview.js');
+$jslang = [
 		'ru_sure' => JText::_('COM_USERNOTES_RU_SURE'),
 		'fsz2big' => JText::_('COM_USERNOTES_FSZ2BIG'),
 		'fbadtyp' => JText::_('COM_USERNOTES_FBADTYP')
-	);
-$jsvars = array(
-	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=',
+	];
+$jsvars = [
+//	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=',
+	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&task=',
 	'itemID' => $this->item->itemID,
 	'notesID' => urlencode($this->notesID),
 	'parentID' => $this->item->parentID,
 	'contentID' => ($this->item->contentID?:0)
-);
-$jdoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
-var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=";
+];
+$this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
+//var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=";
+var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&task=";
 var itemID = '.$this->item->itemID.';
 var notesID = "'.urlencode($this->notesID).'";
 var parentID = '.$this->item->parentID.';
 var contentID = '.$this->item->contentID.';
-var upldDestURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'";
+//var upldDestURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'";
+var upldDestURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw";
 var fup_payload = {task:"attach", cID:'.$this->item->contentID.'};
 var uploadMaxFilesize = '.$this->maxUploadBytes.';
 	Oopim.L = '.json_encode($jslang).';
@@ -46,6 +48,8 @@ $prning = ($this->state->get('task', 0) === 'printNote');
 if ($prning) echo '<button type="button" class="btn btn-primary" onclick="window.close();window.history.back();">'.JText::_('COM_USERNOTES_PRNDONE').'</button>';
 // if not printing, accommodate targeted breadcrumb module
 if (!$prning) echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
+
+if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
 ?>
 <div id="container">
 	<div id="body">

@@ -1,27 +1,28 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
-include_once JPATH_COMPONENT.'/classes/note_class.php';
+use Joomla\CMS\Factory;
 
 JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 
 class UserNotesModelUserNote extends JModelItem
 {
+	const DBFILE = '/usernotes.db3';
 	protected $_context = 'com_usernotes.usernote';
 	protected $_storPath = null;
 	protected $_item = null;	// use for cache
 
-	public function __construct ($config = array())
+
+	public function __construct ($config = [])
 	{
 		$this->_storPath = UserNotesHelper::userDataPath();
-		$udbPath = $this->_storPath.'/usernotes.db3';
-		$db = JDatabaseDriver::getInstance(array('driver'=>'sqlite', 'database'=>$udbPath));
+		$udbPath = $this->_storPath.self::DBFILE;
+		$db = JDatabaseDriver::getInstance(['driver'=>'sqlite', 'database'=>$udbPath]);
 
 		$config['dbo'] = $db;
 		parent::__construct($config);
@@ -33,7 +34,7 @@ class UserNotesModelUserNote extends JModelItem
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState('usernote.id');
 
 		if ($this->_item === null) {
-			$this->_item = array();
+			$this->_item = [];
 		}
 
 		if (!isset($this->_item[$pk])) {
@@ -108,7 +109,7 @@ class UserNotesModelUserNote extends JModelItem
 				$cid = $db->insertid();
 				$q = $db->getQuery(true);
 				$q->insert('notes')->columns('ownerID,shared,isParent,title,contentID,parentID,secured')
-								->values(implode(',',array($user,1,0,$db->quote($ntitl),$cid,$data->getInt('parentID'),$secured)));
+								->values(implode(',', [$user, 1, 0, $db->quote($ntitl), $cid, $data->getInt('parentID'), $secured]));
 				$db->setQuery($q);
 				$db->execute();
 			}
@@ -146,7 +147,7 @@ class UserNotesModelUserNote extends JModelItem
 				}
 				$q = $db->getQuery(true);
 				$q->insert('notes')->columns('ownerID,shared,isParent,title,contentID,parentID,secured')
-									->values(implode(',',array($user,1,1,$db->quote($ftitl),0,$fpid,$sec)));
+									->values(implode(',', [$user, 1, 1, $db->quote($ftitl), 0, $fpid, $sec]));
 				$db->setQuery($q);
 				$db->execute();
 				$pid = $db->insertid();
@@ -160,7 +161,7 @@ class UserNotesModelUserNote extends JModelItem
 	}
 
 
-	public function getForm ($data = array(), $loadData = true)
+	public function getForm ($data = [], $loadData = true)
 	{
 		// Get the encryption phrase form.
 		$form = JForm::getInstance('com_usernotes.ephrase', JPATH_COMPONENT.'/models/forms/ephrase.xml');
@@ -178,7 +179,7 @@ class UserNotesModelUserNote extends JModelItem
 		if (!$contentID || !$files) return;
 		$path = JPATH_BASE.'/'.UserNotesHelper::userDataPath().'/attach/'.$contentID;
 		$msg = '';
-		$fns = array();
+		$fns = [];
 		foreach ($files as $file) {
 			if ($file['error'] == UPLOAD_ERR_OK) {
 				$tmp_name = $file['tmp_name'];
@@ -260,17 +261,23 @@ class UserNotesModelUserNote extends JModelItem
 	public function deleteAttachments ($contentID=0)
 	{
 		if (!$contentID) return;
-		$atts = array();
+
+		$atDir = $this->_storPath.'/attach/'.$contentID;
+
+		// do nothing if there are no attachments
+		if (!file_exists($atDir)) return;
+
+		$atts = [];
 		try
 		{
 			$db = $this->getDbo();
 			$db->setQuery('SELECT contentID,attached FROM fileatt WHERE contentID='.$contentID);
 			$atts = $db->loadRowList();
 			foreach ($atts as $att) {
-				unlink($this->_storPath.'/attach/'.$contentID.'/'.$att[1]);
+				unlink($atDir.'/'.$att[1]);
 			}
-			@unlink($this->_storPath.'/attach/'.$contentID.'/index.html');
-			rmdir($this->_storPath.'/attach/'.$contentID);
+			@unlink($atDir.'/index.html');
+			@rmdir($atDir);
 			$db->setQuery('DELETE FROM fileatt WHERE contentID='.$contentID);
 			$db->execute();
 		}
@@ -333,7 +340,7 @@ class UserNotesModelUserNote extends JModelItem
 	protected function populateState ()
 	{
 		// Initialize variables
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$params = JComponentHelper::getParams('com_usernotes');
 		$input = $app->input;
 

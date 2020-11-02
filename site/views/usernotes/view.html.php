@@ -1,11 +1,12 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
+
+use Joomla\CMS\Factory;
 
 include_once JPATH_COMPONENT.'/views/view.php';
 
@@ -15,9 +16,10 @@ class UsernotesViewUsernotes extends UsernotesViewBase
 	protected $items;
 	protected $parentID = 0;
 
+
 	public function display ($tpl = null)
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		// Get view related request variables.
 
@@ -30,7 +32,7 @@ class UsernotesViewUsernotes extends UsernotesViewBase
 
 		// If at the root, check storage useage and queue a message if near quota
 		if (!$this->parentID) {
-			$mparams = $app->getParams();
+			$mparams = $app->getParams();	echo'<xmp>';var_dump($mparams);echo'</xmp>';
 			$storQuota = (int) $mparams->get('storQuota', 0);
 			if (!$storQuota) $storQuota = (int) $this->state->cparams->get('storQuota', 0);
 			if ($storQuota) {
@@ -65,4 +67,5 @@ class UsernotesViewUsernotes extends UsernotesViewBase
 
 		return parent::display($tpl);
 	}
+
 }

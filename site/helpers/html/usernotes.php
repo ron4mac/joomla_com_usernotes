@@ -1,19 +1,22 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Router\Route;
+
 abstract class JHtmlUsernotes
 {
+
 	public static function itemLink ($item)
 	{
 		$param = $item->isParent ? 'pid=' : 'view=usernote&nid=';
 		$ttl = $item->secured ? base64_decode($item->title) : $item->title;
-		$attrs = array('class'=>'nav');
+		$attrs = ['class'=>'nav'];
 		if (isset($item->lPath)) $attrs['title'] = $item->lPath;
 		return JHtml::link(
 				self::aiUrl($param.$item->itemID),
@@ -26,7 +29,7 @@ abstract class JHtmlUsernotes
 		return JHtml::link(
 				self::aiUrl('task=printNote&nid='.$id),
 				self::ico('icon-print'),
-				array('title'=>$titl,'class'=>'nav act-left','onclick'=>'Oopim.printNote(event,this);return false;')
+				['title'=>$titl, 'class'=>'nav act-left', 'onclick'=>'Oopim.printNote(event,this);return false;']
 			);
 	}
 	public static function newActIcon ($id, $titl)
@@ -34,7 +37,7 @@ abstract class JHtmlUsernotes
 		return JHtml::link(
 				self::aiUrl('task=edit.addNote&pid='.$id),
 				self::ico('icon-file-plus'),
-				array('title'=>$titl,'class'=>'nav act-left')
+				['title'=>$titl, 'class'=>'nav act-left']
 			);
 	}
 	public static function edtActIcon ($id, $titl)
@@ -42,7 +45,7 @@ abstract class JHtmlUsernotes
 		return JHtml::link(
 				self::aiUrl('task=edit.editNote&nid='.$id),
 				self::ico('icon-edit'),
-				array('title'=>$titl,'class'=>'nav act-left')
+				['title'=>$titl, 'class'=>'nav act-left']
 			);
 	}
 	public static function movActIcon ($id, $titl)
@@ -58,7 +61,7 @@ abstract class JHtmlUsernotes
 		return JHtml::link(
 				self::aiUrl('task=edit.deleteItem&iid='.$id),
 				self::ico('icon-file-minus idang'),
-				array('title'=>$titl,'class'=>'nav act-right sure','data-suremsg'=>strtolower($titl))
+				['title'=>$titl, 'class'=>'nav act-right sure', 'data-suremsg'=>strtolower($titl)]
 			);
 	}
 	public static function fNewActIcon ($id, $titl)
@@ -66,7 +69,7 @@ abstract class JHtmlUsernotes
 		return JHtml::link(
 				self::aiUrl('task=edit.addFolder&type=f&pid='.$id),
 				self::ico('icon-folder-plus-2'),
-				array('title'=>$titl,'class'=>'nav act-left')
+				['title'=>$titl, 'class'=>'nav act-left']
 			);
 	}
 	public static function fEdtActIcon ($id, $titl)
@@ -74,7 +77,7 @@ abstract class JHtmlUsernotes
 		return JHtml::link(
 				self::aiUrl('task=edit.editFolder&type=f&nid='.$id),
 				self::ico('icon-edit'),
-				array('title'=>$titl,'class'=>'nav act-right')
+				['title'=>$titl, 'class'=>'nav act-right']
 			);
 	}
 	public static function fDelActIcon ($id, $titl)
@@ -82,17 +85,19 @@ abstract class JHtmlUsernotes
 		return JHtml::link(
 				self::aiUrl('task=edit.deleteItem&iid='.$id),
 				self::ico('icon-folder-remove idang'),
-				array('title'=>$titl,'class'=>'nav act-right sure','data-suremsg'=>strtolower($titl))
+				['title'=>$titl, 'class'=>'nav act-right sure', 'data-suremsg'=>strtolower($titl)]
 			);
 	}
 	public static function toolActIcon ($id, $titl)
 	{
 		return '<a href="#" title="'.$titl.'" class="act-left" onclick="Oopim.toolMenu(event);">'.self::ico('icon-wrench').'</a>';
 	}
+
 //	public static function srchActIcon ($id, $titl)
 //	{
 //		return '<a href="#" title="Search" class="dbsrch" onclick="return Oopim.performSearch(this.parentNode,'.$id.');">'.self::ico('icon-search').'</a>';
 //	}
+
 
 	public static function searchField ($pid)
 	{
@@ -107,16 +112,17 @@ abstract class JHtmlUsernotes
 EOD;
 	}
 
-	public static function form_dropdown ($name = '', $options = array(), $selected = array(), $extra = '')
+
+	public static function form_dropdown ($name = '', $options = [], $selected = [], $extra = '')
 	{
 		if (!is_array($selected)) {
-			$selected = array($selected);
+			$selected = [$selected];
 		}
 		// If no selected state was submitted we will attempt to set it automatically
 		if (count($selected) === 0) {
 			// If the form name appears in the $_POST array we have a winner!
 			if (isset($_POST[$name])) {
-				$selected = array($_POST[$name]);
+				$selected = [$_POST[$name]];
 			}
 		}
 		if ($extra != '') $extra = ' '.$extra;
@@ -140,15 +146,17 @@ EOD;
 		return $form;
 	}
 
+
 	public static function form_button ($data = '', $content = '', $extra = '')
 	{
-		$defaults = array('name' => ((!is_array($data)) ? $data : ''), 'type' => 'button');
+		$defaults = ['name' => ((!is_array($data)) ? $data : ''), 'type' => 'button'];
 		if (is_array($data) AND isset($data['content'])) {
 			$content = $data['content'];
 			unset($data['content']); // content is not an attribute
 		}
 		return "<button ".self::_parse_form_attributes($data, $defaults).$extra.">".$content."</button>";
 	}
+
 
 	public static function att_list ($atchs, $cid, $edt=false)
 	{
@@ -192,30 +200,33 @@ EOD;
 		return $att;
 	}
 
+
 	private static function aiUrl ($prms, $xml=false)
 	{
 		static $mnuId = 0;
 
 		if (!$mnuId) {
-			$mnuId = JFactory::getApplication()->input->getInt('Itemid', 0);
+			$mnuId = Factory::getApplication()->input->getInt('Itemid', 0);
 		}
-		$url = JRoute::_('index.php?option=com_usernotes'.($prms?('&'.$prms):'').'&Itemid='.$mnuId, $xml);
+		$url = Route::_('index.php?option=com_usernotes'.($prms?('&'.$prms):'').'&Itemid='.$mnuId, $xml);
 		return $url;
 	}
+
 
 	private static function mnuId ()
 	{
 		static $mnuId = 0;
 
 		if (!$mnuId) {
-			$mnuId = JFactory::getApplication()->input->getInt('Itemid', 0);
+			$mnuId = Factory::getApplication()->input->getInt('Itemid', 0);
 		}
 		return $mnuId;
 	}
 
+
 	private static function form_prep ($str = '', $field_name = '')
 	{
-		static $prepped_fields = array();
+		static $prepped_fields = [];
 
 		// if the field name is an array we do this recursively
 		if (is_array($str)) {
@@ -239,7 +250,7 @@ EOD;
 		$str = htmlspecialchars($str);
 
 		// In case htmlspecialchars misses these.
-		$str = str_replace(array("'", '"'), array("&#39;", "&quot;"), $str);
+		$str = str_replace(["'", '"'], ["&#39;", "&quot;"], $str);
 
 		if ($field_name != '') {
 			$prepped_fields[$field_name] = $field_name;
@@ -248,9 +259,11 @@ EOD;
 		return $str;
 	}
 
+
 	private static function ico ($ico)
 	{
 		return '<i class="'.$ico.'" style="font-size:'.(IS_SMALL_DEVICE ? 28 : 16).'px"> </i>';
 	}
+
 
 }

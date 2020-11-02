@@ -1,8 +1,7 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('JPATH_BASE') or die;
@@ -61,6 +60,8 @@ class JFormFieldGmkbValue extends JFormField
 			$script[] = '	if (elm.checked) {';
 			$script[] = '		jQuery(elm).siblings(".input-gmkb").addClass("hidden");';
 			$script[] = '		jQuery(elm).siblings(".gmkb-dflt").removeClass("hidden");';
+			$script[] = '		console.log(jQuery(elm).siblings(".gmkb-valu").eq(0));';
+			$script[] = '		jQuery(elm).siblings(".gmkb-valu").eq(0).val("0");';
 			$script[] = '	} else {';
 			$script[] = '		jQuery(elm).siblings(".gmkb-dflt").addClass("hidden");';
 			$script[] = '		jQuery(elm).siblings(".input-gmkb").removeClass("hidden");';

@@ -1,52 +1,84 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\Event\Dispatcher as EventDispatcher;
 
 abstract class UserNotesHelper
 {
+	protected static $instanceID = null;
 	protected static $instanceType = null;
 	protected static $ownerID = null;
 	protected static $udp = null;
+	protected static $idp = null;			// instance data path
+
+	public static function getInstanceID ()
+	{
+		if (self::$instanceID) return self::$instanceID;
+		$iid = Factory::getApplication()->getUserState('com_usernotes.instance', '');
+		if ($iid) {
+			self::$instanceID = $iid;
+		}
+		return self::$instanceID;
+	}
 
 	public static function getStorageBase ()
 	{
 		$dispatcher = new EventDispatcher();
 		$results = $dispatcher->triggerEvent('onRjuserDatapath', null);
 		$sdp = isset($results[0]) ? trim($results[0]) : '';
-		return $sdp ? $sdp : 'userstor';
+		return $sdp ?: 'userstor';
 	}
 
+	public static function instanceDataPath ()
+	{
+		if (self::$idp) return self::$idp;
+
+		$sdp = self::getStorageBase();
+		$ndir = self::getStorageDir();
+		$cmp = JApplicationHelper::getComponentName();
+
+		self::$idp = $sdp.'/'.$ndir.'/'.$cmp;
+		return self::$idp;
+	}
 
 	public static function userDataPath ()
 	{
 		if (self::$udp) return self::$udp;
-		self::getTypeOwner();
-		$cmp = JApplicationHelper::getComponentName();
-		switch (self::$instanceType) {
-			case 0:
-				$ndir = '@'. self::$ownerID;
-				break;
-			case 1:
-				$ndir = '_'. self::$ownerID;
-				break;
-			case 2:
-				$ndir = '_0';
-				break;
-		}
 
 		$sdp = self::getStorageBase();
+		$ndir = self::getStorageDir();
+		$cmp = JApplicationHelper::getComponentName();
 
 		self::$udp = $sdp.'/'.$ndir.'/'.$cmp;
 		return self::$udp;
 	}
 
+	public static function getStorageDir ($force=false)
+	{
+		if (!$force) {
+			list(,$ddir,) = explode(':', self::getInstanceID());
+			return $ddir;
+		}
+
+		self::getTypeOwner();
+		switch (self::$instanceType) {
+			case 0:
+				return '@'. self::$ownerID;
+				break;
+			case 1:
+				return '_'. self::$ownerID;
+				break;
+			case 2:
+				return '_0';
+				break;
+		}
+	}
 
 	public static function getDbPaths ($which, $dbname, $full=false, $cmp='')
 	{
@@ -80,21 +112,18 @@ abstract class UserNotesHelper
 		return $paths;
 	}
 
-
 	public static function getGroupTitle ($gid)
 	{
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$db->setQuery('SELECT title FROM #__usergroups WHERE id='.$gid);
 		return $db->loadResult();
 	}
 
-
 	public static function hashCookieName ($v1=0, $v2=0)
 	{
-		$uid = JFactory::getUser()->get('id');
+		$uid = Factory::getUser()->get('id');
 		return md5(implode(':', array($uid, $v1, $v2)));
 	}
-
 
 	public static function doCrypt ($pass, $dat, $de=false, $sm = 2)
 	{
@@ -158,7 +187,7 @@ abstract class UserNotesHelper
 	public static function userAuth ($uid)
 	{
 		self::getTypeOwner();
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		$uid = $user->get('id');
 		$ugrps = $user->get('groups');
 		switch (self::$instanceType) {
@@ -172,17 +201,15 @@ abstract class UserNotesHelper
 		}
 	}
 
-
-	public static function getInstanceID ()
+	public static function _getInstanceID ()
 	{
 		if (is_null(self::$instanceType)) self::getTypeOwner();
 		return base64_encode(self::$instanceType.':'.self::$ownerID);
 	}
 
-
 	public static function getActions ()
 	{
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		$result = new JObject;
 
 		$actions = JAccess::getActionsFromFile(JPATH_ADMINISTRATOR . '/components/com_usernotes/access.xml');
@@ -192,7 +219,6 @@ abstract class UserNotesHelper
 
 		return $result;
 	}
-
 
 	// convert string in form n(K|M|G) to an integer value
 	public static function to_bytes ($val)
@@ -207,7 +233,6 @@ abstract class UserNotesHelper
 		}
 		return $val;
 	}
-
 
 	// convert integer value to n(K|M|G) string
 	public static function to_KMG ($val=0)
@@ -227,7 +252,6 @@ abstract class UserNotesHelper
 		return $val.$sizm;
 	}
 
-
 	public static function formatBytes ($bytes, $precision=2, $sep=' ')
 	{
 		$units = array('B', 'KB', 'MB', 'GB', 'TB');
@@ -238,7 +262,6 @@ abstract class UserNotesHelper
 		return round($bytes, $precision) . $sep . $units[$pow];
 	}
 
-
 	// return the max file upload size as set by the php config
 	public static function phpMaxUp ()
 	{
@@ -247,30 +270,27 @@ abstract class UserNotesHelper
 		return min($p,$u);
 	}
 
-
 	//correctly format a string value from a table before showing it
 	public static function fs_db ($value)
 	{
 		return htmlspecialchars(stripslashes($value));
 	}
 
-
 	private static function getTypeOwner ()
 	{
 		if (is_null(self::$instanceType)) {
-			$app = JFactory::getApplication();
-			$notesid = $app->input->getBase64('unID');
+			$app = Factory::getApplication();
+			$notesid = '';	//$app->input->getBase64('unID');
 			if ($notesid) {
 				$nids = explode(':',base64_decode($notesid));
 				self::$instanceType = $nids[0];
 				self::$ownerID = $nids[1];
 			} else {
-				$params = $app->getParams();
+				$params = $app->getParams();	file_put_contents('APPARMS.TXT',print_r($params,true),FILE_APPEND);
 				self::$instanceType = $params->get('notes_type');
 				switch (self::$instanceType) {
 					case 0:
-						self::$ownerID = JFactory::getUser()->get('id');
-						if (!self::$ownerID) self::$ownerID = -1;
+						self::$ownerID = Factory::getUser()->get('id') ?: -1;
 						break;
 					case 1:
 						self::$ownerID = $params->get('group_auth');

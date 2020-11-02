@@ -1,23 +1,25 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('JPATH_BASE') or die;
+
+use Joomla\CMS\Factory;
 
 class JFormFieldGmkbValue extends JFormField
 {
 	protected $type = 'GmkbValue';
 
-	protected function getInput()
+
+	protected function getInput ()
 	{
-		$allowEdit		= ((string) $this->element['edit'] == 'true') ? true : false;
-		$allowClear		= ((string) $this->element['clear'] != 'false') ? true : false;
+		$allowEdit = ((string) $this->element['edit'] == 'true') ? true : false;
+		$allowClear = ((string) $this->element['clear'] != 'false') ? true : false;
 
 		// Load language
-		JFactory::getLanguage()->load('com_usernotes', JPATH_SITE);
+		Factory::getLanguage()->load('com_usernotes', JPATH_SITE);
 
 		$cmpdef = $this->element['compdef'];
 		$params = JComponentHelper::getParams('com_usernotes');
@@ -25,14 +27,13 @@ class JFormFieldGmkbValue extends JFormField
 
 		// create the component default display
 		list($cdv,$cdm) = $this->num2gmkv($defsiz);
-		$mc = array('KiB','MiB','GiB');
+		$mc = ['KiB','MiB','GiB'];
 		$compdef = $cdv.$mc[$cdm];
 
 		// class='required' for client side validation
 		$class = '';
 
-		if ($this->required)
-		{
+		if ($this->required) {
 			$class = ' class="required modal-value"';
 		}
 
@@ -40,7 +41,7 @@ class JFormFieldGmkbValue extends JFormField
 		list($uplsiz,$uplsizm) = $this->num2gmkv($this->value);
 
 		// Setup variables for display.
-		$html	= array();
+		$html = [];
 
 		$html[] = '<input type="checkbox" id="'.$this->id.'_dchk" onclick="unotes_doDefault(this)" '.($this->value ? '' : 'checked ').'style="vertical-align:initial" />';
 		$html[] = '<label for="'.$this->id.'_dchk" style="display:inline;margin-right:1em">'.JText::_('JDEFAULT').'</label>';
@@ -60,9 +61,10 @@ class JFormFieldGmkbValue extends JFormField
 		static $scripted;
 		if (!$scripted) {
 			$scripted = true;
-			$script = array();
+			$script = [];
 			$script[] = 'function unotes_doDefault (elm) {';
 			$script[] = '	if (elm.checked) {';
+			$script[] = '		jQuery(elm).siblings(".input-gmkb").find("input.gmkb-valu").val("");';
 			$script[] = '		jQuery(elm).siblings(".input-gmkb").addClass("hidden");';
 			$script[] = '		jQuery(elm).siblings(".gmkb-dflt").removeClass("hidden");';
 			$script[] = '	} else {';
@@ -76,10 +78,11 @@ class JFormFieldGmkbValue extends JFormField
 			$script[] = '	var shft = +jQuery(elm).val();console.log(shft);console.log(numb * shft);';
 			$script[] = '	valu.val(numb * shft);';
 			$script[] = '}';
-			JFactory::getDocument()->addScriptDeclaration(implode("\n", $script)."\n");
+			Factory::getDocument()->addScriptDeclaration(implode("\n", $script)."\n");
 		}
 		return implode("\n", $html);
 	}
+
 
 	private function num2gmkv ($num)
 	{
@@ -97,7 +100,8 @@ class JFormFieldGmkbValue extends JFormField
 		} else {
 			$num = '';
 		}
-		return array($num,$sizm);
+		return [$num,$sizm];
 	}
+
 
 }

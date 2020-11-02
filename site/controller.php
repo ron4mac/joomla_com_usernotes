@@ -1,11 +1,13 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Router\Route;
 
 JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 JLoader::register('JHtmlUsernotes', JPATH_COMPONENT . '/helpers/html/usernotes.php');
@@ -16,22 +18,27 @@ class UserNotesController extends JControllerLegacy
 	protected $uid;
 	protected $mnuItm;
 
-	public function __construct ($config = array())
+	public function __construct ($config = [])
 	{
 		parent::__construct($config);
-		if (JDEBUG) { JLog::addLogger(array('text_file'=>'com_usernotes.log.php'), JLog::ALL, array('com_usernotes')); }
-		$this->uid = JFactory::getUser()->get('id');
+		if (JDEBUG) { JLog::addLogger(['text_file'=>'com_usernotes.log.php'], JLog::ALL, ['com_usernotes']); }
+		$this->uid = Factory::getUser()->get('id');
 		$this->mnuItm = $this->input->getInt('Itemid', 0);
+		if ($this->mnuItm) {
+			Factory::getApplication()->setUserState('com_usernotes.instance', $this->mnuItm.':'.UserNotesHelper::getStorageDir(true).':'.$this->uid);
+		}
 	}
 
 
 	public function display ($cachable = false, $urlparams = false)
 	{
 		if ($auth = UserNotesHelper::userAuth($this->uid)) {
-			if (($auth > 1) && !file_exists(UserNotesHelper::userDataPath())) {
+			$udp = UserNotesHelper::userDataPath();
+			if (($auth > 1) && !file_exists($udp)) {
 				$this->input->set('view', 'startup');
 				$view = $this->getView('startup','html');
 			} else {
+				@mkdir($udp, 0755, true);
 				$view = $this->getView('usernotes','html');
 			}
 			$view->itemId = $this->mnuItm;
@@ -50,8 +57,7 @@ class UserNotesController extends JControllerLegacy
 		mkdir($udp.'/attach', 0777, true);
 		file_put_contents($udp.'/index.html', $htm);
 		file_put_contents($udp.'/attach/index.html', $htm);
-	//	$this->setRedirect(JRoute::_('index.php?option=com_usernotes&view=usernotes&Itemid='.$this->mnuItm, false));
-		$this->setRedirect(JRoute::_('index.php?option=com_usernotes&Itemid='.$this->mnuItm, false));
+		$this->setRedirect(Route::_('index.php?option=com_usernotes&Itemid='.$this->mnuItm, false));
 	}
 
 
@@ -65,7 +71,7 @@ class UserNotesController extends JControllerLegacy
 
 	public function printNote ()
 	{
-		$input = JFactory::getApplication()->input;
+		$input = Factory::getApplication()->input;
 		$input->set('tmpl','component');
 		$view = $this->getView('usernote', 'html');
 		$view->setModel($this->getModel('usernote'), true);
@@ -119,7 +125,7 @@ class UserNotesController extends JControllerLegacy
 	{
 		$pid = $this->input->post->getInt('pID', 0);
 		$m = $this->getModel('usernotes');
-		$hier = $m->get_item_hier(JFactory::getUser()->get('id'));
+		$hier = $m->get_item_hier(Factory::getUser()->get('id'));
 		echo '<span>Move item to:</span><br />';
 		echo JHtml::_('usernotes.form_dropdown', 'moveTo', $hier, $pid, 'id="moveTo"');
 		echo '<br /><hr />'.JHtml::_('usernotes.form_button', 'moveto', 'Move', 'style="float:right" onclick="Oopim.doMove(true)"');
@@ -143,8 +149,7 @@ class UserNotesController extends JControllerLegacy
 		$cid = $this->input->post->getInt('cID', 0);
 		$this->load->model('content_model', 'mycmodel');
 		$ictnt = $this->mycmodel->get_item($cid, $this->enty_item);
-		//call_user_func_array(array($ictnt, $act), array($iid, $cid));
-		call_user_func(array($ictnt, $act), $cid);
+		call_user_func([$ictnt, $act], $cid);
 	}
 
 
@@ -157,11 +162,11 @@ class UserNotesController extends JControllerLegacy
 		$ctnt = $item->contentID ? $this->myimodel->get_item($item->contentID) : NULL;
 		$atch = $item->contentID ? $this->myimodel->get_attached($item->contentID) : NULL;
 		$this->load->view($this->enty_base.'/ajax',
-			array(
+				[
 				'contentID'=>$item->contentID,
 				$this->enty_item=>$ctnt ? $ctnt->rendered(true) : '[MISSING CONTENT]',
 				'attached'=>$atch
-				)
+				]
 			);
 	}
 

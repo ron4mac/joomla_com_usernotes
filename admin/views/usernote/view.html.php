@@ -1,11 +1,12 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
+
+use Joomla\CMS\Factory;
 
 class UserNotesViewUserNote extends JViewLegacy
 {
@@ -30,9 +31,9 @@ class UserNotesViewUserNote extends JViewLegacy
 
 	protected function addToolbar ()
 	{
-		JFactory::getApplication()->input->set('hidemainmenu', true);
+		Factory::getApplication()->input->set('hidemainmenu', true);
 
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		$isNew = ($this->item->id == 0);
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 

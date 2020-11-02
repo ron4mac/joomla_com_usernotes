@@ -1,25 +1,28 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
+
+use Joomla\CMS\Factory;
 
 JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 
 class UserNotesModelUserNotes extends JModelList
 {
+	const DBFILE = '/usernotes.db3';
 	protected $_storPath = null;
 
-	public function __construct ($config=array())
+
+	public function __construct ($config = [])
 	{
 		$this->_storPath = UserNotesHelper::userDataPath();
-		$udbPath = $this->_storPath.'/usernotes.db3';
+		$udbPath = $this->_storPath.self::DBFILE;
 		$doInit = !file_exists($udbPath);
 		
-		$option = array('driver'=>'sqlite', 'database'=>$udbPath);
+		$option = ['driver'=>'sqlite', 'database'=>$udbPath];
 		$db = JDatabaseDriver::getInstance($option);
 		$db->connect();
 		$db->getConnection()->sqliteCreateFunction('b64d', 'base64_decode', 1);
@@ -37,7 +40,7 @@ class UserNotesModelUserNotes extends JModelList
 	public function search ($sterm)
 	{
 		$db = $this->getDbo();
-		$userID = JFactory::getUser()->get('id');
+		$userID = Factory::getUser()->get('id');
 		$db->setQuery("SELECT I.itemID,I.title,I.isParent,I.shared,I.secured FROM notes AS I JOIN content AS C ON C.contentID=I.contentID "
 			."WHERE I.secured IS NOT 1 AND (I.ownerID == '".$userID."' OR I.shared) AND (C.serial_content LIKE \"%".$sterm."%\" OR I.title LIKE \"%".$sterm."%\")");
 		$a1 = $db->loadObjectList();
@@ -53,7 +56,7 @@ class UserNotesModelUserNotes extends JModelList
 		$db = $this->getDbo();
 		foreach ($items as &$item) {
 			$to = $item->itemID;
-			$path = array();
+			$path = [];
 			while ($to) {
 				$db->setQuery('SELECT title,parentID,secured FROM notes WHERE itemID='.$to);
 				$r = $db->loadAssoc();
@@ -105,7 +108,7 @@ class UserNotesModelUserNotes extends JModelList
 		$db = $this->getDbo();
 		$db->setQuery('SELECT * FROM notes WHERE isParent == 1 AND (ownerID == '.$userID.' OR shared) ORDER BY parentID,title');
 		$rows = $db->loadObjectList();
-		$hier = array(0=>'&lt;'.'My Notes'.'&gt;');
+		$hier = [0 => '&lt;'.'My Notes'.'&gt;'];
 		$this->buildBranch(0, '-&nbsp;', $rows, $hier);
 		return $hier;
 	}
@@ -115,7 +118,7 @@ class UserNotesModelUserNotes extends JModelList
 	public function getStorSize ()
 	{
 		// get the DB file size
-		$dbsz = filesize($this->_storPath.'/usernotes.db3');
+		$dbsz = filesize($this->_storPath.self::DBFILE);
 
 		// get total of attachment sizes
 		$db = $this->getDbo();
@@ -138,7 +141,7 @@ class UserNotesModelUserNotes extends JModelList
 	protected function populateState ($ordering = null, $direction = null)
 	{
 		// Initialize variables
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$params = JComponentHelper::getParams('com_usernotes');
 		$input = $app->input;
 

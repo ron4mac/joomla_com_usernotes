@@ -1,11 +1,12 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
+
+use Joomla\CMS\Factory;
 
 define('ITM_CAN_EDIT', 1);
 define('ITM_CAN_DELE', 2);
@@ -23,28 +24,34 @@ class UsernotesViewBase extends JViewLegacy
 	protected $footMsg;
 	protected $attached;
 
-	public function __construct ($config = array())
+	protected $instance;
+	protected $jDoc;
+
+
+	public function __construct ($config = [])
 	{
 		parent::__construct($config);
-		$this->userID = JFactory::getUser()->get('id');
+		$this->userID = Factory::getUser()->get('id');
 		if (empty($this->itemId)) {
-			$this->itemId = JFactory::getApplication()->input->getInt('Itemid', 0);
+			$this->itemId = Factory::getApplication()->input->getInt('Itemid', 0);
 		}
+		$this->instance = Factory::getApplication()->getUserState('com_usernotes.instance', '::');
+		$this->jDoc = Factory::getDocument();
 	}
 
 
 	protected function buildPathway ($to)
 	{
 		$db = $this->getModel()->getDbo();
-		$pw = JFactory::getApplication()->getPathway();
-		$crums = array();
+		$pw = Factory::getApplication()->getPathway();
+		$crums = [];
 		while ($to) {
 			$db->setQuery('SELECT title,parentID,secured FROM notes WHERE itemID='.$to);
 			$r = $db->loadAssoc();
 			if ($r['secured']) {
 				$r['title'] = base64_decode($r['title']);
 			}
-			array_unshift($crums, array($r['title'],'index.php?option=com_usernotes&pid='.$to));
+			array_unshift($crums, [$r['title'],'index.php?option=com_usernotes&pid='.$to]);
 			$to = $r['parentID'];
 		}
 		foreach ($crums as $crum) {
@@ -58,7 +65,7 @@ class UsernotesViewBase extends JViewLegacy
 		if ($this->userID) {
 			if (UserNotesHelper::userAuth($this->userID) > 1) {
 				if ($this->item && $this->item->checked_out && $this->item->checked_out != $this->userID) {
-					$this->footMsg = 'Checked out by '.JFactory::getUser($this->item->checked_out)->get('username').'.';
+					$this->footMsg = 'Checked out by '.Factory::getUser($this->item->checked_out)->get('username').'.';
 				} else {
 					$this->access = 15;
 				}
@@ -74,5 +81,12 @@ class UsernotesViewBase extends JViewLegacy
 			}
 		}
 	}
+
+
+	protected function nqMessage ($msg, $svrty)
+	{
+		Factory::getApplication()->enqueueMessage($msg, $svrty);
+	}
+
 
 }

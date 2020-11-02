@@ -1,13 +1,16 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
-
 defined('_JEXEC') or die;
 
-$controller = JControllerLegacy::getInstance('UserNotes');
-$controller->execute(JFactory::getApplication()->input->get('task'));
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Factory;
+
+define('RJC_DBUG', JDEBUG && file_exists(JPATH_ROOT.'/rjcdev.php'));
+
+$controller = BaseController::getInstance('UserNotes');
+$controller->execute(Factory::getApplication()->input->get('task'));
 $controller->redirect();

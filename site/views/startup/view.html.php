@@ -1,20 +1,22 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die('Restricted access');
  
+use Joomla\CMS\Factory;
+
 class UsernotesViewStartup extends JViewLegacy
 {
 	protected $quota;
 	protected $maxfs;
 
+
 	public function display ($tpl = null)
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		// Get the component parameters
 		$cparams = JComponentHelper::getParams('com_usernotes');
@@ -44,5 +46,6 @@ class UsernotesViewStartup extends JViewLegacy
 */
 		return parent::display($tpl);
 	}
+
 
 }

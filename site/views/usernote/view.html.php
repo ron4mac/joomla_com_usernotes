@@ -1,11 +1,12 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
+
+use Joomla\CMS\Factory;
 
 include_once JPATH_COMPONENT.'/views/view.php';
 
@@ -15,9 +16,10 @@ class UsernotesViewUsernote extends UsernotesViewBase
 	protected $params;
 	protected $smallDevice = false;
 
+
 	public function display ($tpl = null)
 	{
-		$app  = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		// Get model data.
 		$this->state = $this->get('State');
@@ -64,5 +66,6 @@ class UsernotesViewUsernote extends UsernotesViewBase
 
 		return parent::display($tpl);
 	}
+
 
 }

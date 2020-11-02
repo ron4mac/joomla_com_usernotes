@@ -1,29 +1,30 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
 JHtml::stylesheet('components/com_usernotes/static/css/oopim.css');
 JHtml::_('jquery.framework', false);
-$jdoc = JFactory::getDocument();
-$jdoc->addScript('components/com_usernotes/static/js/oopim.js');
-$jdoc->addScript('components/com_usernotes/static/js/notesview.js');
-$jslang = array(
+
+$this->jDoc->addScript('components/com_usernotes/static/js/oopim.js');
+$this->jDoc->addScript('components/com_usernotes/static/js/notesview.js');
+$jslang = [
 		'no_sterm' => JText::_('COM_USERNOTES_NO_STERM'),
 		'ru_sure' => JText::_('COM_USERNOTES_RU_SURE')
-	);
-$jdoc->addScriptDeclaration('Oopim.L = '.json_encode($jslang).';
+	];
+$this->jDoc->addScriptDeclaration('Oopim.L = '.json_encode($jslang).';
 ');
 
 if (/*$this->state->secured*/ $this->item && $this->item->secured && $_SERVER['SERVER_PORT'] != 443) {
 	//JError::raiseNotice(100, 'You do not have a secure connection!', 'error');
-	JFactory::getApplication()->enqueueMessage('<span style="color:red">'.JText::_('COM_USERNOTES_NOTICE_INSECURE').'</span>', 'warning');
+	$this->nqMessage('<span style="color:red">'.JText::_('COM_USERNOTES_NOTICE_INSECURE').'</span>', 'warning');
 	//echo '<div style="background-color:red;color:white;">WARNING: You do not have a secure connection!</div>';
 }
+
+if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
 
 if (isset($this->posq)) {
 	$svty = 'notice';
@@ -32,7 +33,7 @@ if (isset($this->posq)) {
 		$svty = 'warning';
 		$msg = '<span style="color:red">'.$msg.'</span>';
 	}
-	JFactory::getApplication()->enqueueMessage($msg, $svty);
+	$this->nqMessage($msg, $svty);
 }
 
 if ($this->state->secured && $_SERVER['SERVER_PORT'] != 443) {

@@ -1,16 +1,14 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die('Restricted access');
 
 if (file_exists($this->fpath)) {
-	$doc = JFactory::getDocument();
 	if ($this->down) {
-		$doc->setMimeEncoding('application/download');
+		$this->jDoc->setMimeEncoding('application/download');
 		header("Pragma: public");
 		header("Expires: 0"); 
 		header("Cache-Control: must-revalidate, post-check=0, pre-check=0"); 
@@ -18,7 +16,7 @@ if (file_exists($this->fpath)) {
 		header('Content-Disposition: attachment; filename="'.$this->fnam.'"');
 		header("Content-Transfer-Encoding: binary");
 	} else {
-		$doc->setMimeEncoding($this->mime);
+		$this->jDoc->setMimeEncoding($this->mime);
 	}
 	header('Content-Length: '.filesize($this->fpath));
 	if (JDEBUG) {

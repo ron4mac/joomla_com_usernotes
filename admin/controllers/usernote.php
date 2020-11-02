@@ -1,18 +1,19 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+
 class UserNotesControllerUserNote extends JControllerForm
 {
 
-	protected function allowAdd ($data = array())
+	protected function allowAdd ($data = [])
 	{
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		$categoryId = JArrayHelper::getValue($data, 'catid', $this->input->getInt('filter_category_id'), 'int');
 		$allow = null;
 
@@ -30,9 +31,9 @@ class UserNotesControllerUserNote extends JControllerForm
 	}
 
 
-	protected function allowEdit ($data = array(), $key = 'id')
+	protected function allowEdit ($data = [], $key = 'id')
 	{
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		$recordId = (int) isset($data[$key]) ? $data[$key] : 0;
 		$categoryId = 0;
 
@@ -55,7 +56,7 @@ class UserNotesControllerUserNote extends JControllerForm
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		// Set the model
-		$model = $this->getModel('UserNote', '', array());
+		$model = $this->getModel('UserNote', '', []);
 
 		// Preset the redirect
 		$this->setRedirect(JRoute::_('index.php?option=com_usernotes&view=usernotes' . $this->getRedirectToListAppend(), false));
@@ -64,7 +65,7 @@ class UserNotesControllerUserNote extends JControllerForm
 	}
 
 
-	protected function postSaveHook (JModelLegacy $model, $validData = array())
+	protected function postSaveHook (JModelLegacy $model, $validData = [])
 	{
 
 	}

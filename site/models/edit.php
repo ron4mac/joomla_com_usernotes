@@ -1,25 +1,26 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
-include_once JPATH_COMPONENT.'/classes/note_class.php';
+use Joomla\CMS\Factory;
 
 JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 
 class UserNotesModelEdit extends JModelForm
 {
+	const DBFILE = '/usernotes.db3';
 	protected $_context = 'com_usernotes.usernote';
 	protected $_data;
 
-	public function __construct ($config = array())
+
+	public function __construct ($config = [])
 	{
-		$udbPath = UserNotesHelper::userDataPath().'/usernotes.db3';
-		$db = JDatabaseDriver::getInstance(array('driver'=>'sqlite', 'database'=>$udbPath));
+		$udbPath = UserNotesHelper::userDataPath().self::DBFILE;
+		$db = JDatabaseDriver::getInstance(['driver'=>'sqlite', 'database'=>$udbPath]);
 
 		$config['dbo'] = $db;
 		parent::__construct($config);
@@ -69,7 +70,7 @@ class UserNotesModelEdit extends JModelForm
 	public function checkOut ($nid=null)
 	{
 		if (!$nid) return true;
-		$uid = JFactory::getUser()->get('id');
+		$uid = Factory::getUser()->get('id');
 		if (!$uid) return false;
 		$db = $this->getDbo();
 		$db->setQuery('UPDATE notes SET checked_out = '.$uid.', checked_out_time = '.time().' WHERE itemID == '.$nid);
@@ -80,7 +81,7 @@ class UserNotesModelEdit extends JModelForm
 	public function checkIn ($nid=null)
 	{
 		if (!$nid) return true;
-		$uid = JFactory::getUser()->get('id');
+		$uid = Factory::getUser()->get('id');
 		if (!$uid) return false;
 		$db = $this->getDbo();
 		$db->setQuery('UPDATE notes SET checked_out = 0, checked_out_time = NULL WHERE itemID == '.$nid);
@@ -97,10 +98,10 @@ class UserNotesModelEdit extends JModelForm
 	}
 
 
-	public function getForm ($data = array(), $loadData = true)
+	public function getForm ($data = [], $loadData = true)
 	{
 		// Initialize variables
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$input = $app->input;
 
 		if ($input->get('type','','cmd') == 'f') {
@@ -119,7 +120,7 @@ class UserNotesModelEdit extends JModelForm
 		// get any data
 		$this->_data = $data;
 		// Get the form.
-		$form = $this->loadForm($src, $nam, array('control' => 'jform', 'load_data' => true));
+		$form = $this->loadForm($src, $nam, ['control' => 'jform', 'load_data' => true]);
 
 		if (empty($form)) {
 			return false;
@@ -138,7 +139,7 @@ class UserNotesModelEdit extends JModelForm
 	protected function populateState ()
 	{
 		// Initialize variables
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$params = JComponentHelper::getParams('com_usernotes');
 		$input = $app->input;
 

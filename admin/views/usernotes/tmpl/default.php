@@ -1,8 +1,7 @@
 <?php
 /**
  * @package    com_usernotes
- *
- * @copyright  Copyright (C) 2016-2019 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -15,6 +14,13 @@ JHtml::_('behavior.multiselect');
 $listOrder	= $this->state('list.ordering');
 $listDirn	= $this->state('list.direction');
 $canDo		= UserNotesHelper::getActions();
+
+$component = \JComponentHelper::getComponent('com_usernotes');
+$extension = \JTable::getInstance('extension');
+$extension->load($component->id);
+$manifest = new \Joomla\Registry\Registry($extension->manifest_cache);
+
+echo $manifest->get('version');
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_usernotes&view=usernotes'); ?>" method="post" name="adminForm" id="adminForm">
 	<div id="j-sidebar-container" class="span2">
