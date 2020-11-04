@@ -395,7 +395,9 @@ img.abortX {
 	/*margin-top: 1px;*/
 	cursor: pointer;
 }
-
+img.x-att-del {
+	cursor: pointer;
+}
 .idang {
 	color:#D55;
 }

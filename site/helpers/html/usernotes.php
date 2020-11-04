@@ -164,7 +164,7 @@ EOD;
 		foreach ($atchs as $atchr) {
 			$atch = $atchr[0];
 			if ($edt) {
-				$html .= '<br /><span><img src="'.JUri::base().'/components/com_usernotes/static/imgs/deletex.png" title="'.JText::_('COM_USERNOTES_DEL_ATT').'" alt="delete attachment" onclick="Oopim.aj_detach('.$cid.',\''.$atch.'\');" />&nbsp;'.$atch.'</span>';
+				$html .= '<br /><span><img class="x-att-del" src="'.JUri::base().'/components/com_usernotes/static/imgs/deletex.png" title="'.JText::_('COM_USERNOTES_DEL_ATT').'" alt="delete attachment" onclick="Oopim.aj_detach('.$cid.',\''.$atch.'\');" />&nbsp;'.$atch.'</span>';
 			} else {
 				$html .= '<div data-afile="'.rawurlencode($atch).'" class="atchlink">';
 				$html .= '<a href="#" class="noeffect" onclick="Oopim.getAttach(event,this,true)" title="'.JText::_('COM_USERNOTES_DOWNFIL').'"><div class="downlink">&nbsp;</div></a><a href="#" class="noeffect" onclick="Oopim.getAttach(event,this,false)" title="'.JText::_('COM_USERNOTES_VIEWFIL').'">'.$atch.'</a>';

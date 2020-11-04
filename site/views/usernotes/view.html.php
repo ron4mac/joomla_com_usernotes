@@ -32,16 +32,16 @@ class UsernotesViewUsernotes extends UsernotesViewBase
 
 		// If at the root, check storage useage and queue a message if near quota
 		if (!$this->parentID) {
-			$mparams = $app->getParams();	echo'<xmp>';var_dump($mparams);echo'</xmp>';
+			$mparams = $app->getParams();	//echo'<xmp>';var_dump($mparams);echo'</xmp>';
 			$storQuota = (int) $mparams->get('storQuota', 0);
 			if (!$storQuota) $storQuota = (int) $this->state->cparams->get('storQuota', 0);
 			if ($storQuota) {
 				$storSize = $this->get('StorSize');
 				$posq = $storSize / $storQuota;
-				if ($posq > 0.9) {
+				if ($posq > 0.8) {
 					$svty = 'notice';
 					$msg = JText::sprintf('COM_USERNOTES_NOTICE_QUOTA', UserNotesHelper::formatBytes($storSize, 1, ''), $posq * 100);
-					if ($posq > 0.95) {
+					if ($posq > 0.9) {
 						$svty = 'warning';
 						$msg = '<span style="color:red">'.$msg.'</span>';
 					}

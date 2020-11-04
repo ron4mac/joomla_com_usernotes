@@ -134,6 +134,11 @@ abstract class UserNotesHelper
 				return self::encrypt($dat, $pass);
 			}
 		}
+
+		if (!function_exists('mcrypt_module_open')) {
+			return '<span sytle="color:red">CAN NOT BE DECODED WITH PHP > 7.1</span>';
+		}
+
 		$td = @mcrypt_module_open(MCRYPT_3DES, '', MCRYPT_MODE_ECB, '');
 		$iv = @mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_DEV_RANDOM);
 		$ks = @mcrypt_enc_get_key_size($td);
