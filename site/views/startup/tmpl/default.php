@@ -1,15 +1,15 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Router\Route;
 
-?>
 if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
+?>
 
 <h1>User Notes Startup Screen</h1>
 <div>

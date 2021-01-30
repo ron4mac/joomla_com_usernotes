@@ -11,6 +11,7 @@ use Joomla\Event\Dispatcher as EventDispatcher;
 
 abstract class UserNotesHelper
 {
+	const COMP = 'com_usernotes';
 	protected static $instanceID = null;
 	protected static $instanceType = null;
 	protected static $ownerID = null;
@@ -33,6 +34,25 @@ abstract class UserNotesHelper
 		$results = $dispatcher->triggerEvent('onRjuserDatapath', null);
 		$sdp = isset($results[0]) ? trim($results[0]) : '';
 		return $sdp ?: 'userstor';
+	}
+
+	public static function getLimits ()
+	{
+		$app = JFactory::getApplication();
+
+		// Get the component parameters
+		$cparams = JComponentHelper::getParams(self::COMP);		//var_dump($cparams);
+		// Get the instance parameters
+		$mparams = $app->getParams();		//var_dump($mparams);
+
+		$storQuota = $cparams->get('storQuota');
+		$storQuota = $storQuota?:134217728;
+		$maxUpload = $cparams->get('maxUpload');
+		$maxUpload = $maxUpload?:4194304;
+
+		$sysMaxUp = JFilesystemHelper::fileUploadMaxSize(false);
+
+		return ['storQuota'=>$storQuota, 'maxUpload'=>min($maxUpload, $sysMaxUp)];
 	}
 
 	public static function instanceDataPath ()
@@ -217,9 +237,9 @@ abstract class UserNotesHelper
 		$user = Factory::getUser();
 		$result = new JObject;
 
-		$actions = JAccess::getActionsFromFile(JPATH_ADMINISTRATOR . '/components/com_usernotes/access.xml');
+		$actions = JAccess::getActionsFromFile(JPATH_ADMINISTRATOR . '/components/'.self::COMP.'/access.xml');
 		foreach ($actions as $action) {
-			$result->set($action->name,	$user->authorise($action->name, 'com_usernotes'));
+			$result->set($action->name, $user->authorise($action->name, self::COMP));
 		}
 
 		return $result;

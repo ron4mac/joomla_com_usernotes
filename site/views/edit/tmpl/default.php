@@ -18,7 +18,8 @@ $this->jDoc->addScript('components/com_usernotes/static/js/oopim.js');
 // Build values for javascript use
 $jsvars = [
 //	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=',
-	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&task=',
+//	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&task=',
+	'aBaseURL' => $this->aUrl('format=raw').'&task=',
 	'itemID' => $this->item->itemID,
 	'notesID' => urlencode($this->notesID),
 	'parentID' => $this->item->parentID,
@@ -30,11 +31,11 @@ $jslang = [
 	];
 $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 //var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=";
-var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&task=";
-var itemID = '.$this->item->itemID.';
-var notesID = "'.urlencode($this->notesID).'";
-var parentID = '.$this->item->parentID.';
-var contentID = '.($this->item->contentID?:0).';
+//var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&task=";
+//var itemID = '.$this->item->itemID.';
+//var notesID = "'.urlencode($this->notesID).'";
+//var parentID = '.$this->item->parentID.';
+//var contentID = '.($this->item->contentID?:0).';
 	Oopim.L = '.json_encode($jslang).';
 	Oopim.V = '.json_encode($jsvars).';
 ');
@@ -47,7 +48,7 @@ $lgnd = $this->type == 'f' ? '_F' : '';
 echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 ?>
 <div class="unote-edit">
-	<form action="<?=Route::_('index.php?option=com_usernotes&view=edit&Itemid='.$this->itemId, false)?>" method="post" name="adminForm" id="adminForm" class="form-validate" data-cancel="edit.cancelEdit">
+	<form action="<?=$this->aUrl('view=edit')?>" method="post" name="adminForm" id="adminForm" class="form-validate" data-cancel="edit.cancelEdit">
 		<span class="unote-buttons">
 			<input type="reset" value="Reset" class="btn" />
 			<button type="button" class="btn" onclick="Joomla.submitbutton('edit.cancelEdit')"><?= JText::_('JCANCEL') ?></button>

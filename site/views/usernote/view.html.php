@@ -1,7 +1,7 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -15,7 +15,6 @@ class UsernotesViewUsernote extends UsernotesViewBase
 	protected $state;
 	protected $params;
 	protected $smallDevice = false;
-
 
 	public function display ($tpl = null)
 	{
@@ -59,6 +58,9 @@ class UsernotesViewUsernote extends UsernotesViewBase
 		// establish the max file upload size
 		$this->maxUploadBytes = min($this->params->get('maxUpload'), UserNotesHelper::phpMaxUp());
 
+		$limits = UserNotesHelper::getLimits();
+		$this->maxUploadBytes = $limits['maxUpload'];
+
 		// Escape strings for HTML output
 		$this->pageclass_sfx = htmlspecialchars($this->params->get('pageclass_sfx'));
 
@@ -66,6 +68,5 @@ class UsernotesViewUsernote extends UsernotesViewBase
 
 		return parent::display($tpl);
 	}
-
 
 }

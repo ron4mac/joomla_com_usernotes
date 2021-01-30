@@ -1,12 +1,13 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Router\Route;
 
 define('ITM_CAN_EDIT', 1);
 define('ITM_CAN_DELE', 2);
@@ -27,7 +28,6 @@ class UsernotesViewBase extends JViewLegacy
 	protected $instance;
 	protected $jDoc;
 
-
 	public function __construct ($config = [])
 	{
 		parent::__construct($config);
@@ -39,6 +39,12 @@ class UsernotesViewBase extends JViewLegacy
 		$this->jDoc = Factory::getDocument();
 	}
 
+	// return an action url for use (mostly) with ajax/javascript
+	protected function aUrl ($prms, $sep='&')
+	{
+		if (is_array($prms)) $prms = http_build_query($prms, '', $sep);
+		return Route::_('index.php?option=com_usernotes'.$sep.'Itemid='.$this->itemId.$sep.$prms, false);
+	}
 
 	protected function buildPathway ($to)
 	{
@@ -51,14 +57,15 @@ class UsernotesViewBase extends JViewLegacy
 			if ($r['secured']) {
 				$r['title'] = base64_decode($r['title']);
 			}
-			array_unshift($crums, [$r['title'],'index.php?option=com_usernotes&pid='.$to]);
+//			array_unshift($crums, [$r['title'],'index.php?option=com_usernotes&pid='.$to]);
+//			array_unshift($crums, array($r['title'], Route::_('index.php?option=com_usernotes&pid='.$to.'&Itemid='.$this->itemId, false)));
+			array_unshift($crums, array($r['title'], $this->aUrl('pid='.$to)));
 			$to = $r['parentID'];
 		}
 		foreach ($crums as $crum) {
 			$pw->addItem($crum[0], $crum[1]);
 		}
 	}
-
 
 	protected function _prepareDocument ($ePhrase = false)
 	{
@@ -82,11 +89,9 @@ class UsernotesViewBase extends JViewLegacy
 		}
 	}
 
-
 	protected function nqMessage ($msg, $svrty)
 	{
 		Factory::getApplication()->enqueueMessage($msg, $svrty);
 	}
-
 
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -11,17 +11,27 @@ JHtml::stylesheet('components/com_usernotes/static/css/pumenu.css');
 JHtml::_('jquery.framework');
 
 $jslang = [
-		'ru_sure' => JText::_('COM_USERNOTES_RU_SURE')
-	];
+	'ru_sure' => JText::_('COM_USERNOTES_RU_SURE')
+];
+$jsvars = [
+	'aBaseURL' => $this->aUrl('format=raw').'&task=',
+//	'itemID' => $this->item->itemID,
+//	'notesID' => urlencode($this->notesID),
+//	'parentID' => $this->item->parentID,
+//	'contentID' => ($this->item->contentID?:0)
+];
 
+$this->jDoc->addScript('components/com_usernotes/static/js/oopim.js');
+$this->jDoc->addScript('components/com_usernotes/static/js/notesview.js');
 $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 //var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=";
-var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&task=";
-var itemID = '.$this->item->itemID.';
-var notesID = "'.urlencode($this->notesID).'";
-var parentID = '.$this->item->parentID.';
-var contentID = '.$this->item->contentID.';
+//var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&task=";
+//var itemID = '.$this->item->itemID.';
+//var notesID = "'.urlencode($this->notesID).'";
+//var parentID = '.$this->item->parentID.';
+//var contentID = '.$this->item->contentID.';
 	Oopim.L = '.json_encode($jslang).';
+	Oopim.V = '.json_encode($jsvars).';
 ');
 $this->jDoc->addScript('components/com_usernotes/static/js/oopim.js');
 $itemID = $this->item->itemID;
@@ -40,7 +50,7 @@ echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 	</div>
 	<div class="footer">
 		<?php
-			echo JHtml::_('usernotes.prnActIcon', $itemID, JText::_('COM_USERNOTES_PRNNOTE'));
+		//	echo JHtml::_('usernotes.prnActIcon', $itemID, JText::_('COM_USERNOTES_PRNNOTE'));
 		if ($this->access & ITM_CAN_EDIT) {
 			echo JHtml::_('usernotes.movActIcon', $itemID, JText::_('COM_USERNOTES_MOVNOTE'));
 		}

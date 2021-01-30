@@ -24,10 +24,12 @@
 		if (down) {
 			var dlf = document.getElementById("dnldf");
 		//	dlf.src = "index.php?option=com_usernotes&unID="+notesID+"&view=atvue&format=raw&cat="+contentID+"|"+afile+"&down=1";
-			dlf.src = "index.php?option=com_usernotes&view=atvue&format=raw&cat="+contentID+"|"+afile+"&down=1";
+		//	dlf.src = "index.php?option=com_usernotes&view=atvue&format=raw&cat="+contentID+"|"+afile+"&down=1";
+			dlf.src = "index.php?option=com_usernotes&view=atvue&format=raw&cat="+this.V.contentID+"|"+afile+"&down=1";
 		} else {
 		//	window.location = "index.php?option=com_usernotes&unID="+notesID+"&view=atvue&format=raw&cat="+contentID+"|"+afile;
-			window.location = "index.php?option=com_usernotes&view=atvue&format=raw&cat="+contentID+"|"+afile;
+		//	window.location = "index.php?option=com_usernotes&view=atvue&format=raw&cat="+contentID+"|"+afile;
+			window.location = "index.php?option=com_usernotes&view=atvue&format=raw&cat="+this.V.contentID+"|"+afile;
 		}
 	};
 

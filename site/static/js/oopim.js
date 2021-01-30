@@ -55,3 +55,10 @@ Oopim = {};	// a namespace for utility objects
 	});
 
 })(jQuery);
+
+if (typeof Joomla != "undefined")
+	Joomla.submitbutton = function (butt) {
+		var bp = butt.split('.');
+		if (bp[1] == "cancel") return true;
+		Joomla.submitform(butt);
+	};

@@ -21,7 +21,8 @@ $jslang = [
 	];
 $jsvars = [
 //	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=',
-	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&task=',
+//	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&task=',
+	'aBaseURL' => $this->aUrl('format=raw').'&task=',
 	'itemID' => $this->item->itemID,
 	'notesID' => urlencode($this->notesID),
 	'parentID' => $this->item->parentID,
@@ -29,13 +30,14 @@ $jsvars = [
 ];
 $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 //var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=";
-var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&task=";
-var itemID = '.$this->item->itemID.';
-var notesID = "'.urlencode($this->notesID).'";
-var parentID = '.$this->item->parentID.';
-var contentID = '.$this->item->contentID.';
+//var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&task=";
+//var itemID = '.$this->item->itemID.';
+//var notesID = "'.urlencode($this->notesID).'";
+//var parentID = '.$this->item->parentID.';
+//var contentID = '.$this->item->contentID.';
 //var upldDestURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'";
-var upldDestURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw";
+//var upldDestURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw";
+var upldDestURL = "'.$this->aUrl('format=raw').'";
 var fup_payload = {task:"attach", cID:'.$this->item->contentID.'};
 var uploadMaxFilesize = '.$this->maxUploadBytes.';
 	Oopim.L = '.json_encode($jslang).';

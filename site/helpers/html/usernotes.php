@@ -201,13 +201,14 @@ EOD;
 	}
 
 
-	private static function aiUrl ($prms, $xml=false)
+	private static function aiUrl ($prms, $xml=true)
 	{
 		static $mnuId = 0;
 
 		if (!$mnuId) {
 			$mnuId = Factory::getApplication()->input->getInt('Itemid', 0);
 		}
+		if (is_array($prms)) $prms = http_build_query($prms);
 		$url = Route::_('index.php?option=com_usernotes'.($prms?('&'.$prms):'').'&Itemid='.$mnuId, $xml);
 		return $url;
 	}
