@@ -29,7 +29,7 @@ class com_usernotesInstallerScript
 	function preflight ($type, $parent)
 	{
 		if (method_exists($parent,'getManifest')) {
-			$this->release = $parent->getManifest->version;
+			$this->release = $parent->getManifest()->version;
 		} else {
 			$this->release = $parent->get('manifest')->version;
 		}
