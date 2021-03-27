@@ -75,17 +75,13 @@ UNote = {};	// a namespace for our javascript
 
 
 	UNote.getAttach = function (evt, elm, down) {
-		estop(evt);
+		estop(evt,true);
 		var afile = elm.parentNode.dataset.afile;
 		if (down) {
 			var dlf = document.getElementById("dnldf");
-		//	dlf.src = "index.php?option=com_usernotes&unID="+notesID+"&view=atvue&format=raw&cat="+contentID+"|"+afile+"&down=1";
-		//	dlf.src = "index.php?option=com_usernotes&view=atvue&format=raw&cat="+contentID+"|"+afile+"&down=1";
-			dlf.src = "index.php?option=com_usernotes&view=atvue&format=raw&cat="+this.V.contentID+"|"+afile+"&down=1";
+			dlf.src = this.V.aBaseURL+"&view=atvue&format=raw&cat="+this.V.contentID+"|"+afile+"&down=1";
 		} else {
-		//	window.location = "index.php?option=com_usernotes&unID="+notesID+"&view=atvue&format=raw&cat="+contentID+"|"+afile;
-		//	window.location = "index.php?option=com_usernotes&view=atvue&format=raw&cat="+contentID+"|"+afile;
-			window.location = "index.php?option=com_usernotes&view=atvue&format=raw&cat="+this.V.contentID+"|"+afile;
+			window.location = this.V.aBaseURL+"&view=atvue&format=raw&cat="+this.V.contentID+"|"+afile;
 		}
 	};
 
