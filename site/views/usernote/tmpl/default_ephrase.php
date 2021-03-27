@@ -6,12 +6,14 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Language\Text;
+
 JHtml::stylesheet('components/com_usernotes/static/css/oopim.css');
 JHtml::stylesheet('components/com_usernotes/static/css/pumenu.css');
 JHtml::_('jquery.framework');
 
 $jslang = [
-	'ru_sure' => JText::_('COM_USERNOTES_RU_SURE')
+	'ru_sure' => Text::_('COM_USERNOTES_RU_SURE')
 ];
 $jsvars = [
 	'aBaseURL' => $this->aUrl('format=raw').'&task=',
@@ -21,8 +23,7 @@ $jsvars = [
 //	'contentID' => ($this->item->contentID?:0)
 ];
 
-$this->jDoc->addScript('components/com_usernotes/static/js/oopim.js');
-$this->jDoc->addScript('components/com_usernotes/static/js/notesview.js');
+$this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js');
 $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 //var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=";
 //var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&task=";
@@ -30,10 +31,9 @@ $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 //var notesID = "'.urlencode($this->notesID).'";
 //var parentID = '.$this->item->parentID.';
 //var contentID = '.$this->item->contentID.';
-	Oopim.L = '.json_encode($jslang).';
-	Oopim.V = '.json_encode($jsvars).';
+	UNote.L = '.json_encode($jslang).';
+	UNote.V = '.json_encode($jsvars).';
 ');
-$this->jDoc->addScript('components/com_usernotes/static/js/oopim.js');
 $itemID = $this->item->itemID;
 // accommodate targeted breadcrumb module
 echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
@@ -44,18 +44,18 @@ echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 		<div class="ephrase">
 			<form action="" method="post" class="form-validate">
 				<?php echo $this->form->renderFieldset('ephrase')?>
-				<button type="submit" class="btn btn-primary"><?=JText::_('JSUBMIT');?></button>
+				<button type="submit" class="btn btn-primary"><?=Text::_('JSUBMIT');?></button>
 			</form>
 		</div>
 	</div>
 	<div class="footer">
 		<?php
-		//	echo JHtml::_('usernotes.prnActIcon', $itemID, JText::_('COM_USERNOTES_PRNNOTE'));
+		//	echo JHtml::_('usernotes.prnActIcon', $itemID, Text::_('COM_USERNOTES_PRNNOTE'));
 		if ($this->access & ITM_CAN_EDIT) {
-			echo JHtml::_('usernotes.movActIcon', $itemID, JText::_('COM_USERNOTES_MOVNOTE'));
+			echo JHtml::_('usernotes.movActIcon', $itemID, Text::_('COM_USERNOTES_MOVNOTE'));
 		}
 		if ($this->access & ITM_CAN_DELE) {
-			echo JHtml::_('usernotes.delActIcon', $itemID, JText::_('COM_USERNOTES_DELNOTE'));
+			echo JHtml::_('usernotes.delActIcon', $itemID, Text::_('COM_USERNOTES_DELNOTE'));
 		}
 		?>
 		&nbsp;<?=$this->footMsg?>

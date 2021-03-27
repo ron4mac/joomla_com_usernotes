@@ -1,13 +1,15 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Session\Session;
 
 JLoader::register('JHtmlUsernotes', JPATH_COMPONENT . '/helpers/html/usernotes.php');
 
@@ -24,32 +26,6 @@ class UsernotesControllerEdit extends JControllerForm
 		$this->uID = Factory::getUser()->get('id');
 	}
 
-/*
-	public function display ($cachable = false, $urlparams = array())
-	{
-		$document = $this->app->getDocument();
-		$viewType = $document->getType();
-		$viewName = $this->input->get('view', $this->default_view);
-		$viewLayout = $this->input->get('layout', 'default', 'string');
-
-		$view = $this->getView($viewName, $viewType, '', array('base_path' => $this->basePath, 'layout' => $viewLayout));
-
-		// Get/Create the model
-		if ($model = $this->getModel($viewName, '', array('base_path' => $this->basePath)))
-		{
-			// Push the model into the view (as default)
-			$view->setModel($model, true);
-		}
-
-		$view->document = $document;
-		$view->itemId = $this->mnuItm;
-
-		// Display the view
-		$view->display();
-
-		return $this;
-	}
-*/
 
 	public function addNote ()
 	{
@@ -103,7 +79,7 @@ class UsernotesControllerEdit extends JControllerForm
 	public function saveNote ()
 	{
 		// Check for request forgeries.
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 
 		$model = $this->getModel('usernote');
 
@@ -121,7 +97,7 @@ class UsernotesControllerEdit extends JControllerForm
 	public function saveFolder ()
 	{
 		// Check for request forgeries.
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 
 		$model = $this->getModel('usernote');
 

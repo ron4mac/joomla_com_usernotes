@@ -1,10 +1,12 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die('Restricted access');
+
+use Joomla\CMS\Language\Text;
 
 if (file_exists($this->fpath)) {
 	if ($this->down) {
@@ -26,8 +28,8 @@ if (file_exists($this->fpath)) {
 	readfile($this->fpath);
 } else {
 	if ($this->down) {
-		echo '<script>alert("'.JText::_('Not able to access this file for download.').'")</script>';
+		echo '<script>alert("'.Text::_('Not able to access this file for download.').'")</script>';
 	} else {
-		echo '<p style="font-size:1.5em">'.JText::_('Not able to access this file.').'</p>';
+		echo '<p style="font-size:1.5em">'.Text::_('Not able to access this file.').'</p>';
 	}
 }

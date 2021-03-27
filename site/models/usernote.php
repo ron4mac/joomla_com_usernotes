@@ -1,12 +1,13 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
 JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 
@@ -45,14 +46,14 @@ class UserNotesModelUserNote extends JModelItem
 					->select('n.*, c.serial_content'/*, a.attached'*/)
 					->from('notes AS n')
 					->join('LEFT', 'content AS c on c.contentID = n.contentID')
-					->where('n.itemID = ' . (int) $pk);
+					->where('n.itemID = ' . (int)$pk);
 
 				$db->setQuery($query);
 
 				$data = $db->loadObject();
 
 				if (empty($data)) {
-					JError::raiseError(404, JText::_('COM_USERNOTES_ERROR_FEED_NOT_FOUND'));
+					JError::raiseError(404, Text::_('COM_USERNOTES_ERROR_NOTE_NOT_FOUND'));
 				} else {
 					if ($nm = @unserialize($data->serial_content)) {
 						$data->serial_content = $nm->rendered();
@@ -189,10 +190,10 @@ class UserNotesModelUserNote extends JModelItem
 					move_uploaded_file($tmp_name, $path.'/'.$name);
 					$fns[] = $name;
 				}
-				else $msg .= JText::_('COM_USERNOTES_NOUPLOAD');
+				else $msg .= Text::_('COM_USERNOTES_NOUPLOAD');
 			}
 			elseif ($file['error'] != UPLOAD_ERR_NO_FILE) {
-				$msg .= sprintf(JText::_('COM_USERNOTES_UPLOADERR'), $file['error']);
+				$msg .= sprintf(Text::_('COM_USERNOTES_UPLOADERR'), $file['error']);
 			}
 		}
 		if ($fns) {
@@ -249,6 +250,28 @@ class UserNotesModelUserNote extends JModelItem
 				->where('attached='.$db->quote($file));
 			$db->setQuery($q)->execute();
 			unlink($this->_storPath.'/attach/'.$contentID.'/'.$file);
+		}
+		catch (Exception $e)
+		{
+			$this->setError($e);
+		}
+		return false;
+	}
+
+
+	public function renameAttachment ($contentID=0, $file=null, $tofile=null)
+	{
+		if (!$contentID || !$file || !$tofile) return;
+		if ($file == $tofile) return;
+		$path = JPATH_BASE.'/'.UserNotesHelper::userDataPath().'/attach/'.$contentID.'/';
+		if (!file_exists($path.$file)) return 'No such file';
+		if (file_exists($path.$tofile)) return 'File already exists';
+		if (!rename($path.$file,$path.$tofile)) return 'Failed to rename file';
+		try
+		{
+			$db = $this->getDbo();
+			$db->setQuery('UPDATE fileatt SET attached='.$db->quote($tofile).' WHERE contentID='.$contentID.' AND attached='.$db->quote($file));
+			$db->execute();
 		}
 		catch (Exception $e)
 		{

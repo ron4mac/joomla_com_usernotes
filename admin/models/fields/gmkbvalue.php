@@ -1,10 +1,12 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('JPATH_BASE') or die;
+
+use Joomla\CMS\Factory;
 
 class JFormFieldGmkbValue extends JFormField
 {
@@ -17,11 +19,11 @@ class JFormFieldGmkbValue extends JFormField
 		$allowClear		= ((string) $this->element['clear'] != 'false') ? true : false;
 
 		// Load language
-		JFactory::getLanguage()->load(self::COMP, JPATH_ADMINISTRATOR);
+		Factory::getLanguage()->load(self::COMP, JPATH_ADMINISTRATOR);
 
 		// create the component default display
 		list($cdv,$cdm) = $this->num2gmkv($this->element['compdef']);
-		$mc = array(' KB',' MB',' GB');
+		$mc = [' KB',' MB',' GB'];
 		$compdef = $cdv.$mc[$cdm];
 
 		// class='required' for client side validation
@@ -36,7 +38,7 @@ class JFormFieldGmkbValue extends JFormField
 		list($uplsiz,$uplsizm) = $this->num2gmkv($this->value?:$this->element['compdef']);
 
 		// Setup variables for display.
-		$html	= array();
+		$html	= [];
 
 		$html[] = '<input type="checkbox" id="'.$this->id.'_dchk" onclick="GMKBff.sDef(this)" '.($this->value ? '' : 'checked ').'style="vertical-align:initial" />';
 		$html[] = '<label for="'.$this->id.'_dchk" style="display:inline;margin-right:1em">'.JText::_('JDEFAULT').'</label>';
@@ -56,7 +58,7 @@ class JFormFieldGmkbValue extends JFormField
 		static $scripted;
 		if (!$scripted) {
 			$scripted = true;
-			$jdoc = JFactory::getDocument();
+			$jdoc = Factory::getDocument();
 			$script = '
 var GMKBff = (function($) {
 	return {
@@ -108,7 +110,7 @@ var GMKBff = (function($) {
 		} else {
 			$num = '';
 		}
-		return array($num,$sizm);
+		return [$num, $sizm];
 	}
 
 	// get a component option value

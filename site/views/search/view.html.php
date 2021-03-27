@@ -1,12 +1,13 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
 include_once JPATH_COMPONENT.'/views/view.php';
 
@@ -21,7 +22,7 @@ class UsernotesViewSearch extends UsernotesViewBase
 	{
 		$app = Factory::getApplication();
 		// add to the bread crumb
-		$app->getPathWay()->addItem(JText::_('COM_USERNOTES_SEARCH'),'');
+		$app->getPathWay()->addItem(Text::_('COM_USERNOTES_SEARCH'),'');
 
 		// Get view related request variables.
 		$sterm = $app->input->getString('sterm');

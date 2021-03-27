@@ -1,7 +1,7 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -9,8 +9,7 @@ defined('_JEXEC') or die;
 JHtml::stylesheet('components/com_usernotes/static/css/oopim.css');
 JHtml::_('jquery.framework', false);
 
-$this->jDoc->addScript('components/com_usernotes/static/js/oopim.js');
-$this->jDoc->addScript('components/com_usernotes/static/js/notesview.js');
+$this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js');
 
 if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
 

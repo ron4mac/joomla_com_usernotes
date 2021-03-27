@@ -1,4 +1,4 @@
-Oopim.Upld5d = (function(){
+UNote.Upld5d = (function(){
 
 	var isInitted = false;
 
@@ -49,7 +49,7 @@ Oopim.Upld5d = (function(){
 	function NextInQueue(decr,tag) {
 		if (decr) {
 			if (! --inPrg) {
-				if (typeof(Oopim.fup_done == 'function')) Oopim.fup_done(errCnt);
+				if (typeof(UNote.fup_done == 'function')) UNote.fup_done(errCnt);
 				total2do = totalDone = errCnt = 0;
 				if (responses) { console.log(responses); }
 			}
@@ -98,9 +98,9 @@ Oopim.Upld5d = (function(){
 			};
 
 			if (typeof(fup_ftypes) == 'object' && fup_ftypes.indexOf(file.type) < 0) {
-				errM = Oopim.sprintf(Oopim.L.fbadtyp, file.type);
+				errM = UNote.sprintf(UNote.L.fbadtyp, file.type);
 			} else if (file.size > uploadMaxFilesize) {
-				errM = Oopim.L.fsz2big;
+				errM = UNote.L.fsz2big;
 			}
 
 			// create progress bar

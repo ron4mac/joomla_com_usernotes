@@ -17,6 +17,18 @@
 			filter="integer"
 			compdef="4194304" />
 
+		<field
+			name="hide_secure"
+			type="radio"
+			class="btn-group btn-group-yesno"
+			default="1"
+			label="COM_USERNOTES_CONFIG_HIDSECUR_LABEL"
+			description="COM_USERNOTES_CONFIG_HIDSECUR_DESC"
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
 		<field name="secureurl" type="text"
 			label="COM_USERNOTES_CONFIG_SECURL_LABEL"
 			description="COM_USERNOTES_CONFIG_SECURL_DESC"

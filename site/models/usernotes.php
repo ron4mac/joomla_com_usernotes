@@ -1,7 +1,7 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -134,6 +134,7 @@ class UserNotesModelUserNotes extends JModelList
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
 		$query->select('*')->from('notes')->where('parentID='.$pid);
+		if ($this->getState('hide-secure')) $query->where('secured IS NOT 1');
 		return $query;
 	}
 
@@ -162,6 +163,10 @@ class UserNotesModelUserNotes extends JModelList
 
 		// Load the parameters.
 		$this->setState('cparams', $params);
+
+		// set whether secured item should be shown
+		$userID = Factory::getUser()->get('id');
+		$this->setState('hide-secure', !(bool)$userID);
 	}
 
 }

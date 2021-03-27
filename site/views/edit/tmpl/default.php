@@ -1,20 +1,22 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
 
-JHtml::stylesheet('components/com_usernotes/static/css/oopim.css');
-JHtml::_('jquery.framework', true);
-JHtml::_('behavior.keepalive');
-JHtml::_('bootstrap.tooltip');
-JHtml::_('behavior.formvalidator');
+HTMLHelper::stylesheet('components/com_usernotes/static/css/oopim.css');
+HTMLHelper::_('jquery.framework', true);
+HTMLHelper::_('behavior.keepalive');
+HTMLHelper::_('bootstrap.tooltip');
+HTMLHelper::_('behavior.formvalidator');
 
-$this->jDoc->addScript('components/com_usernotes/static/js/oopim.js');
+$this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js');
 // Build values for javascript use
 $jsvars = [
 //	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=',
@@ -26,8 +28,9 @@ $jsvars = [
 	'contentID' => ($this->item->contentID?:0)
 ];
 $jslang = [
-		'sure_del_att' => JText::_('COM_USERNOTES_SURE_DEL_ATT'),
-		'ru_sure' => JText::_('COM_USERNOTES_RU_SURE')
+		'sure_del_att' => Text::_('COM_USERNOTES_SURE_DEL_ATT'),
+		'rename_att' => Text::_('COM_USERNOTES_RENAME_ATT'),
+		'ru_sure' => Text::_('COM_USERNOTES_RU_SURE')
 	];
 $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 //var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=";
@@ -36,8 +39,8 @@ $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 //var notesID = "'.urlencode($this->notesID).'";
 //var parentID = '.$this->item->parentID.';
 //var contentID = '.($this->item->contentID?:0).';
-	Oopim.L = '.json_encode($jslang).';
-	Oopim.V = '.json_encode($jsvars).';
+	UNote.L = '.json_encode($jslang).';
+	UNote.V = '.json_encode($jsvars).';
 ');
 
 if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
@@ -45,14 +48,14 @@ if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
 $task = $this->type == 'f' ? 'edit.saveFolder' : 'edit.saveNote';
 $lgnd = $this->type == 'f' ? '_F' : '';
 // accommodate targeted breadcrumb module
-echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
+echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 ?>
 <div class="unote-edit">
 	<form action="<?=$this->aUrl('view=edit')?>" method="post" name="adminForm" id="adminForm" class="form-validate" data-cancel="edit.cancelEdit">
 		<span class="unote-buttons">
 			<input type="reset" value="Reset" class="btn" />
-			<button type="button" class="btn" onclick="Joomla.submitbutton('edit.cancelEdit')"><?= JText::_('JCANCEL') ?></button>
-			<button type="submit" class="btn btn-primary validate"><?= JText::_('JSAVE') ?></button>
+			<button type="button" class="btn" onclick="Joomla.submitbutton('edit.cancelEdit')"><?= Text::_('JCANCEL') ?></button>
+			<button type="submit" class="btn btn-primary validate"><?= Text::_('JSAVE') ?></button>
 		</span>
 		<fieldset class="adminform" style="clear:both">
 			<div class="adminformlist">
@@ -68,11 +71,11 @@ echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 		</fieldset>
 		<input type="hidden" name="task" value="<?=$task?>" />
 		<input type="hidden" name="Itemid" value="<?=$this->itemId?>" />
-		<?php echo JHtml::_('form.token'); ?>
+		<?php echo HTMLHelper::_('form.token'); ?>
 	</form>
 	<?php if (isset($this->attached) && $this->attached): ?>
 	<div id="attachments">
-		<?=JHtml::_('usernotes.att_list', $this->attached, $this->item->contentID, true)?>
+		<?=HTMLHelper::_('usernotes.att_list', $this->attached, $this->item->contentID, true)?>
 	</div>
 	<?php endif; ?>
 </div>

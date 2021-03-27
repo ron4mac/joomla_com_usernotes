@@ -1,12 +1,13 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
 JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 
@@ -46,7 +47,7 @@ class UserNotesModelEdit extends JModelForm
 			$data = $db->loadObject();
 
 			if (empty($data)) {
-				JError::raiseError(404, JText::_('COM_USERNOTES_ERROR_FEED_NOT_FOUND'));
+				JError::raiseError(404, Text::_('COM_USERNOTES_ERROR_NOTE_NOT_FOUND'));
 			} else {
 				if ($data->serial_content) {
 					if ($nm = @unserialize($data->serial_content)) {

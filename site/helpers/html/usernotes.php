@@ -1,13 +1,15 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
 
 abstract class JHtmlUsernotes
 {
@@ -18,7 +20,7 @@ abstract class JHtmlUsernotes
 		$ttl = $item->secured ? base64_decode($item->title) : $item->title;
 		$attrs = ['class'=>'nav'];
 		if (isset($item->lPath)) $attrs['title'] = $item->lPath;
-		return JHtml::link(
+		return HTMLHelper::link(
 				self::aiUrl($param.$item->itemID),
 				'<div class="menug '.($item->isParent?'foldm':'docum').($item->secured?' isecure':'').'"></div>'.htmlspecialchars($ttl),
 				$attrs
@@ -26,15 +28,15 @@ abstract class JHtmlUsernotes
 	}
 	public static function prnActIcon ($id, $titl)
 	{
-		return JHtml::link(
+		return HTMLHelper::link(
 				self::aiUrl('task=printNote&nid='.$id),
-				self::ico('icon-print'),
-				['title'=>$titl, 'class'=>'nav act-left', 'onclick'=>'Oopim.printNote(event,this);return false;']
+				self::ico('icon-print large-icon'),
+				['title'=>$titl, 'class'=>'nav act-left', 'onclick'=>'UNote.printNote(event,this);return false;']
 			);
 	}
 	public static function newActIcon ($id, $titl)
 	{
-		return JHtml::link(
+		return HTMLHelper::link(
 				self::aiUrl('task=edit.addNote&pid='.$id),
 				self::ico('icon-file-plus'),
 				['title'=>$titl, 'class'=>'nav act-left']
@@ -42,7 +44,7 @@ abstract class JHtmlUsernotes
 	}
 	public static function edtActIcon ($id, $titl)
 	{
-		return JHtml::link(
+		return HTMLHelper::link(
 				self::aiUrl('task=edit.editNote&nid='.$id),
 				self::ico('icon-edit'),
 				['title'=>$titl, 'class'=>'nav act-left']
@@ -50,15 +52,15 @@ abstract class JHtmlUsernotes
 	}
 	public static function movActIcon ($id, $titl)
 	{
-		return '<a href="#" title="'.$titl.'" class="act-left" onclick="Oopim.moveTo(event)">'.self::ico('icon-move').'</a>';
+		return '<a href="#" title="'.$titl.'" class="act-left" onclick="UNote.moveTo(event)">'.self::ico('icon-move').'</a>';
 	}
 	public static function attActIcon ($id, $titl)
 	{
-		return '<a href="#" title="'.$titl.'" class="act-left" onclick="Oopim.addAttach(event)">'.self::ico('icon-attachment').'</a>';
+		return '<a href="#" title="'.$titl.'" class="act-left" onclick="UNote.addAttach(event)">'.self::ico('icon-attachment').'</a>';
 	}
 	public static function delActIcon ($id, $titl)
 	{
-		return JHtml::link(
+		return HTMLHelper::link(
 				self::aiUrl('task=edit.deleteItem&iid='.$id),
 				self::ico('icon-file-minus idang'),
 				['title'=>$titl, 'class'=>'nav act-right sure', 'data-suremsg'=>strtolower($titl)]
@@ -66,7 +68,7 @@ abstract class JHtmlUsernotes
 	}
 	public static function fNewActIcon ($id, $titl)
 	{
-		return JHtml::link(
+		return HTMLHelper::link(
 				self::aiUrl('task=edit.addFolder&type=f&pid='.$id),
 				self::ico('icon-folder-plus-2'),
 				['title'=>$titl, 'class'=>'nav act-left']
@@ -74,7 +76,7 @@ abstract class JHtmlUsernotes
 	}
 	public static function fEdtActIcon ($id, $titl)
 	{
-		return JHtml::link(
+		return HTMLHelper::link(
 				self::aiUrl('task=edit.editFolder&type=f&nid='.$id),
 				self::ico('icon-edit'),
 				['title'=>$titl, 'class'=>'nav act-right']
@@ -82,7 +84,7 @@ abstract class JHtmlUsernotes
 	}
 	public static function fDelActIcon ($id, $titl)
 	{
-		return JHtml::link(
+		return HTMLHelper::link(
 				self::aiUrl('task=edit.deleteItem&iid='.$id),
 				self::ico('icon-folder-remove idang'),
 				['title'=>$titl, 'class'=>'nav act-right sure', 'data-suremsg'=>strtolower($titl)]
@@ -90,13 +92,8 @@ abstract class JHtmlUsernotes
 	}
 	public static function toolActIcon ($id, $titl)
 	{
-		return '<a href="#" title="'.$titl.'" class="act-left" onclick="Oopim.toolMenu(event);">'.self::ico('icon-wrench').'</a>';
+		return '<a href="#" title="'.$titl.'" class="act-left" onclick="UNote.toolMenu(event);">'.self::ico('icon-wrench').'</a>';
 	}
-
-//	public static function srchActIcon ($id, $titl)
-//	{
-//		return '<a href="#" title="Search" class="dbsrch" onclick="return Oopim.performSearch(this.parentNode,'.$id.');">'.self::ico('icon-search').'</a>';
-//	}
 
 
 	public static function searchField ($pid)
@@ -104,9 +101,9 @@ abstract class JHtmlUsernotes
 		$fact = self::aiUrl('');
 		return <<<EOD
 <div class="search">
-	<form name="sqry" action="{$fact}" method="POST" onsubmit="return Oopim.performSearch(this,{$pid})">
+	<form name="sqry" action="{$fact}" method="POST" onsubmit="return UNote.performSearch(this,{$pid})">
 		<input type="hidden" name="task" value="search" />
-		<input type="search" name="sterm" results="10" autosave="oopim_notes" placeholder="Search..." />
+		<input type="search" name="sterm" results="10" autosave="user_notes" placeholder="Search..." />
 	</form>
 </div>
 EOD;
@@ -164,10 +161,13 @@ EOD;
 		foreach ($atchs as $atchr) {
 			$atch = $atchr[0];
 			if ($edt) {
-				$html .= '<br /><span><img class="x-att-del" src="'.JUri::base().'/components/com_usernotes/static/imgs/deletex.png" title="'.JText::_('COM_USERNOTES_DEL_ATT').'" alt="delete attachment" onclick="Oopim.aj_detach('.$cid.',\''.$atch.'\');" />&nbsp;'.$atch.'</span>';
+				$html .= '<br /><span>';
+				$html .= '<a href="#" title="'.Text::_('COM_USERNOTES_DEL_ATT').'" class="att-left" onclick="UNote.aj_delAttach(event,'.$cid.',\''.$atch.'\')">'.self::ico('icon-remove idang').'</a>';
+				$html .= '<a href="#" title="'.Text::_('COM_USERNOTES_REN_ATT').'" class="att-left" onclick="UNote.aj_renAttach(event,'.$cid.',\''.$atch.'\')">'.self::ico('icon-pencil-2 idarn').'</a>';
+				$html .= '&nbsp;'.$atch.'</span>';
 			} else {
 				$html .= '<div data-afile="'.rawurlencode($atch).'" class="atchlink">';
-				$html .= '<a href="#" class="noeffect" onclick="Oopim.getAttach(event,this,true)" title="'.JText::_('COM_USERNOTES_DOWNFIL').'"><div class="downlink">&nbsp;</div></a><a href="#" class="noeffect" onclick="Oopim.getAttach(event,this,false)" title="'.JText::_('COM_USERNOTES_VIEWFIL').'">'.$atch.'</a>';
+				$html .= '<a href="#" class="noeffect" onclick="UNote.getAttach(event,this,true)" title="'.Text::_('COM_USERNOTES_DOWNFIL').'">'.self::ico('icon-download').'</a><a href="#" class="noeffect" onclick="UNote.getAttach(event,this,false)" title="'.Text::_('COM_USERNOTES_VIEWFIL').'">'.$atch.'</a>';
 				$html .= '</div>';
 			}
 		}
@@ -263,6 +263,7 @@ EOD;
 
 	private static function ico ($ico)
 	{
+		return '<i class="'.$ico.'"> </i>';
 		return '<i class="'.$ico.'" style="font-size:'.(IS_SMALL_DEVICE ? 28 : 16).'px"> </i>';
 	}
 

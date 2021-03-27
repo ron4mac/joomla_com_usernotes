@@ -73,6 +73,18 @@
 				description="COM_USERNOTES_CONFIG_MAXUPLD_DESC"
 				default="0"
 				compdef="4194304/maxUpload" />
+			<field
+				name="hide_secure"
+				type="radio"
+				class="btn-group btn-group-yesno"
+				default=""
+				label="COM_USERNOTES_CONFIG_HIDSECUR_LABEL"
+				description="COM_USERNOTES_CONFIG_HIDSECUR_DESC"
+			>
+				<option value="">-default-</option>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
 
 		</fieldset>
 	</fields>

@@ -1,13 +1,14 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\HTML\HTMLHelper;
 
 JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 JLoader::register('JHtmlUsernotes', JPATH_COMPONENT . '/helpers/html/usernotes.php');
@@ -86,7 +87,7 @@ class UserNotesController extends JControllerLegacy
 		$m = $this->getModel('usernote');
 		$notesid = $this->input->getBase64('notesID', '');
 		$cid = $this->input->post->getInt('cID', 0);
-		$files = $this->input->files->get('attm');
+		$files = $this->input->files->get('attm', null, 'raw');
 		if (JDEBUG) {
 			$fdmp = print_r($files, true);
 			JLog::add("attach ... notesID: {$notesid}  note: {$cid}  file(s): {$fdmp}", JLog::INFO, 'com_usernotes');
@@ -109,6 +110,20 @@ class UserNotesController extends JControllerLegacy
 	}
 
 
+	public function renAttach ()
+	{
+		$m = $this->getModel('usernote');
+		$cid = $this->input->post->getInt('contentID', 0);
+		$file = $this->input->post->getString('file', '');
+		$tofile = $this->input->post->getString('tofile', '');
+		if (JDEBUG) {
+			JLog::add("renAttach ... note: {$cid}  file: {$file} tofile: {$tofile}", JLog::INFO, 'com_usernotes');
+		}
+		$r = $m->renameAttachment($cid, $file, $tofile);
+		if ($r) echo $r;
+	}
+
+
 	public function attlist ()
 	{
 		$m = $this->getModel('usernote');
@@ -116,7 +131,7 @@ class UserNotesController extends JControllerLegacy
 		$ined = $this->input->getInt('inedit', 0);
 		$atchs = $m->attachments($cid);
 		if ($atchs) {
-			echo JHtml::_('usernotes.att_list', $atchs, $cid, $ined);
+			echo HTMLHelper::_('usernotes.att_list', $atchs, $cid, $ined);
 		} else echo '';
 	}
 
@@ -127,9 +142,9 @@ class UserNotesController extends JControllerLegacy
 		$m = $this->getModel('usernotes');
 		$hier = $m->get_item_hier(Factory::getUser()->get('id'));
 		echo '<span>Move item to:</span><br />';
-		echo JHtml::_('usernotes.form_dropdown', 'moveTo', $hier, $pid, 'id="moveTo"');
-		echo '<br /><hr />'.JHtml::_('usernotes.form_button', 'moveto', 'Move', 'style="float:right" onclick="Oopim.doMove(true)"');
-		echo JHtml::_('usernotes.form_button', 'cancel', 'Cancel', 'style="float:right" onclick="Oopim.doMove(false)"');
+		echo HTMLHelper::_('usernotes.form_dropdown', 'moveTo', $hier, $pid, 'id="moveTo"');
+		echo '<br /><hr />'.HTMLHelper::_('usernotes.form_button', 'moveto', 'Move', 'style="float:right" onclick="UNote.doMove(true)"');
+		echo HTMLHelper::_('usernotes.form_button', 'cancel', 'Cancel', 'style="float:right" onclick="UNote.doMove(false)"');
 	}
 
 

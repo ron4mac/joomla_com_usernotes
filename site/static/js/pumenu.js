@@ -3,8 +3,7 @@ var pum_closetimer = 0;
 var pum_menuitem = 0;
 
 // open hidden layer
-function mopen(id,xpos,ypos)
-{	
+function mopen (id, xpos, ypos) {
 	// cancel close timer
 	mcancelclosetime();
 
@@ -17,25 +16,21 @@ function mopen(id,xpos,ypos)
 	pum_menuitem.style.top = ypos+'px';
 	pum_menuitem.style.display = 'block';
 	mclosetime();
-
 }
+
 // close showed layer
-function mclose()
-{
+function mclose () {
 	if (pum_menuitem) pum_menuitem.style.display = 'none';
 }
 
 // go close timer
-function mclosetime()
-{
+function mclosetime () {
 	pum_closetimer = window.setTimeout(mclose, pum_timeout);
 }
 
 // cancel close timer
-function mcancelclosetime()
-{
-	if (pum_closetimer)
-	{
+function mcancelclosetime () {
+	if (pum_closetimer) {
 		window.clearTimeout(pum_closetimer);
 		pum_closetimer = null;
 	}

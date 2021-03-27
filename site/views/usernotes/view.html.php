@@ -1,12 +1,13 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
 include_once JPATH_COMPONENT.'/views/view.php';
 
@@ -40,7 +41,7 @@ class UsernotesViewUsernotes extends UsernotesViewBase
 				$posq = $storSize / $storQuota;
 				if ($posq > 0.8) {
 					$svty = 'notice';
-					$msg = JText::sprintf('COM_USERNOTES_NOTICE_QUOTA', UserNotesHelper::formatBytes($storSize, 1, ''), $posq * 100);
+					$msg = Text::sprintf('COM_USERNOTES_NOTICE_QUOTA', UserNotesHelper::formatBytes($storSize, 1, ''), $posq * 100);
 					if ($posq > 0.9) {
 						$svty = 'warning';
 						$msg = '<span style="color:red">'.$msg.'</span>';

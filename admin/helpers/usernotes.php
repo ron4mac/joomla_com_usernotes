@@ -1,13 +1,12 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
-use Joomla\Event\Dispatcher as EventDispatcher;
 
 abstract class UserNotesHelper
 {
@@ -30,15 +29,14 @@ abstract class UserNotesHelper
 
 	public static function getStorageBase ()
 	{
-		$dispatcher = new EventDispatcher();
-		$results = $dispatcher->triggerEvent('onRjuserDatapath', null);
-		$sdp = isset($results[0]) ? trim($results[0]) : '';
-		return $sdp ?: 'userstor';
+		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath', null);
+		$sdp = isset($result[0]) ? trim($result[0]) : 'userstor';
+		return $sdp;
 	}
 
 	public static function getLimits ()
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		// Get the component parameters
 		$cparams = JComponentHelper::getParams(self::COMP);		//var_dump($cparams);

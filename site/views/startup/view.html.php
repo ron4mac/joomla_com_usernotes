@@ -6,13 +6,12 @@
  */
 defined('_JEXEC') or die('Restricted access');
  
-use Joomla\CMS\Factory;
+//use Joomla\CMS\Factory;
 
 class UsernotesViewStartup extends JViewLegacy
 {
 	protected $quota;
 	protected $maxfs;
-
 
 	public function display ($tpl = null)
 	{
