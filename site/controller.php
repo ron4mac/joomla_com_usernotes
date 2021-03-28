@@ -157,6 +157,15 @@ class UserNotesController extends JControllerLegacy
 	}
 
 
+	public function addRating ()
+	{
+		$rate = $this->input->post->getInt('rate', 0);
+		$iid = $this->input->post->getInt('iID', 0);
+		$m = $this->getModel('usernote');
+		echo $m->addRating($iid, $rate);
+	}
+
+
 	public function tool ()
 	{
 		$act = $this->input->post->getCmd('mnuact','');

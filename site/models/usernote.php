@@ -77,6 +77,27 @@ class UserNotesModelUserNote extends JModelItem
 	}
 
 
+	public function addRating ($iid, $rate)
+	{
+		try
+		{
+			$db = $this->getDbo();
+			$db->transactionStart();
+			$db->setQuery('SELECT vcount,vtotal FROM notes WHERE itemID='.$iid);
+			$data = $db->loadRow();
+			$data[0]++; $data[1] += $rate;
+			$db->setQuery('UPDATE notes SET vcount='.$data[0].' ,vtotal='.$data[1].' WHERE itemID='.$iid);
+			$db->execute();
+			$db->transactionCommit();
+			return $data[1]/$data[0].':('.$data[0].')';
+		}
+		catch (Exception $e)
+		{
+			$this->setError($e);
+		}
+	}
+
+
 	public function storeNote (JInput $data, $user)
 	{
 		$iid = $data->getInt('itemID');

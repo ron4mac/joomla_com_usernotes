@@ -33,6 +33,9 @@ class UsernotesViewUsernote extends UsernotesViewBase
 			return parent::display('ephrase');
 		}
 
+		$this->ratcnt = $this->item->vcount;
+		$this->rating = $this->item->vtotal ? ($this->item->vtotal / $this->item->vcount) : 0;
+
 		if ($this->item->secured) {
 			$cookn = UserNotesHelper::hashCookieName($this->item->itemID, $this->item->contentID);
 			$ephrase = $app->input->post->get('ephrase','','string');

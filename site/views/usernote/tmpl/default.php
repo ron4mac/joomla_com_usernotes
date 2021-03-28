@@ -15,6 +15,7 @@ JHtml::_('jquery.framework', false);
 $this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js');
 $this->jDoc->addScript('components/com_usernotes/static/js/upload5d.js');
 $this->jDoc->addScript('components/com_usernotes/static/js/pumenu.js');
+$this->jDoc->addScript('components/com_usernotes/static/js/rating.js');
 $jslang = [
 		'ru_sure' => Text::_('COM_USERNOTES_RU_SURE'),
 		'fsz2big' => Text::_('COM_USERNOTES_FSZ2BIG'),
@@ -56,6 +57,7 @@ if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
 ?>
 <div id="container">
 	<div id="body">
+		<div class="rated"><span id="unrating" class="rating" data-default-rating="<?=$this->rating?>"></span> <span id="numrats">(<?=$this->ratcnt?>)</span></div>
 		<h3><?php if ($this->item->secured) echo'<span class="icon-unlock" style="font-size:.8em;opacity:0.5"></span>'; ?><?=$this->item->title?></h3>
 		<div id="note"><?=$this->item->serial_content?></div>
 	</div>
@@ -106,23 +108,22 @@ if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
 <?php if ($this->attached): ?>
 <iframe id="dnldf" style="display:none;"></iframe>
 <?php endif; ?>
-<?php
-if ($prning) {
-	echo '<script>
+<script>
+<?php if ($prning): ?>
 window.print();
 (function() {
 
 	var beforePrint = function() {
-		console.log(\'Functionality to run before printing.\');
+		console.log("Functionality to run before printing.");
 	};
 
 	var afterPrint = function() {
-		console.log(\'Functionality to run after printing\');
+		console.log("Functionality to run after printing");
 	//	window.close();
 	};
 
 	if (window.matchMedia) {
-		var mediaQueryList = window.matchMedia(\'print\');
+		var mediaQueryList = window.matchMedia("print");
 		mediaQueryList.addListener(function(mql) {
 			if (mql.matches) {
 				beforePrint();
@@ -136,7 +137,14 @@ window.print();
 	window.onafterprint = afterPrint;
 
 }());
+<?php endif; ?>
+var rating = document.getElementById('unrating');
+var r = new SimpleStarRating(rating);
+rating.addEventListener('rate', function(e) {
+	UNote.addRating(e.detail, function (newr) {
+		var rslt = newr.split(":");
+		r.setCurrentRating(rslt[0]);
+		document.getElementById('numrats').innerHTML = rslt[1];
+	});
+});
 </script>
-';
-}
-?>

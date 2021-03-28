@@ -124,6 +124,16 @@ UNote = {};	// a namespace for our javascript
 	};
 
 
+	UNote.addRating = function (val,cbk) {
+		$.post(this.V.aBaseURL+"addRating", { rate: val, iID: this.V.itemID },
+			function (data,status,xhr) {
+				if (data) { cbk(data); }
+			//	else { reloadView(); }
+			}
+		);
+	};
+
+
 	UNote.toolAct = function (evt,act) {
 		mclose();
 		if ($(evt.srcElement).attr("data-sure")) {

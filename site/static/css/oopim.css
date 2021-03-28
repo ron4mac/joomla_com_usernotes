@@ -70,39 +70,26 @@ div.menug {
 	width: 32px;
 	height: 32px;
 	margin-right: 6px;
-	background-image: url('../imgs/32/oopim-menu.png');
 	background-repeat: no-repeat;
 	position: relative;
 	top: -6px;
 }
-div.calem {
-	background-position: -96px 0;
-}
-div.notem {
-	background-position: -64px 0;
-}
-div.secrm {
-	background-position: 0 0;
-}
 
 div.docum {
-/*	background-image: url('../imgs/32/document.png');*/
-	background-image: url('../imgs/32/note.png');
+	background-image: url('../imgs/note.png');
 	background-size: cover;
 }
 div.docum.isecure {
-/*	background-image: url('../imgs/32/document-secure.png');*/
-	background-image: url('../imgs/32/key.png'), url('../imgs/32/note.png');
+	background-image: url('../imgs/key.png'), url('../imgs/note.png');
 	background-size: 32px 32px, cover;
 	background-position: 0 0, 0 0;
 }
 div.foldm {
-	background-image: url('../imgs/32/folder.png');
+	background-image: url('../imgs/folder.png');
 	background-size: cover;
 }
 div.foldm.isecure {
-/*	background-image: url('../imgs/32/folder-secure.png');*/
-	background-image: url('../imgs/32/locked-folder.png');
+	background-image: url('../imgs/locked-folder.png');
 	background-size: cover;
 }
 
@@ -405,4 +392,57 @@ img.x-att-del {
 }
 .idarn {
 	color:orange;
+}
+
+/** star rating **/
+.rated {
+	float: right;
+}
+.rating {
+	display: none;
+	font-size: 20px;
+	font-weight: bold;
+	color: #3af;
+	white-space: nowrap;
+}
+
+.rating .star {
+	display: inline-block;
+	position: relative;
+	letter-spacing: 0.05em;
+}
+
+.rating .star::before {
+	display: inline-block;
+	color: #aaa;
+	content: '☆';
+	width: 1em;
+	height: 1em;
+}
+
+.rating .star::after {
+	display: inline-block;
+	position: absolute;
+	content: '★';
+	top: 0;
+	left: 0;
+	opacity: 0;
+	width: 0;
+	height: 0;
+	transition: all 0.1s linear;
+	overflow-x: hidden;
+}
+
+.rating:not([disabled]) .star:hover::after,
+.rating .star.active::after {
+	opacity: 1;
+	width: 1em;
+	height: 1.5em;
+}
+.rating:not([disabled]) .star:hover::after {
+	color: gold;
+}
+
+.rating .star.active.half::after {
+	width: 0.5em;
 }
