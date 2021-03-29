@@ -160,6 +160,7 @@ class UserNotesController extends JControllerLegacy
 	public function addRating ()
 	{
 		$rate = $this->input->post->getInt('rate', 0);
+		if ($rate == 0 && UserNotesHelper::userAuth($this->uid) < 2) die('0:(0):NOT ALLOWED');
 		$iid = $this->input->post->getInt('iID', 0);
 		$m = $this->getModel('usernote');
 		echo $m->addRating($iid, $rate);

@@ -394,13 +394,15 @@ img.x-att-del {
 	color:orange;
 }
 
+
 /** star rating **/
 .rated {
 	float: right;
+	margin-top: 6px;
 }
 .rating {
 	display: none;
-	font-size: 20px;
+	font-size: 24px;
 	font-weight: bold;
 	color: #3af;
 	white-space: nowrap;
@@ -445,4 +447,27 @@ img.x-att-del {
 
 .rating .star.active.half::after {
 	width: 0.5em;
+}
+
+/** small static stars in item list **/
+.strate {
+	display: inline-block;
+}
+.strback {
+	position: relative;
+	display: inline-block;
+}
+.strback::before {
+	content: "☆☆☆☆☆";
+	color: #CCC;
+}
+.strating {
+	position: absolute;
+	top: 0;
+	overflow-x: hidden;
+	display: flex;
+}
+.strating::before {
+	content: "★★★★★";
+	color: #3af;
 }

@@ -6,10 +6,10 @@
  */
 defined('_JEXEC') or die;
 
-JHtml::stylesheet('components/com_usernotes/static/css/oopim.css');
+JHtml::stylesheet('components/com_usernotes/static/css/oopim.css', ['version' => 'auto']);
 JHtml::_('jquery.framework', false);
 
-$this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js');
+$this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js', ['version' => 'auto']);
 
 if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
 

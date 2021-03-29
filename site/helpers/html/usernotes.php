@@ -16,7 +16,16 @@ abstract class JHtmlUsernotes
 
 	public static function itemLink ($item)
 	{
-		$param = $item->isParent ? 'pid=' : 'view=usernote&nid=';
+		$strate = '';
+		if ($item->isParent) {
+			$param = 'pid=';
+		} else {
+			$param = 'view=usernote&nid=';
+			if ($item->vtotal) {
+				$p = (int)($item->vtotal/$item->vcount/5*100);
+				$strate = ' <div class="strate"><div class="strback"><div class="strating" style="width:'.$p.'%"></div></div></div>';
+			}
+		}
 		$ttl = $item->secured ? base64_decode($item->title) : $item->title;
 		$attrs = ['class'=>'nav'];
 		if (isset($item->lPath)) $attrs['title'] = $item->lPath;
@@ -24,7 +33,7 @@ abstract class JHtmlUsernotes
 				self::aiUrl($param.$item->itemID),
 				'<div class="menug '.($item->isParent?'foldm':'docum').($item->secured?' isecure':'').'"></div>'.htmlspecialchars($ttl),
 				$attrs
-			);
+			) . $strate;
 	}
 	public static function prnActIcon ($id, $titl)
 	{

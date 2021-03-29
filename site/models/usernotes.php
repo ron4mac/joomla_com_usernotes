@@ -41,10 +41,11 @@ class UserNotesModelUserNotes extends JModelList
 	{
 		$db = $this->getDbo();
 		$userID = Factory::getUser()->get('id');
-		$db->setQuery("SELECT I.itemID,I.title,I.isParent,I.shared,I.secured FROM notes AS I JOIN content AS C ON C.contentID=I.contentID "
+		$db->setQuery("SELECT I.itemID,I.title,I.isParent,I.shared,I.secured,I.vtotal,I.vcount FROM notes AS I JOIN content AS C ON C.contentID=I.contentID "
 			."WHERE I.secured IS NOT 1 AND (I.ownerID == '".$userID."' OR I.shared) AND (C.serial_content LIKE \"%".$sterm."%\" OR I.title LIKE \"%".$sterm."%\")");
 		$a1 = $db->loadObjectList();
-		$db->setQuery("SELECT I.itemID,I.title,I.isParent,I.shared,I.secured FROM notes AS I "
+		// also check secured note titles (since they are encoded)
+		$db->setQuery("SELECT I.itemID,I.title,I.isParent,I.shared,I.secured,I.vtotal,I.vcount FROM notes AS I "
 			."WHERE I.secured IS 1 AND (I.ownerID == '".$userID."' OR I.shared) AND (b64d(I.title) LIKE \"%".$sterm."%\")");
 		$a2 = $db->loadObjectList();
 		return array_merge($a1, $a2);

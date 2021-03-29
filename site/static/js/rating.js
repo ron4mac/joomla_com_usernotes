@@ -102,16 +102,16 @@ var SimpleStarRating = (function () {
 
 		function starClick(e) {
 			if (disabled) return;
-
+//			console.log(e);
 			if (this === e.target) {
 				var starClicked = stars.indexOf(e.target);
 				if (starClicked !== -1) {
 					var starRating = starClicked + 1;
-					setCurrentRating(starRating);
+//					setCurrentRating(starRating);
 					if (typeof this.onrate === 'function')
 						this.onrate(currentRating);
 					var evt = new CustomEvent('rate', {
-						detail: starRating,
+						detail: e.metaKey ? 0 : starRating
 					});
 					disable();
 					target.dispatchEvent(evt);

@@ -8,8 +8,8 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
 
-JHtml::stylesheet('components/com_usernotes/static/css/oopim.css');
-JHtml::stylesheet('components/com_usernotes/static/css/pumenu.css');
+JHtml::stylesheet('components/com_usernotes/static/css/oopim.css', ['version' => 'auto']);
+JHtml::stylesheet('components/com_usernotes/static/css/pumenu.css', ['version' => 'auto']);
 JHtml::_('jquery.framework');
 
 $jslang = [
@@ -23,7 +23,7 @@ $jsvars = [
 //	'contentID' => ($this->item->contentID?:0)
 ];
 
-$this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js');
+$this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js', ['version' => 'auto']);
 $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 //var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=";
 //var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&task=";

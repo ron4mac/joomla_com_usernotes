@@ -8,14 +8,14 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
 
-JHtml::stylesheet('components/com_usernotes/static/css/oopim.css');
-JHtml::stylesheet('components/com_usernotes/static/css/pumenu.css');
+JHtml::stylesheet('components/com_usernotes/static/css/oopim.css', ['version' => 'auto']);
+JHtml::stylesheet('components/com_usernotes/static/css/pumenu.css', ['version' => 'auto']);
 JHtml::_('jquery.framework', false);
 
-$this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js');
-$this->jDoc->addScript('components/com_usernotes/static/js/upload5d.js');
-$this->jDoc->addScript('components/com_usernotes/static/js/pumenu.js');
-$this->jDoc->addScript('components/com_usernotes/static/js/rating.js');
+$this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js', ['version' => 'auto']);
+$this->jDoc->addScript('components/com_usernotes/static/js/upload5d.js', ['version' => 'auto']);
+$this->jDoc->addScript('components/com_usernotes/static/js/pumenu.js', ['version' => 'auto']);
+$this->jDoc->addScript('components/com_usernotes/static/js/rating.js', ['version' => 'auto']);
 $jslang = [
 		'ru_sure' => Text::_('COM_USERNOTES_RU_SURE'),
 		'fsz2big' => Text::_('COM_USERNOTES_FSZ2BIG'),
@@ -140,11 +140,20 @@ window.print();
 <?php endif; ?>
 var rating = document.getElementById('unrating');
 var r = new SimpleStarRating(rating);
-rating.addEventListener('rate', function(e) {
+rating.addEventListener('rate', function(e) {	console.log(e);
+	if (e.detail === 0) {
+		if (!confirm("Clear rating for this item?")) return;
+	}
 	UNote.addRating(e.detail, function (newr) {
 		var rslt = newr.split(":");
-		r.setCurrentRating(rslt[0]);
-		document.getElementById('numrats').innerHTML = rslt[1];
+		if (rslt[2]) {
+			alert(rslt[2]);
+//			r.showDefaultRating();
+		} else {
+			if (rslt[0] == 0) r.setDefaultRating(0);
+			r.setCurrentRating(rslt[0]);
+			document.getElementById('numrats').innerHTML = rslt[1];
+		}
 	});
 });
 </script>
