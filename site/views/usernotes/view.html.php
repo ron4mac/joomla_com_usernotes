@@ -31,8 +31,23 @@ class UsernotesViewUsernotes extends UsernotesViewBase
 
 		$this->parentID = $this->state->get('parent.id');
 
-		// If at the root, check storage useage and queue a message if near quota
-		if (!$this->parentID) {
+		// Create breadcrumbs to this item
+		$this->buildPathway($this->parentID);
+
+		// Check for errors.
+		// @TODO: Maybe this could go into JComponentHelper::raiseErrors($this->get('Errors'))
+		if (count($errors = $this->get('Errors'))) {
+			JError::raiseWarning(500, implode("\n", $errors));
+			return false;
+		}
+
+		// Get the component parameters
+		$this->cparams = JComponentHelper::getParams('com_usernotes');
+
+		$this->_prepareDocument();
+
+		// If user can edit and at the root, check storage useage and queue a message if near quota
+		if ($this->access && !$this->parentID) {
 			$mparams = $app->getParams();	//echo'<xmp>';var_dump($mparams);echo'</xmp>';
 			$storQuota = (int) $mparams->get('storQuota', 0);
 			if (!$storQuota) $storQuota = (int) $this->state->cparams->get('storQuota', 0);
@@ -50,21 +65,6 @@ class UsernotesViewUsernotes extends UsernotesViewBase
 				}
 			}
 		}
-
-		// Create breadcrumbs to this item
-		$this->buildPathway($this->parentID);
-
-		// Check for errors.
-		// @TODO: Maybe this could go into JComponentHelper::raiseErrors($this->get('Errors'))
-		if (count($errors = $this->get('Errors'))) {
-			JError::raiseWarning(500, implode("\n", $errors));
-			return false;
-		}
-
-		// Get the component parameters
-		$this->cparams = JComponentHelper::getParams('com_usernotes');
-
-		$this->_prepareDocument();
 
 		return parent::display($tpl);
 	}

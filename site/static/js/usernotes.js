@@ -8,7 +8,7 @@ UNote = {};	// a namespace for our javascript
 		e.returnValue = false;
 	}
 
-	UNote.performSearch = function(aform) {
+	UNote.performSearch = function (aform) {
 		var sterm = $.trim(aform.sterm.value);
 		if (sterm==='') {
 			alert(this.L.no_sterm);

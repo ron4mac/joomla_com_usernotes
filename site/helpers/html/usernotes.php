@@ -107,10 +107,13 @@ abstract class JHtmlUsernotes
 
 	public static function searchField ($pid)
 	{
+		$mnuId = self::mnuId();
 		$fact = self::aiUrl('');
 		return <<<EOD
 <div class="search">
-	<form name="sqry" action="{$fact}" method="POST" onsubmit="return UNote.performSearch(this,{$pid})">
+	<form name="sqry" action="{$fact}" method="GET" onsubmit="return UNote.performSearch(this,{$pid})">
+		<input type="hidden" name="option" value="com_usernotes" />
+		<input type="hidden" name="Itemid" value="{$mnuId}" />
 		<input type="hidden" name="task" value="search" />
 		<input type="search" name="sterm" results="10" autosave="user_notes" placeholder="Search..." />
 	</form>
@@ -212,13 +215,8 @@ EOD;
 
 	private static function aiUrl ($prms, $xml=true)
 	{
-		static $mnuId = 0;
-
-		if (!$mnuId) {
-			$mnuId = Factory::getApplication()->input->getInt('Itemid', 0);
-		}
 		if (is_array($prms)) $prms = http_build_query($prms);
-		$url = Route::_('index.php?option=com_usernotes'.($prms?('&'.$prms):'').'&Itemid='.$mnuId, $xml);
+		$url = Route::_('index.php?option=com_usernotes'.($prms?('&'.$prms):'').'&Itemid='.self::mnuId(), $xml);
 		return $url;
 	}
 
