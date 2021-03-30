@@ -9,7 +9,6 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Language\Text;
 
 JHtml::stylesheet('components/com_usernotes/static/css/oopim.css', ['version' => 'auto']);
-JHtml::stylesheet('components/com_usernotes/static/css/pumenu.css', ['version' => 'auto']);
 JHtml::_('jquery.framework');
 
 $jslang = [

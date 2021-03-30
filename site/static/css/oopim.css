@@ -93,16 +93,16 @@ div.foldm.isecure {
 	background-size: cover;
 }
 
-a.act-left {
-	margin-left: 12px;
+a.act-left, a.act-right {
 	margin-bottom: 0;
 	display: inline-flex;
 }
+a.act-left {
+	margin-left: 12px;
+}
 a.act-right {
-	float: right;
 	margin-right: 12px;
-	display: inline-flex;
-
+	float: right;
 }
 
 .ttlfield {
@@ -395,7 +395,8 @@ img.x-att-del {
 }
 
 
-/** star rating **/
+/* ============================  star rating
+*/
 .rated {
 	float: right;
 	margin-top: 6px;
@@ -470,4 +471,39 @@ img.x-att-del {
 .strating::before {
 	content: "★★★★★";
 	color: #3af;
+}
+
+
+/* ============================ small popup menu
+*/
+#spum {
+	margin: 0;
+	padding: 0;
+}
+
+#spum li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#spum li a {
+	display: block;
+	margin: 0;
+	padding: 4px 4px;
+	background: #FFD;
+	text-decoration: none;
+}
+
+#spum li a:hover {
+	background: #49A3FF;
+}
+
+div.pum {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	border: 1px solid #BBB;
+	border-radius: 3px;
+	box-shadow: 0 0 5px #888;
 }

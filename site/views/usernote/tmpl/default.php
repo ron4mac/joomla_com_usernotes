@@ -9,12 +9,10 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Language\Text;
 
 JHtml::stylesheet('components/com_usernotes/static/css/oopim.css', ['version' => 'auto']);
-JHtml::stylesheet('components/com_usernotes/static/css/pumenu.css', ['version' => 'auto']);
 JHtml::_('jquery.framework', false);
 
 $this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js', ['version' => 'auto']);
 $this->jDoc->addScript('components/com_usernotes/static/js/upload5d.js', ['version' => 'auto']);
-$this->jDoc->addScript('components/com_usernotes/static/js/pumenu.js', ['version' => 'auto']);
 $this->jDoc->addScript('components/com_usernotes/static/js/rating.js', ['version' => 'auto']);
 $jslang = [
 		'ru_sure' => Text::_('COM_USERNOTES_RU_SURE'),

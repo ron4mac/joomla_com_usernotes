@@ -175,6 +175,43 @@ UNote = {};	// a namespace for our javascript
 	};
 
 
+	//----- small popup menu -----
+	var pum_closetimer = null;
+	var pum_menuitem = 0;
+	// open hidden layer
+	function mopen (id, xpos, ypos, to=2500) {
+		// cancel close timer
+		mcancelclosetime();
+		// close old layer
+		if (pum_menuitem) pum_menuitem.style.display = 'none';
+		// get new layer and show it
+		pum_menuitem = document.getElementById(id);
+		pum_menuitem.style.left = xpos+'px';
+		pum_menuitem.style.top = ypos+'px';
+		pum_menuitem.style.display = 'block';
+		mclosetime(to);
+	}
+
+	// close showed layer
+	function mclose () {
+		if (pum_menuitem) pum_menuitem.style.display = 'none';
+	}
+
+	// go close timer
+	function mclosetime (to) {
+		pum_closetimer = window.setTimeout(mclose, to);
+	}
+
+	// cancel close timer
+	function mcancelclosetime () {
+		if (pum_closetimer) {
+			window.clearTimeout(pum_closetimer);
+			pum_closetimer = null;
+		}
+	}
+
+
+
 	$(document).ready(function() {
 		$(document).on("touchstart touchmove touchend click", "a.nav", function(ev) {	console.log(ev.type+':'+this.pending);
 			if (ev.type == 'touchmove') {
