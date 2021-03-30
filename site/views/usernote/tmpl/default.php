@@ -7,9 +7,10 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
 
-JHtml::stylesheet('components/com_usernotes/static/css/oopim.css', ['version' => 'auto']);
-JHtml::_('jquery.framework', false);
+HTMLHelper::stylesheet('components/com_usernotes/static/css/usernotes.css', ['version' => 'auto']);
+HTMLHelper::_('jquery.framework', false);
 
 $this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js', ['version' => 'auto']);
 $this->jDoc->addScript('components/com_usernotes/static/js/upload5d.js', ['version' => 'auto']);
@@ -49,7 +50,7 @@ $prning = ($this->state->get('task', 0) === 'printNote');
 //echo'<xmp>';var_dump($prning,$this->state->get('task', 0));echo'</xmp>';
 if ($prning) echo '<button type="button" class="btn btn-primary" onclick="window.close();window.history.back();">'.Text::_('COM_USERNOTES_PRNDONE').'</button>';
 // if not printing, accommodate targeted breadcrumb module
-if (!$prning) echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
+if (!$prning) echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 
 if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
 ?>
@@ -62,20 +63,20 @@ if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
 <?php if (!$prning): ?>
 	<div id="attachments">
 <?php if ($this->attached): ?>
-		<?=JHtml::_('usernotes.att_list',$this->attached,$this->item->contentID)?>
+		<?=HTMLHelper::_('usernotes.att_list',$this->attached,$this->item->contentID)?>
 <?php endif; ?>
 	</div>
 	<div class="footer">
 		<?php
-			echo JHtml::_('usernotes.prnActIcon',$itemID,Text::_('COM_USERNOTES_PRNNOTE'));
+			echo HTMLHelper::_('usernotes.prnActIcon',$itemID,Text::_('COM_USERNOTES_PRNNOTE'));
 		if ($this->access & ITM_CAN_EDIT) {
-			echo JHtml::_('usernotes.edtActIcon',$itemID,Text::_('COM_USERNOTES_EDTNOTE'));
-			echo JHtml::_('usernotes.attActIcon',$itemID,Text::_('COM_USERNOTES_ADDATCH'));
-			echo JHtml::_('usernotes.movActIcon',$itemID,Text::_('COM_USERNOTES_MOVNOTE'));
-			echo JHtml::_('usernotes.toolActIcon',$itemID,Text::_('COM_USERNOTES_SPCTOOL'));
+			echo HTMLHelper::_('usernotes.edtActIcon',$itemID,Text::_('COM_USERNOTES_EDTNOTE'));
+			echo HTMLHelper::_('usernotes.attActIcon',$itemID,Text::_('COM_USERNOTES_ADDATCH'));
+			echo HTMLHelper::_('usernotes.movActIcon',$itemID,Text::_('COM_USERNOTES_MOVNOTE'));
+			echo HTMLHelper::_('usernotes.toolActIcon',$itemID,Text::_('COM_USERNOTES_SPCTOOL'));
 		}
 		if ($this->access & ITM_CAN_DELE) {
-			echo JHtml::_('usernotes.delActIcon',$itemID,Text::_('COM_USERNOTES_DELNOTE'));
+			echo HTMLHelper::_('usernotes.delActIcon',$itemID,Text::_('COM_USERNOTES_DELNOTE'));
 		}
 		?>
 		&nbsp;<?=$this->footMsg?>

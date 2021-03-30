@@ -7,9 +7,10 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
 
-JHtml::stylesheet('components/com_usernotes/static/css/oopim.css', ['version' => 'auto']);
-JHtml::_('jquery.framework');
+HTMLHelper::stylesheet('components/com_usernotes/static/css/usernotes.css', ['version' => 'auto']);
+HTMLHelper::_('jquery.framework');
 
 $jslang = [
 	'ru_sure' => Text::_('COM_USERNOTES_RU_SURE')
@@ -35,7 +36,7 @@ $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 ');
 $itemID = $this->item->itemID;
 // accommodate targeted breadcrumb module
-echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
+echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 ?>
 <div id="container">
 	<div id="body">
@@ -49,12 +50,12 @@ echo JHtml::_('content.prepare', '{loadposition usernotes_bc}');
 	</div>
 	<div class="footer">
 		<?php
-		//	echo JHtml::_('usernotes.prnActIcon', $itemID, Text::_('COM_USERNOTES_PRNNOTE'));
+		//	echo HTMLHelper::_('usernotes.prnActIcon', $itemID, Text::_('COM_USERNOTES_PRNNOTE'));
 		if ($this->access & ITM_CAN_EDIT) {
-			echo JHtml::_('usernotes.movActIcon', $itemID, Text::_('COM_USERNOTES_MOVNOTE'));
+			echo HTMLHelper::_('usernotes.movActIcon', $itemID, Text::_('COM_USERNOTES_MOVNOTE'));
 		}
 		if ($this->access & ITM_CAN_DELE) {
-			echo JHtml::_('usernotes.delActIcon', $itemID, Text::_('COM_USERNOTES_DELNOTE'));
+			echo HTMLHelper::_('usernotes.delActIcon', $itemID, Text::_('COM_USERNOTES_DELNOTE'));
 		}
 		?>
 		&nbsp;<?=$this->footMsg?>

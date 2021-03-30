@@ -8,7 +8,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\HTML\HTMLHelper;
 
-HTMLHelper::stylesheet('components/com_usernotes/static/css/oopim.css', ['version' => 'auto']);
+HTMLHelper::stylesheet('components/com_usernotes/static/css/usernotes.css', ['version' => 'auto']);
 HTMLHelper::_('jquery.framework', false);
 
 $this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js', ['version' => 'auto']);
