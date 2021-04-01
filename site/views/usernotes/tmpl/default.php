@@ -9,10 +9,6 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 
-HTMLHelper::stylesheet('components/com_usernotes/static/css/usernotes.css', ['version' => 'auto']);
-HTMLHelper::_('jquery.framework', false);
-
-$this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js', ['version' => 'auto']);
 $jslang = [
 		'no_sterm' => Text::_('COM_USERNOTES_NO_STERM'),
 		'ru_sure' => Text::_('COM_USERNOTES_RU_SURE')

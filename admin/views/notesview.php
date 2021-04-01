@@ -7,6 +7,8 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
 
 require_once JPATH_BASE . '/components/com_usernotes/helpers/usernotes.php';
 
@@ -24,6 +26,8 @@ class UsernotesView extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
+		HTMLHelper::stylesheet('administrator/components/com_usernotes/static/usernotes.css', ['version' => 'auto']);
+
 		$this->items = $this->get('Items');
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');	//var_dump($this->state);
@@ -51,17 +55,17 @@ class UsernotesView extends JViewLegacy
 	protected function addSubmenu ($vName)
 	{
 		JHtmlSidebar::addEntry(
-			JText::_('COM_USERNOTES_SUBMENU_USER'),
+			Text::_('COM_USERNOTES_SUBMENU_USER'),
 			'index.php?option=com_usernotes',
 			$vName == 'user'
 		);
 		JHtmlSidebar::addEntry(
-			JText::_('COM_USERNOTES_SUBMENU_GROUP'),
+			Text::_('COM_USERNOTES_SUBMENU_GROUP'),
 			'index.php?option=com_usernotes&view=groupnotes',
 			$vName == 'group'
 		);
 //		JHtmlSidebar::addEntry(
-//			JText::_('COM_USERNOTES_SUBMENU_SITE'),
+//			Text::_('COM_USERNOTES_SUBMENU_SITE'),
 //			'index.php?option=com_usernotes&view=site',
 //			$vName == 'site'
 //		);
@@ -72,9 +76,9 @@ class UsernotesView extends JViewLegacy
 	{
 		$canDo = UserNotesHelper::getActions();
 
-		JToolBarHelper::title(JText::_('COM_USERNOTES_MENU').': '.JText::_('COM_USERNOTES_MANAGER_'.strtoupper($this->relm)), 'stack usernotes');
+		JToolBarHelper::title(Text::_('COM_USERNOTES_MENU').': '.Text::_('COM_USERNOTES_MANAGER_'.strtoupper($this->relm)), 'stack usernotes');
 
-		JToolBarHelper::deleteList(JText::_('COM_USERNOTES_MANAGER_DELETEOK'));
+		JToolBarHelper::deleteList(Text::_('COM_USERNOTES_MANAGER_DELETEOK'));
 		//JToolBarHelper::trash('usernotes.trash');
 
 	//	if ($canDo->get('core.edit.state')) {

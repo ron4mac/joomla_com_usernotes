@@ -7,6 +7,7 @@
 defined('JPATH_BASE') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
 class JFormFieldGmkbValue extends JFormField
 {
@@ -41,7 +42,7 @@ class JFormFieldGmkbValue extends JFormField
 		$html	= [];
 
 		$html[] = '<input type="checkbox" id="'.$this->id.'_dchk" onclick="GMKBff.sDef(this)" '.($this->value ? '' : 'checked ').'style="vertical-align:initial" />';
-		$html[] = '<label for="'.$this->id.'_dchk" style="display:inline;margin-right:1em">'.JText::_('JDEFAULT').'</label>';
+		$html[] = '<label for="'.$this->id.'_dchk" style="display:inline;margin-right:1em">'.Text::_('JDEFAULT').'</label>';
 
 		$html[] = '<span class="input-gmkb'.($this->value ? '' : ' hidden').'">';
 		$html[] = '<input type="number" step="1" min="1" class="input-medium" id="' . $this->id . '_name" value="' . $uplsiz .'" onchange="GMKBff.sVal(this.parentNode)" onkeyup="GMKBff.sVal(this.parentNode)" style="width:4em;text-align:right" />';

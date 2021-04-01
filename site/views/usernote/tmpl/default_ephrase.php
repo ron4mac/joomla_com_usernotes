@@ -9,9 +9,6 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 
-HTMLHelper::stylesheet('components/com_usernotes/static/css/usernotes.css', ['version' => 'auto']);
-HTMLHelper::_('jquery.framework');
-
 $jslang = [
 	'ru_sure' => Text::_('COM_USERNOTES_RU_SURE')
 ];
@@ -23,7 +20,6 @@ $jsvars = [
 //	'contentID' => ($this->item->contentID?:0)
 ];
 
-$this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js', ['version' => 'auto']);
 $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 //var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=";
 //var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&task=";

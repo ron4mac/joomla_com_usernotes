@@ -100,7 +100,7 @@ abstract class UserNotesHelper
 
 	public static function getDbPaths ($which, $dbname, $full=false, $cmp='')
 	{
-		$paths = array();
+		$paths = [];
 		if (!$cmp) $cmp = JApplicationHelper::getComponentName();
 		switch ($which) {
 			case 'u':
@@ -140,7 +140,7 @@ abstract class UserNotesHelper
 	public static function hashCookieName ($v1=0, $v2=0)
 	{
 		$uid = Factory::getUser()->get('id');
-		return md5(implode(':', array($uid, $v1, $v2)));
+		return md5(implode(':', [$uid, $v1, $v2]));
 	}
 
 	public static function doCrypt ($pass, $dat, $de=false, $sm = 2)
@@ -277,7 +277,7 @@ abstract class UserNotesHelper
 
 	public static function formatBytes ($bytes, $precision=2, $sep=' ')
 	{
-		$units = array('B', 'KB', 'MB', 'GB', 'TB');
+		$units = ['B','KB','MB','GB','TB'];
 		$bytes = max($bytes, 0);
 		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
 		$pow = min($pow, count($units) - 1); 

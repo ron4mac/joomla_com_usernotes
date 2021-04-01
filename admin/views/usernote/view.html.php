@@ -1,12 +1,13 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
 class UserNotesViewUserNote extends JViewLegacy
 {
@@ -40,7 +41,7 @@ class UserNotesViewUserNote extends JViewLegacy
 		// Since we don't track these assets at the item level, use the category id.
 		$canDo = JHelperContent::getActions('com_usernotes', 'category', $this->item->catid);
 
-		JToolbarHelper::title(JText::_('COM_USERNOTES_MANAGER_USERNOTE'), 'feed usernotes');
+		JToolbarHelper::title(Text::_('COM_USERNOTES_MANAGER_USERNOTE'), 'feed usernotes');
 
 		// If not checked out, can save the item.
 		if (!$checkedOut && ($canDo->get('core.edit') || count($user->getAuthorisedCategories('com_usernotes', 'core.create')) > 0)) {

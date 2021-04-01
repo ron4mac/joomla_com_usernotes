@@ -1,10 +1,12 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Language\Text;
 
 abstract class JHtmlMyGrid
 {
@@ -14,10 +16,29 @@ abstract class JHtmlMyGrid
 		if (USERNOTES_J30) {
 			$html = JHtml::_('grid.checkall');
 		} else {
-			$html = '<input type="checkbox" name="checkall-toggle" value="" title="'.JText::_('JGLOBAL_CHECK_ALL').'" onclick="Joomla.checkAll(this)" />';
+			$html = '<input type="checkbox" name="checkall-toggle" value="" title="'.Text::_('JGLOBAL_CHECK_ALL').'" onclick="Joomla.checkAll(this)" />';
 		}
 		return $html;
 	}
 
+	public static function info ($data)
+	{
+		if (!is_array($data)) return $data;
+		$html = '<dl class="UN-info">';
+		foreach ($data as $k=>$v) {
+			switch ($k) {
+				case 'size':
+					$html .= '<dt>'.'Storage Use: '.'</dt><dd>'.JHtmlNumber::bytes($v, 'auto', 1).'</dd><br>';
+					break;
+				case 'notes':
+					$html .= '<dt>'.'Notes: '.'</dt><dd>'.$v.'</dd><br>';
+					break;
+				case 'atts':
+					$html .= '<dt>'.'Attachments: '.'</dt><dd>'.$v.'</dd><br>';
+					break;
+			}
+		}
+		return $html.'</dl>';
+	}
 
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -14,9 +14,9 @@ class UsernotesModelUsernotes extends JModelList
 	protected $relm = 'u';
 	protected $_total = -1;
 
-	public function __construct ($config = array())
+	public function __construct ($config = [])
 	{   
-		$config['filter_fields'] = array('fullname', 'username', 'userid');
+		$config['filter_fields'] = ['fullname', 'username', 'userid'];
 		parent::__construct($config);
 	}
 
@@ -24,22 +24,26 @@ class UsernotesModelUsernotes extends JModelList
 	public function getItems ()
 	{
 		// Get a storage key.
-		$store = $this->getStoreId('list');
+		$stork = $this->getStoreId('list');
 
 		// Try to load the data from internal storage.
-		if (isset($this->cache[$store])) {
-			return $this->cache[$store];
+		if (isset($this->cache[$stork])) {
+			return $this->cache[$stork];
 		}
 
-		$unotes = array();
-		$folds = UserNotesHelper::getDbPaths($this->relm,'usernotes');
+		require_once JPATH_COMPONENT.'/helpers/db.php';
+
+		$unotes = [];
+		$folds = UserNotesHelper::getDbPaths($this->relm, 'usernotes', true);
 		foreach ($folds as $fold) {
-			$userid = (int)substr($fold,1);
+			$ufold = basename(dirname(dirname($fold)));
+			$userid = (int)substr($ufold,1);
+			$info = UserNotesHelperDb::getInfo($fold);
 			if ($this->relm == 'u') {
 				$user = JUser::getInstance($userid);
-				$unotes[] = array('name'=>$user->name,'uname'=>$user->username,'uid'=>$userid);
+				$unotes[] = ['name'=>$user->name,'uname'=>$user->username,'uid'=>$userid, 'info'=>$info];
 			} else {
-				$unotes[] = array('uname'=>UserNotesHelper::getGroupTitle($userid),'name'=>'group','uid'=>$userid);
+				$unotes[] = ['uname'=> $userid ? UserNotesHelper::getGroupTitle($userid) : '[ Site ]','name'=>'group','uid'=>$userid, 'info'=>$info];
 			}
 		}
 		$this->_total = count($unotes);
@@ -72,29 +76,29 @@ class UsernotesModelUsernotes extends JModelList
 
 
 		// Add the items to the internal cache.
-		$this->cache[$store] = array_slice($unotes,$start,$limit?$limit:null);
+		$this->cache[$stork] = array_slice($unotes,$start,$limit?$limit:null);
 
-		return $this->cache[$store];
+		return $this->cache[$stork];
 	}
 
 
 	public function getTotal ()
 	{
 		// Get a storage key.
-		$store = $this->getStoreId('getTotal');
+		$stork = $this->getStoreId('getTotal');
 
 		// Try to load the data from internal storage.
-		if (isset($this->cache[$store])) {
-			return $this->cache[$store];
+		if (isset($this->cache[$stork])) {
+			return $this->cache[$stork];
 		}
 
 		// Load the total if none
 		if ($this->_total < 0) $this->getItems();
 
 		// Add the total to the internal cache.
-		$this->cache[$store] = $this->_total;
+		$this->cache[$stork] = $this->_total;
 
-		return $this->cache[$store];
+		return $this->cache[$stork];
 	}
 
 

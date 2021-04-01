@@ -72,8 +72,7 @@ class UserNotesController extends JControllerLegacy
 
 	public function printNote ()
 	{
-		$input = Factory::getApplication()->input;
-		$input->set('tmpl','component');
+		$this->input->set('tmpl','component');
 		$view = $this->getView('usernote', 'html');
 		$view->setModel($this->getModel('usernote'), true);
 		$view->display();

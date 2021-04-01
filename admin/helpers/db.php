@@ -1,10 +1,12 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
+
+use Joomla\CMS\Language\Text;
 
 // require_once JPATH_COMPONENT_SITE.'/classes/note_class.php';
 
@@ -20,11 +22,28 @@ abstract class UserNotesHelperDb
 	}
 
 
+	public static function getInfo ($udbPath)
+	{
+		//$udbPath .= '/usernotes.db3';
+		if (!file_exists($udbPath)) return [];
+		$size = filesize($udbPath);
+		$db = JDatabaseDriver::getInstance(['driver'=>'sqlite', 'database'=>$udbPath]);
+		$tbls = $db->getTableList();	//return print_r($tbls);
+		if (in_array('attach', $tbls)) return Text::_('COM_USERNOTES_OLD_DB');
+		
+		$atsz = $db->setQuery('SELECT totatt FROM attsizsum')->loadResult();
+		$size += $atsz;
+		$notes = $db->setQuery('SELECT COUNT(*) FROM notes')->loadResult();
+		$atts = $db->setQuery('SELECT COUNT(*) FROM fileatt')->loadResult();
+		return ['size'=>$size,'notes'=>$notes,'atts'=>$atts,'hasold'=>false];
+	}
+
+
 	public static function convertDb ($udbPath)
 	{
 		if (!file_exists($udbPath)) return;
 		$attsDir = $udbPath.'/attach/';
-		$db = JDatabaseDriver::getInstance(array('driver'=>'sqlite', 'database'=>$udbPath.'/usernotes.db3'));
+		$db = JDatabaseDriver::getInstance(['driver'=>'sqlite', 'database'=>$udbPath.'/usernotes.db3']);
 
 		$tbls = $db->getTableList();
 		if (!in_array('fileatt', $tbls)) {
@@ -51,12 +70,14 @@ abstract class UserNotesHelperDb
 			// create view to sum the file sizes
 			$db->setQuery('CREATE VIEW attsizsum AS SELECT SUM(fsize) AS totatt FROM fileatt');
 			$db->execute();
-	//	}
+		}
 
 		// add `secured` column to `notes`
-		$db->setQuery('ALTER TABLE notes ADD COLUMN secured BOOLEAN DEFAULT NULL');
-		@$db->execute();
-}
+		self::dbnofail($db, 'ALTER TABLE notes ADD COLUMN secured BOOLEAN DEFAULT NULL');
+		// add `vtotal` and `vcount` column to `notes` for star rating
+		self::dbnofail($db, 'ALTER TABLE notes ADD COLUMN vcount INTEGER DEFAULT 0');
+		self::dbnofail($db, 'ALTER TABLE notes ADD COLUMN vtotal INTEGER DEFAULT 0');
+
 		// convert all content
 		$qry = $db->getQuery(true)
 			->select('n.itemID, n.title, n.contentID, c.serial_content')
@@ -82,6 +103,16 @@ abstract class UserNotesHelperDb
 			$off += $lim;
 		}
 		//jexit();
+	}
+
+	private static function dbnofail ($db, $q)
+	{
+		try {
+			$db->setQuery($q);
+			@$db->execute();
+		} catch (Exception $e) {
+			// ignore
+		}
 	}
 
 }

@@ -8,6 +8,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\HTML\HTMLHelper;
 
 define('ITM_CAN_EDIT', 1);
 define('ITM_CAN_DELE', 2);
@@ -37,6 +38,10 @@ class UsernotesViewBase extends JViewLegacy
 		}
 		$this->instance = Factory::getApplication()->getUserState('com_usernotes.instance', '::');
 		$this->jDoc = Factory::getDocument();
+		// get static css/js for subclasses
+		HTMLHelper::stylesheet('components/com_usernotes/static/css/usernotes.css', ['version' => 'auto']);
+		HTMLHelper::_('jquery.framework', false);
+		$this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js', ['version' => 'auto']);
 	}
 
 	// return an action url for use (mostly) with ajax/javascript
@@ -58,8 +63,8 @@ class UsernotesViewBase extends JViewLegacy
 				$r['title'] = base64_decode($r['title']);
 			}
 //			array_unshift($crums, [$r['title'],'index.php?option=com_usernotes&pid='.$to]);
-//			array_unshift($crums, array($r['title'], Route::_('index.php?option=com_usernotes&pid='.$to.'&Itemid='.$this->itemId, false)));
-			array_unshift($crums, array($r['title'], $this->aUrl('pid='.$to)));
+//			array_unshift($crums, [$r['title'], Route::_('index.php?option=com_usernotes&pid='.$to.'&Itemid='.$this->itemId, false)]);
+			array_unshift($crums, [$r['title'], $this->aUrl('pid='.$to)]);
 			$to = $r['parentID'];
 		}
 		foreach ($crums as $crum) {

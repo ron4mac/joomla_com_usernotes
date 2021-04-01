@@ -1,12 +1,13 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
 class UserNotesControllerUserNote extends JControllerForm
 {
@@ -53,7 +54,7 @@ class UserNotesControllerUserNote extends JControllerForm
 
 	public function batch ($model = null)
 	{
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 
 		// Set the model
 		$model = $this->getModel('UserNote', '', []);

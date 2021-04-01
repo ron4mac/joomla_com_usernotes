@@ -1,15 +1,18 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\HTML\HTMLHelper;
+
 // Include the component HTML helpers.
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
-JHtml::_('behavior.tooltip');
-JHtml::_('behavior.multiselect');
+HTMLHelper::addIncludePath(JPATH_COMPONENT.'/helpers/html');
+HTMLHelper::_('behavior.tooltip');
+HTMLHelper::_('behavior.multiselect');
 
 $listOrder	= $this->state('list.ordering');
 $listDirn	= $this->state('list.direction');
@@ -22,7 +25,7 @@ $manifest = new \Joomla\Registry\Registry($extension->manifest_cache);
 
 echo $manifest->get('version');
 ?>
-<form action="<?php echo JRoute::_('index.php?option=com_usernotes&view=usernotes'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo Route::_('index.php?option=com_usernotes&view=usernotes'); ?>" method="post" name="adminForm" id="adminForm">
 	<div id="j-sidebar-container" class="span2">
 		<?php echo $this->sidebar; ?>
 	</div>
@@ -31,15 +34,15 @@ echo $manifest->get('version');
 			<thead>
 				<tr>
 					<th width="1%"></th>
-					<th width="1%"><?php echo JHtml::_('myGrid.checkall'); ?></th>
+					<th width="1%"><?php echo HTMLHelper::_('myGrid.checkall'); ?></th>
 					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_USERNOTES_USERNAME', 'username', $listDirn, $listOrder); ?>
+						<?php echo HTMLHelper::_('grid.sort', 'COM_USERNOTES_USERNAME', 'username', $listDirn, $listOrder); ?>
 					</th>
 					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_USERNOTES_FULLNAME', 'fullname', $listDirn, $listOrder); ?>
+						<?php echo HTMLHelper::_('grid.sort', 'COM_USERNOTES_FULLNAME', 'fullname', $listDirn, $listOrder); ?>
 					</th>
 					<th width="15%">
-						<?php echo JHtml::_('grid.sort', 'COM_USERNOTES_USERID', 'userid', $listDirn, $listOrder); ?>
+						<?php echo HTMLHelper::_('grid.sort', 'COM_USERNOTES_USERID', 'userid', $listDirn, $listOrder); ?>
 					</th>
 					<th width="30%">
 						&#160;
@@ -60,11 +63,11 @@ echo $manifest->get('version');
 						<?php echo $i + 1 + $this->pagination->limitstart; ?>
 					</td>
 					<td>
-						<?php echo JHtml::_('grid.id', $i, $item['uid']); ?>
+						<?php echo HTMLHelper::_('grid.id', $i, $item['uid']); ?>
 					</td>
 					<td>
 						<?php echo $item['uname']; ?>
-						<a href="<?php echo JRoute::_('index.php?option=com_usernotes&view=events&uid=').$item['uid']; ?>">view</a>
+						<a href="<?php echo Route::_('index.php?option=com_usernotes&view=usernotes&uid=').$item['uid']; ?>">view</a>
 					</td>
 					<td>
 						<?php echo $item['name']; ?>
@@ -73,7 +76,7 @@ echo $manifest->get('version');
 						<?php echo $item['uid'] ?>
 					</td>
 					<td>
-						&#160;
+						<?php echo HTMLHelper::_('myGrid.info', $item['info']); ?>
 					</td>
 				</tr>
 			<?php endforeach; ?>
@@ -84,7 +87,7 @@ echo $manifest->get('version');
 			<input type="hidden" name="boxchecked" value="0" />
 			<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
 			<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
-			<?php echo JHtml::_('form.token'); ?>
+			<?php echo HTMLHelper::_('form.token'); ?>
 		</div>
 	</div>
 </form>

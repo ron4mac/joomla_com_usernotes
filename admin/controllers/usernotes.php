@@ -1,7 +1,7 @@
 <?php
 /**
  * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2020 RJCreations - All rights reserved.
+ * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
  * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -9,7 +9,7 @@ defined('_JEXEC') or die;
 class UserNotesControllerUserNotes extends JControllerAdmin
 {
 
-	public function getModel ($name = 'UserNote', $prefix = 'UserNotesModel', $config = array('ignore_request' => true))
+	public function getModel ($name = 'UserNote', $prefix = 'UserNotesModel', $config = ['ignore_request' => true])
 	{
 		$model = parent::getModel($name, $prefix, $config);
 		return $model;
