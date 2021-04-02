@@ -30,6 +30,9 @@ abstract class UserNotesHelperDb
 		$db = JDatabaseDriver::getInstance(['driver'=>'sqlite', 'database'=>$udbPath]);
 		$tbls = $db->getTableList();	//return print_r($tbls);
 		if (in_array('attach', $tbls)) return Text::_('COM_USERNOTES_OLD_DB');
+		$notescols = $db->setQuery('PRAGMA table_info(notes)')->loadRowList(1);
+		if (!isset($notescols['vtotal'])) return Text::_('COM_USERNOTES_OLD_DB');
+		//return '<pre>'.print_r($notescols,true).'</pre>';
 		
 		$atsz = $db->setQuery('SELECT totatt FROM attsizsum')->loadResult();
 		$size += $atsz;

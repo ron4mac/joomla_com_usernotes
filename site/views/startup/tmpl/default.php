@@ -9,9 +9,9 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 
-//if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
 ?>
 
+<?php if ($this->auth > 1): ?>
 <h1>User Notes Startup Screen</h1>
 <div>
 	<p><?=Text::_('COM_USERNOTES_START1');?></p>
@@ -23,3 +23,6 @@ use Joomla\CMS\Language\Text;
 		<input type="hidden" name="task" value="begin" />
 	</form>
 </div>
+<?php else: ?>
+<h3><?=Text::_('This notes collection has not yet been initiated');?></h3>
+<?php endif; ?>

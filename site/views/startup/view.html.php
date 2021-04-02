@@ -6,7 +6,7 @@
  */
 defined('_JEXEC') or die('Restricted access');
  
-//use Joomla\CMS\Factory;
+use Joomla\CMS\Factory;
 
 class UsernotesViewStartup extends JViewLegacy
 {
@@ -15,8 +15,10 @@ class UsernotesViewStartup extends JViewLegacy
 
 	public function display ($tpl = null)
 	{
-		$limits = UserNotesHelper::getLimits();
+		$this->user = Factory::getUser();
+		$this->auth = UserNotesHelper::userAuth($this->user->get('id'));
 
+		$limits = UserNotesHelper::getLimits();
 		$this->quota = JHtmlNumber::bytes($limits['storQuota'], 'auto', 0);
 		$this->maxfs = JHtmlNumber::bytes($limits['maxUpload'], 'auto', 0);
 

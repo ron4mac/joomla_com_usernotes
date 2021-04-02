@@ -33,7 +33,17 @@ class UserNotesController extends JControllerLegacy
 
 	public function display ($cachable = false, $urlparams = false)
 	{
-		if ($auth = UserNotesHelper::userAuth($this->uid)) {
+		if (!file_exists(UserNotesHelper::userDataPath())) {
+			//set to a view that has no model
+			$this->input->set('view', 'startup');
+			$view = $this->getView('startup','html');
+		} else {
+			$view = $this->getView('meedya','html');
+		}
+		$view->itemId = $this->mnuItm;
+		return parent::display($cachable, $urlparams);
+
+/*		if ($auth = UserNotesHelper::userAuth($this->uid)) {
 			$udp = UserNotesHelper::userDataPath();
 			if (($auth > 1) && !file_exists($udp)) {
 				$this->input->set('view', 'startup');
@@ -46,7 +56,7 @@ class UserNotesController extends JControllerLegacy
 			return parent::display($cachable, $urlparams);
 		} else {
 			$this->setRedirect('index.php');
-		}
+		}*/
 	}
 
 
