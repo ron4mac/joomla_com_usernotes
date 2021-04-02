@@ -38,7 +38,7 @@ class UserNotesController extends JControllerLegacy
 			$this->input->set('view', 'startup');
 			$view = $this->getView('startup','html');
 		} else {
-			$view = $this->getView('meedya','html');
+			$view = $this->getView('usernotes','html');
 		}
 		$view->itemId = $this->mnuItm;
 		return parent::display($cachable, $urlparams);
