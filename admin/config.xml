@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
 
-	<fieldset name="component" addfieldpath="/administrator/components/com_usernotes/models/fields">
+	<fieldset name="component" label="Standard" addfieldpath="/administrator/components/com_usernotes/models/fields">
 
 		<field name="storQuota" type="GmkbValue"
 			label="COM_USERNOTES_CONFIG_QUOTA_LABEL"

@@ -11,7 +11,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 
 HTMLHelper::_('behavior.keepalive');
-HTMLHelper::_('bootstrap.tooltip');
+//HTMLHelper::_('bootstrap.tooltip');
 HTMLHelper::_('behavior.formvalidator');
 
 // Build values for javascript use

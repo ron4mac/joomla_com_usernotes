@@ -29,7 +29,7 @@ abstract class UserNotesHelper
 
 	public static function getStorageBase ()
 	{
-		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath', null);
+		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath', []);
 		$sdp = isset($result[0]) ? trim($result[0]) : 'userstor';
 		return $sdp;
 	}

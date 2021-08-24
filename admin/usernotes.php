@@ -10,7 +10,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 
-JHtml::_('behavior.tabstate');
+//JHtml::_('behavior.tabstate');
 
 $j_version = preg_replace('#[^0-9\.]#i','',JVERSION);
 define('USERNOTES_J30', version_compare($j_version,'3.0.0','>=') ? true : false);

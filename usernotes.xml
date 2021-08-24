@@ -2,13 +2,13 @@
 <extension type="component" version="3.3" method="upgrade">
 	<name>com_usernotes</name>
 	<author>Ron Crans</author>
-	<creationDate>March 2021</creationDate>
+	<creationDate>August 2021</creationDate>
 	<copyright>(C) 2015-2021 RJCreations. All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@jrjconline.net</authorEmail>
 	<authorUrl>rjconline.net</authorUrl>
-	<version>1.2.3</version>
-	<updater jver="3\.[3456789]" pver="7.0.0" />
+	<version>1.2.4</version>
+	<updater jver="[34]\.[0123456789]" pver="7.0.0" />
 	<description>COM_USERNOTES_XML_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
 	<files folder="site">
@@ -25,7 +25,7 @@
 	<administration>
 		<menu img="class:usernotes">com_usernotes</menu>
 		<submenu>
-			<menu link="option=com_usernotes" img="class:usernotes-usr" alt="UserNotes/Users">com_usernotes_users</menu>
+			<menu link="option=com_usernotes" view="usernotes" img="class:usernotes-usr" alt="UserNotes/Users">com_usernotes_users</menu>
 			<menu link="option=com_usernotes" view="groupnotes" img="class:usernotes-grp" alt="UserNotes/Groups">com_usernotes_groups</menu>
 		</submenu>
 		<files folder="admin">
