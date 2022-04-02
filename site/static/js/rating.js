@@ -1,6 +1,12 @@
+/**
+* @package		com_usernotes
+* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @license		GNU General Public License version 3 or later; see LICENSE.txt
+*/
+/* exported SimpleStarRating */
 var SimpleStarRating = (function () {
-	function SimpleStarRating(target) {
-		function attr(name, d) {
+	function SimpleStarRating (target) {
+		function attr (name, d) {
 			var a = target.getAttribute(name);
 			return (a ? a : d);
 		}
@@ -25,26 +31,26 @@ var SimpleStarRating = (function () {
 			stars.push(n);
 		}
 
-		function disable() {
+		function disable () {
 			target.setAttribute('disabled', '');
 			disabled = true;
 		}
 		this.disable = disable;
 
-		function enable() {
+		function enable () {
 			target.removeAttribute('disabled');
 			disabled = false;
 		}
 		this.enable = enable;
 
-		function setCurrentRating(rating) {
+		function setCurrentRating (rating) {
 			currentRating = rating;
 			target.setAttribute('data-rating', currentRating);
 			showCurrentRating();
 		}
 		this.setCurrentRating = setCurrentRating;
 
-		function setDefaultRating(rating) {
+		function setDefaultRating (rating) {
 			defaultRating = rating;
 			target.setAttribute('data-default-rating', defaultRating);
 			showDefaultRating();
@@ -67,7 +73,7 @@ var SimpleStarRating = (function () {
 
 		showDefaultRating();
 
-		function showRating(r) {
+		function showRating (r) {
 			clearRating();
 			for (var i = 0; i < stars.length; i++) {
 				if (i >= r)
@@ -78,7 +84,7 @@ var SimpleStarRating = (function () {
 			}
 		}
 
-		function showCurrentRating() {
+		function showCurrentRating () {
 			var ratingAttr = parseFloat(attr('data-rating', 0));
 			if (ratingAttr) {
 				currentRating = ratingAttr;
@@ -88,19 +94,19 @@ var SimpleStarRating = (function () {
 			}
 		}
 
-		function showDefaultRating() {
+		function showDefaultRating () {
 			defaultRating = parseFloat(attr('data-default-rating', 0));
 			showRating(defaultRating);
 		}
 
-		function clearRating() {
+		function clearRating () {
 			for (var i = 0; i < stars.length; i++) {
 				stars[i].classList.remove('active');
 				stars[i].classList.remove('half');
 			}
 		}
 
-		function starClick(e) {
+		function starClick (e) {
 			if (disabled) return;
 //			console.log(e);
 			if (this === e.target) {

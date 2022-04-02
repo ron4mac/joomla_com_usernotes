@@ -1,9 +1,9 @@
 <?php
 /**
- * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
- * @license    GNU General Public License version 3 or later; see LICENSE.txt
- */
+* @package		com_usernotes
+* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @license		GNU General Public License version 3 or later; see LICENSE.txt
+*/
 defined('_JEXEC') or die('Restricted access');
  
 use Joomla\CMS\Factory;

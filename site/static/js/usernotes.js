@@ -1,17 +1,43 @@
-UNote = {};	// a namespace for our javascript
+/**
+* @package		com_usernotes
+* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @license		GNU General Public License version 3 or later; see LICENSE.txt
+*/
+(function(UNote, $) {
 
-(function($) {
-
-	function estop (e, sp=false) {
+	var estop = (e, sp=false) => {
 		if (sp && e.stopPropagation) e.stopPropagation();
 		if (e.preventDefault) e.preventDefault();
 		e.returnValue = false;
-	}
+	};
 
-	UNote.performSearch = function (aform) {
-		var sterm = $.trim(aform.sterm.value);
+	var toFormData = (obj) => {
+		const formData = new FormData();
+		Object.keys(obj).forEach(key => {
+			if (typeof obj[key] !== 'object') formData.append(key, obj[key]);
+			else formData.append(key, JSON.stringify(obj[key]));
+		});
+		return formData;
+	};
+
+	var postAction = (task, parms={}, cb=()=>{}, json=false) => {
+		if (typeof parms === 'object') {
+			if (!(parms instanceof FormData)) parms = toFormData(parms);
+		} else if (typeof parms === 'string') {
+			parms = new URLSearchParams(parms);
+		}
+		if (task) parms.set('task', task);
+	
+		fetch(UNote.V.aBaseURL, {method:'POST',body:parms})
+		.then(resp => { if (!resp.ok) throw new Error(`HTTP ${resp.status}`); if (json) return resp.json(); else return resp.text() })
+		.then(data => cb(data))
+		.catch(err => alert('Failure: '+err));
+	};
+
+	UNote.performSearch = (aform) => {
+		let sterm = $.trim(aform.sterm.value);
 		if (sterm==='') {
-			alert(this.L.no_sterm);
+			alert(UNote.L.no_sterm);
 			return false;
 		}
 		aform.submit();
@@ -19,147 +45,127 @@ UNote = {};	// a namespace for our javascript
 	};
 
 
-	UNote.aj_delAttach = function (evt,cid,fn) {
+	UNote.aj_delAttach = (evt,cid,fn) => {
 		estop(evt);
-		var bURL = this.V.aBaseURL;
-		if (!confirm(this.L.sure_del_att)) return;
-		$.post(bURL+"detach", { contentID: cid, file: fn },
-			function (data,status,xhr) {
-				//console.log(xhr);
-				if (data) { alert(data); }
-				else { $("#attachments").load(bURL+"attlist&inedit=1",{ contentID: cid }); }
-			}
-		);
+		let bURL = UNote.V.aBaseURL+'&task=';
+		if (!confirm(UNote.L.sure_del_att)) return;
+		postAction('detach', { contentID: cid, file: fn }, (data) => {
+			if (data) { alert(data); }
+			else { $("#attachments").load(bURL+"attlist&inedit=1",{ contentID: cid }); }
+		});
 	};
 
 
-	UNote.aj_renAttach = function (evt,cid,fn) {
+	UNote.aj_renAttach = (evt,cid,fn) => {
 		estop(evt);
-		var bURL = this.V.aBaseURL;
-		var nnam = prompt(this.L.rename_att, fn);
+		let bURL = Unote.V.aBaseURL+'&task=';
+		let nnam = prompt(UNote.L.rename_att, fn);
 		if (!nnam) return;
-		$.post(bURL+"renAttach", { contentID: cid, file: fn, tofile: nnam },
-			function (data,status,xhr) {
-				//console.log(xhr);
-				if (data) { alert(data); }
-				else { $("#attachments").load(bURL+"attlist&inedit=1",{ contentID: cid }); }
-			}
-		);
+		postAction('renAttach', { contentID: cid, file: fn, tofile: nnam }, (data) => {
+			if (data) { alert(data); }
+			else { $("#attachments").load(bURL+"attlist&inedit=1",{ contentID: cid }); }
+		});
 	};
 
 
-	UNote.sprintf = function (format) {
-		for (var i = 1; i < arguments.length; i++) {
-			format = format.replace( /%s/, arguments[i] );
+	UNote.sprintf = (format, ...args) => {
+		for (let i = 0; i < args.length; i++) {
+			format = format.replace(/%s/, args[i]);
 		}
 		return format;
 	};
 
 
-	UNote.reloadView = function () {
+	UNote.reloadView = () => {
 		bdiv = document.getElementById("body");
-		$.post(this.V.aBaseURL+"ajitem", { iID: this.V.itemID },
-			function (data,status,xhr) {
-				if (data) { bdiv.innerHTML = data; }
-				else { alert("no data"); }
-			}
-		);
+		postAction('ajitem', { iID: UNote.V.itemID }, (data) => {
+			if (data) { bdiv.innerHTML = data; }
+			else { alert("no data"); }
+		});
 	};
 
 
-	UNote.fup_done = function (rslt) {
+	UNote.fup_done = (rslt) => {
 		if (!rslt) $('#filupld').hide();
-	//	reloadView();
-		$("#attachments").load(this.V.aBaseURL+"attlist",{ "contentID": this.V.contentID });
+		$("#attachments").load(UNote.V.aBaseURL+"&task=attlist",{ contentID: UNote.V.contentID });
 	};
 
 
-	UNote.getAttach = function (evt, elm, down) {
+	UNote.getAttach = (evt, elm, down) => {
 		estop(evt,true);
-		var afile = elm.parentNode.dataset.afile;
+		let afile = elm.parentNode.dataset.afile;
 		if (down) {
-			var dlf = document.getElementById("dnldf");
-			dlf.src = this.V.aBaseURL+"&view=atvue&format=raw&cat="+this.V.contentID+"|"+afile+"&down=1";
+			let dlf = document.getElementById("dnldf");
+			dlf.src = UNote.V.aBaseURL+"&view=atvue&format=raw&cat="+UNote.V.contentID+"|"+afile+"&down=1";
 		} else {
-			window.location = this.V.aBaseURL+"&view=atvue&format=raw&cat="+this.V.contentID+"|"+afile;
+			window.location = UNote.V.aBaseURL+"&view=atvue&format=raw&cat="+UNote.V.contentID+"|"+afile;
 		}
 	};
 
 
-	UNote.moveTo = function (evt) {
+	UNote.moveTo = (evt) => {
 		estop(evt);
 		ddlog = document.createElement("div");
 		ddlog.className = "utildlog";
 		ddlog.style.top = (evt.pageY - 100)+'px';
 		ddlog.style.left = (evt.pageX + 30)+'px';
 		document.body.appendChild(ddlog);
-		$.post(this.V.aBaseURL+"cat_hier", { iID: this.V.itemID, pID: this.V.parentID },
-			function (data,status,xhr) {
-				if (data) { ddlog.innerHTML = data; }
-				else { alert("no data"); }
-			}
-		);
+		postAction('cat_hier', { iID: UNote.V.itemID, pID: UNote.V.parentID }, (data) => {
+			if (data) { ddlog.innerHTML = data; }
+			else { alert("no data"); }
+		});
 		return false;
 	};
 
 
-	UNote.addAttach = function (evt) {
+	UNote.addAttach = (evt) => {
 		estop(evt);
-		this.Upld5d.Init();
+		UNote.Upld5d.Init();
 		$('#filupld').show();
 	};
 
 
-	UNote.doMove = function (doit) {
+	UNote.doMove = (doit) => {
 		if (doit) {
 			//alert($(\'#moveTo\').val());
-			$.post(this.V.aBaseURL+"movitm", { iID: this.V.itemID, pID: $('#moveTo').val() },
-				function (data,status,xhr) {
+			postAction('movitm', { iID: UNote.V.itemID, pID: $('#moveTo').val() }, (data) => {
 					if (data) { alert(data); }
 					else { window.location.reload(); }
-				}
-			);
+			});
 		}
 		document.body.removeChild(ddlog);
 	};
 
 
-	UNote.addRating = function (val,cbk) {
-		$.post(this.V.aBaseURL+"addRating", { rate: val, iID: this.V.itemID },
-			function (data,status,xhr) {
-				if (data) { cbk(data); }
-			//	else { reloadView(); }
-			}
-		);
+	UNote.addRating = (val,cbk) => {
+		postAction('addRating', { rate: val, iID: UNote.V.itemID }, cbk);
 	};
 
 
-	UNote.toolAct = function (evt,act) {
+	UNote.toolAct = (evt,act) => {
 		mclose();
 		if ($(evt.srcElement).attr("data-sure")) {
-			if (!confirm(this.sprintf(this.L.ru_sure, $(this).attr('data-suremsg')))) return;
+			if (!confirm(UNote.sprintf(UNote.L.ru_sure, $(evt.srcElement).attr('data-sure')))) return;
 		}
 		estop(evt);
-		$.post(this.V.aBaseURL+"tool", { mnuact: act, iID: this.V.itemID, cID: this.V.contentID },
-			function (data,status,xhr) {
-				if (data) { alert(data); }
-				else { reloadView(); }
-			}
-		);
+		postAction('tool', { mnuact: act, iID: UNote.V.itemID, cID: UNote.V.contentID }, (data) => {
+			if (data) { alert(data); }
+			else { reloadView(); }
+		});
 	};
 
 
-	UNote.toolMenu = function (evt) {
+	UNote.toolMenu = (evt) => {
 		estop(evt);
 		mopen('putmenu',evt.pageX+20,evt.pageY-8);
 	};
 
 
-	UNote.dnldAttach = function (evt, wich) {
+	UNote.dnldAttach = (evt, wich) => {
 		estop(evt);
-		var dlURL = this.V.aBaseURL+'adnld/' + this.V.contentID + '/' +wich.rel;
+		let dlURL = UNote.V.aBaseURL+'adnld/' + UNote.V.contentID + '/' +wich.rel;
 		//alert(dlURL); return;
-		var dlframe = document.createElement("iframe");
+		let dlframe = document.createElement("iframe");
 		// set source to desired file
 		dlframe.src = dlURL;
 		// This makes the IFRAME invisible to the user.
@@ -169,19 +175,19 @@ UNote = {};	// a namespace for our javascript
 	};
 
 
-	UNote.printNote = function (evt,elm) {
+	UNote.printNote = (evt,elm) => {
 		estop(evt);
-		var newWindow = window.open(elm.href);
+		let newWindow = window.open(elm.href);
 	};
 
 
 	//----- small popup menu -----
-	var pum_closetimer = null;
-	var pum_menuitem = 0;
+	let pum_closetimer = null;
+	let pum_menuitem = 0;
 	// open hidden layer
-	function mopen (id, xpos, ypos, to=2500) {
+	var mopen = (id, xpos, ypos, to=2500) => {
 		// cancel close timer
-		mcancelclosetime();
+		UNote.mcancelclosetime();
 		// close old layer
 		if (pum_menuitem) pum_menuitem.style.display = 'none';
 		// get new layer and show it
@@ -189,30 +195,30 @@ UNote = {};	// a namespace for our javascript
 		pum_menuitem.style.left = xpos+'px';
 		pum_menuitem.style.top = ypos+'px';
 		pum_menuitem.style.display = 'block';
-		mclosetime(to);
-	}
+		UNote.mclosetime(to);
+	};
 
 	// close showed layer
-	function mclose () {
+	var mclose = () => {
 		if (pum_menuitem) pum_menuitem.style.display = 'none';
-	}
+	};
 
 	// go close timer
-	function mclosetime (to) {
+	UNote.mclosetime = (to) => {
 		pum_closetimer = window.setTimeout(mclose, to);
-	}
+	};
 
 	// cancel close timer
-	function mcancelclosetime () {
+	UNote.mcancelclosetime = () => {
 		if (pum_closetimer) {
 			window.clearTimeout(pum_closetimer);
 			pum_closetimer = null;
 		}
-	}
+	};
 
 
 
-	$(document).ready(function() {
+	$(document).ready( () => {
 		$(document).on("touchstart touchmove touchend click", "a.nav", function(ev) {	console.log(ev.type+':'+this.pending);
 			if (ev.type == 'touchmove') {
 				if (this.pending) --this.pending;
@@ -235,11 +241,11 @@ UNote = {};	// a namespace for our javascript
 		});
 	});
 
-})(jQuery);
+})(window.UNote = window.UNote || {}, jQuery);
 
 if (typeof Joomla != "undefined")
 	Joomla.submitbutton = function (butt) {
-		var bp = butt.split('.');
+		let bp = butt.split('.');
 		if (bp[1] == "cancel") return true;
 		Joomla.submitform(butt);
 	};

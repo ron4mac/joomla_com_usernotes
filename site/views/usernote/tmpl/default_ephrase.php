@@ -1,9 +1,9 @@
 <?php
 /**
- * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
- * @license    GNU General Public License version 3 or later; see LICENSE.txt
- */
+* @package		com_usernotes
+* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @license		GNU General Public License version 3 or later; see LICENSE.txt
+*/
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
@@ -13,7 +13,8 @@ $jslang = [
 	'ru_sure' => Text::_('COM_USERNOTES_RU_SURE')
 ];
 $jsvars = [
-	'aBaseURL' => $this->aUrl('format=raw').'&task=',
+//	'aBaseURL' => $this->aUrl('format=raw').'&task=',
+	'aBaseURL' => $this->aUrl('format=raw'),
 //	'itemID' => $this->item->itemID,
 //	'notesID' => urlencode($this->notesID),
 //	'parentID' => $this->item->parentID,

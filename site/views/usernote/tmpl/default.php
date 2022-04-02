@@ -1,9 +1,9 @@
 <?php
 /**
- * @package    com_usernotes
- * @copyright  Copyright (C) 2016-2021 RJCreations - All rights reserved.
- * @license    GNU General Public License version 3 or later; see LICENSE.txt
- */
+* @package		com_usernotes
+* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @license		GNU General Public License version 3 or later; see LICENSE.txt
+*/
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
@@ -19,7 +19,8 @@ $jslang = [
 $jsvars = [
 //	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=',
 //	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&task=',
-	'aBaseURL' => $this->aUrl('format=raw').'&task=',
+//	'aBaseURL' => $this->aUrl('format=raw').'&task=',
+	'aBaseURL' => $this->aUrl('format=raw'),
 	'itemID' => $this->item->itemID,
 	'notesID' => urlencode($this->notesID),
 	'parentID' => $this->item->parentID,
@@ -80,7 +81,7 @@ if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
 <?php endif; ?>
 </div>
 <?php if ($this->access & ITM_CAN_EDIT) : ?>
-<div id="putmenu" class="pum" style="display:none" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+<div id="putmenu" class="pum" style="display:none" onmouseover="UNote.mcancelclosetime()" onmouseout="UNote.mclosetime()">
 	<ul id="spum">
 		<li><a href="#" onclick="UNote.toolAct(event,'dofrac')" title="<?=Text::_('COM_USERNOTES_DOFRACT');?>"><?=Text::_('COM_USERNOTES_DOFRACTZ');?></a></li>
 		<li><a href="#" onclick="UNote.toolAct(event,'unfrac')" title="<?=Text::_('COM_USERNOTES_UNFRACT');?>"><?=Text::_('COM_USERNOTES_UNFRACT');?></a></li>
