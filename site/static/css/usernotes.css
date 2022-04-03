@@ -53,8 +53,11 @@ ul {
 	margin: 10px;
 	padding: 0;
 }
-li.menu, li.note {
+li.menu {
 	height: 36px;
+}
+li.note {
+	height: 30px;
 }
 li.menu a, li.note a {
 	text-decoration:none;
@@ -63,6 +66,25 @@ li.menu a, li.note a {
 li.menu a:hover, li.note a:hover {
 	background-color:#CCF;
 }
+
+
+#container a:link {
+	text-decoration: none;
+}
+#container a.act-left:hover {
+	color: cyan;
+}
+
+#itemsList .note.docu_s {
+	display: flex;
+}
+
+#itemsList .nav {
+	margin-right: .5em;
+}
+
+
+
 
 
 div.menug {
@@ -387,7 +409,7 @@ img.abortX {
 img.x-att-del {
 	cursor: pointer;
 }
-.idang {
+.idang:hover {
 	color:#D55;
 }
 .idarn {

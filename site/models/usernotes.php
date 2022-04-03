@@ -36,17 +36,65 @@ class UserNotesModelUserNotes extends JModelList
 		parent::__construct($config);
 	}
 
+	// an sqlite extended function to search a field for search terms
+	protected $smod = '', $sstrs = []; 
+	public function sfunc ($str) {
+		switch ($this->smod) {
+			case '|':
+				foreach ($this->sstrs as $sstr) {
+					if (stripos($str, $sstr) !== false) return true;
+				}
+				break;
+			case '&':
+				foreach ($this->sstrs as $sstr) {
+					if (stripos($str, $sstr) === false) return false;
+				}
+				return true;
+				break;
+			default:
+				return (bool) (stripos($str, $this->sstrs[0]) !== false);
+		}
+		return false;
+	}
 
 	public function search ($sterm)
 	{
+		if (strpos($sterm, ' OR ') > 0) {
+			$this->smod = '|';
+			$ss = explode(' OR ', $sterm);
+			foreach ($ss as $s) {
+				$this->sstrs[] = trim($s);
+			}
+		} elseif (strpos($sterm, ' AND ') > 0) {
+			$this->smod = '&';
+			$ss = explode(' AND ', $sterm);
+			foreach ($ss as $s) {
+				$this->sstrs[] = trim($s);
+			}
+		} else {
+			$this->sstrs[] = $sterm;
+		}
+
 		$db = $this->getDbo();
+		$db->getConnection()->sqliteCreateFunction('sfunc', [$this,'sfunc'], 1);
+
+		$ors = explode(' OR ', $sterm);
+		
 		$userID = Factory::getUser()->get('id');
-		$db->setQuery("SELECT I.itemID,I.title,I.isParent,I.shared,I.secured,I.vtotal,I.vcount FROM notes AS I JOIN content AS C ON C.contentID=I.contentID "
-			."WHERE I.secured IS NOT 1 AND (I.ownerID == '".$userID."' OR I.shared) AND (C.serial_content LIKE \"%".$sterm."%\" OR I.title LIKE \"%".$sterm."%\")");
+
+		$query = $db->getQuery(true);
+		$query->select('I.itemID,I.title,I.isParent,I.shared,I.secured,I.vtotal,I.vcount')->from('notes AS I');
+		$query->join(null, 'content AS C', 'C.contentID=I.contentID');
+		$query->where(['I.secured IS NOT 1','(I.ownerID == \''.$userID.'\' OR I.shared)']);
+		$query->andWhere(['sfunc(C.serial_content)','sfunc(I.title)']);
+		$db->setQuery($query);
 		$a1 = $db->loadObjectList();
+
 		// also check secured note titles (since they are encoded)
-		$db->setQuery("SELECT I.itemID,I.title,I.isParent,I.shared,I.secured,I.vtotal,I.vcount FROM notes AS I "
-			."WHERE I.secured IS 1 AND (I.ownerID == '".$userID."' OR I.shared) AND (b64d(I.title) LIKE \"%".$sterm."%\")");
+		$query->clear()->select('I.itemID,I.title,I.isParent,I.shared,I.secured,I.vtotal,I.vcount')->from('notes AS I');
+		$query->where(['I.secured IS 1','(I.ownerID == \''.$userID.'\' OR I.shared)']);
+		$query->andWhere('sfunc(b64d(I.title))');
+		$db->setQuery($query);
 		$a2 = $db->loadObjectList();
 		return array_merge($a1, $a2);
 	}
