@@ -84,7 +84,7 @@ class UserNotesModelUserNotes extends JModelList
 
 		$query = $db->getQuery(true);
 		$query->select('I.itemID,I.title,I.isParent,I.shared,I.secured,I.vtotal,I.vcount')->from('notes AS I');
-		$query->join(null, 'content AS C', 'C.contentID=I.contentID');
+		$query->innerJoin('content AS C ON C.contentID=I.contentID');
 		$query->where(['I.secured IS NOT 1','(I.ownerID == \''.$userID.'\' OR I.shared)']);
 		$query->andWhere(['sfunc(C.serial_content)','sfunc(I.title)']);
 		$db->setQuery($query);
