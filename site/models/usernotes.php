@@ -52,7 +52,7 @@ class UserNotesModelUserNotes extends JModelList
 				return true;
 				break;
 			default:
-				return (bool) (stripos($str, $this->sstrs[0]) !== false);
+				if (stripos($str, $this->sstrs[0]) !== false) return true;
 		}
 		return false;
 	}
@@ -75,16 +75,18 @@ class UserNotesModelUserNotes extends JModelList
 			$this->sstrs[] = $sterm;
 		}
 
+		$userID = Factory::getUser()->get('id');
+
 		$db = $this->getDbo();
 		$db->getConnection()->sqliteCreateFunction('sfunc', [$this,'sfunc'], 1);
 
-		$ors = explode(' OR ', $sterm);
-		
-		$userID = Factory::getUser()->get('id');
-
 		$query = $db->getQuery(true);
 		$query->select('I.itemID,I.title,I.isParent,I.shared,I.secured,I.vtotal,I.vcount')->from('notes AS I');
-		$query->innerJoin('content AS C ON C.contentID=I.contentID');
+		if ((int)JVERSION < 4) {
+			$query->innerJoin('content AS C ON C.contentID=I.contentID');
+		} else {
+			$query->innerJoin('content AS C','C.contentID=I.contentID');
+		}
 		$query->where(['I.secured IS NOT 1','(I.ownerID == \''.$userID.'\' OR I.shared)']);
 		$query->andWhere(['sfunc(C.serial_content)','sfunc(I.title)']);
 		$db->setQuery($query);
