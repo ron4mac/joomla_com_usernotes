@@ -29,6 +29,9 @@ class UsernotesViewBase extends JViewLegacy
 	protected $instance;
 	protected $jDoc;
 
+	// allow subclass to specify alternate css file
+	protected $usecss = 'usernotes';
+
 	public function __construct ($config = [])
 	{
 		parent::__construct($config);
@@ -39,7 +42,7 @@ class UsernotesViewBase extends JViewLegacy
 		$this->instance = Factory::getApplication()->getUserState('com_usernotes.instance', '::');
 		$this->jDoc = Factory::getDocument();
 		// get static css/js for subclasses
-		HTMLHelper::stylesheet('components/com_usernotes/static/css/usernotes.css', ['version' => 'auto']);
+		HTMLHelper::stylesheet('components/com_usernotes/static/css/'.$this->usecss.'.css', ['version' => 'auto']);
 		HTMLHelper::_('jquery.framework', false);
 		$this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js', ['version' => 'auto']);
 	}

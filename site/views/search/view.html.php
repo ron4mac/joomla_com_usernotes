@@ -17,6 +17,8 @@ class UsernotesViewSearch extends UsernotesViewBase
 	protected $items;
 	protected $smallDevice = false;
 
+	// use alternate css
+	protected $usecss = 'unotes';
 
 	public function display ($tpl = null)
 	{
@@ -25,11 +27,11 @@ class UsernotesViewSearch extends UsernotesViewBase
 		$app->getPathWay()->addItem(Text::_('COM_USERNOTES_SEARCH'),'');
 
 		// Get view related request variables.
-		$sterm = $app->input->getString('sterm');
+		$this->sterm = $app->input->getString('sterm');
 
 		// Get model data.
 		$m = $this->getModel();
-		$items = $m->search($sterm);
+		$items = $m->search($this->sterm);
 		$m->addItemPaths($items);
 
 		// Check for errors.

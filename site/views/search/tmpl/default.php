@@ -13,16 +13,17 @@ if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
 // accommodate targeted breadcrumb module
 echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 // display the search field
-echo HTMLHelper::_('usernotes.searchField', !empty($this->parentID) ? $this->parentID : 0);
+echo HTMLHelper::_('usernotes.searchField', !empty($this->parentID) ? $this->parentID : 0, $this->sterm);
 ?>
-<div id="container" style="margin-top:1em;">
+<div id="container" class="searchr">
 	<div id="body">
-	<ul id="itemsList">
-	<?php foreach ($this->items as $item): ?>
-		<li class="<?=($item->isParent?'note fold':'note docu').($item->shared?'_s':'')?>">
+	<div id="itemsList">
+	<?php foreach($this->items as $item): ?>
+		<div class="item">
 			<?=HTMLHelper::_('usernotes.itemLink', $item);?>
-		</li>
+		</div>
 	<?php endforeach; ?>
-	</ul>
 	</div>
+	</div>
+	<div class="footer">&nbsp;</div>
 </div>

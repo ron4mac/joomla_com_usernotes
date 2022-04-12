@@ -117,7 +117,7 @@ div.foldm.isecure {
 
 a.act-left, a.act-right {
 	margin-bottom: 0;
-	display: inline-flex;
+/*	display: inline-flex; */
 }
 a.act-left {
 	margin-left: 12px;

@@ -17,6 +17,8 @@ class UsernotesViewUsernotes extends UsernotesViewBase
 	protected $items;
 	protected $parentID = 0;
 
+	// use alternate css
+	protected $usecss = 'unotes';
 
 	public function display ($tpl = null)
 	{
@@ -28,6 +30,7 @@ class UsernotesViewUsernotes extends UsernotesViewBase
 		$this->state = $this->get('State');
 		$this->items = $this->get('Items');
 		$this->item = $this->getModel()->getItem();
+		if (!$this->item) $this->item = (object) ['parentID'=>0, 'secured'=>false, 'checked_out'=>false];
 
 		$this->parentID = $this->state->get('parent.id');
 

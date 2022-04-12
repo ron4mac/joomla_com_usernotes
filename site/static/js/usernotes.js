@@ -34,6 +34,32 @@
 		.catch(err => alert('Failure: '+err));
 	};
 
+	UNote.newFolderDlg = (evt, elm) => {
+		estop(evt, true);
+		$('#foldercr-modal').modal("show");
+		return false;
+	};
+
+	UNote.edtFolderDlg = (evt, elm) => {
+		estop(evt, true);
+		$('#foldered-modal').modal("show");
+		return false;
+	};
+
+	UNote.newFolder = (evt, elm) => {
+		estop(evt);
+	//	console.log(document.forms.un_newfold);
+		postAction('edit.saveFolder', new FormData(document.forms.un_newfold), () => {$('#foldercr-modal').modal("hide");window.location.reload(true)});
+		return false;
+	};
+
+	UNote.saveFolder = (evt, elm) => {
+		estop(evt);
+	//	console.log(document.forms.un_newfold);
+		postAction('edit.saveFolder', new FormData(document.forms.un_edtfold), () => {$('#foldered-modal').modal("hide");window.location.reload(true)});
+		return false;
+	};
+
 	UNote.performSearch = (aform) => {
 		let sterm = $.trim(aform.sterm.value);
 		if (sterm==='') {
@@ -58,7 +84,7 @@
 
 	UNote.aj_renAttach = (evt,cid,fn) => {
 		estop(evt);
-		let bURL = Unote.V.aBaseURL+'&task=';
+		let bURL = UNote.V.aBaseURL+'&task=';
 		let nnam = prompt(UNote.L.rename_att, fn);
 		if (!nnam) return;
 		postAction('renAttach', { contentID: cid, file: fn, tofile: nnam }, (data) => {
@@ -219,7 +245,7 @@
 
 
 	$(document).ready( () => {
-		$(document).on("touchstart touchmove touchend click", "a.nav", function(ev) {	console.log(ev.type+':'+this.pending);
+		$(document).on("touchstart touchmove touchend click", "a.act", function(ev) {	console.log(ev.type+':'+this.pending);
 			if (ev.type == 'touchmove') {
 				if (this.pending) --this.pending;
 				return true;

@@ -27,11 +27,12 @@ abstract class JHtmlUsernotes
 			}
 		}
 		$ttl = $item->secured ? base64_decode($item->title) : $item->title;
-		$attrs = ['class'=>'nav'];
+		$attrs = ['class'=>'act'];
 		if (isset($item->lPath)) $attrs['title'] = $item->lPath;
 		return HTMLHelper::link(
 				self::aiUrl($param.$item->itemID),
-				'<div class="menug '.($item->isParent?'foldm':'docum').($item->secured?' isecure':'').'"></div>'.htmlspecialchars($ttl),
+				'<div class="itml '.($item->isParent?'foldm':'docum').($item->secured?' isecure':'').'">'.htmlspecialchars($ttl).'</div>',
+			//	htmlspecialchars($ttl),
 				$attrs
 			) . $strate;
 	}
@@ -39,73 +40,75 @@ abstract class JHtmlUsernotes
 	{
 		return HTMLHelper::link(
 				self::aiUrl('task=printNote&nid='.$id),
-				self::ico('icon-print large-icon'),
-				['title'=>$titl, 'class'=>'nav act-left', 'onclick'=>'UNote.printNote(event,this);return false;']
+				self::ico('pr','large-icon'),
+				['title'=>$titl, 'class'=>'act act-left', 'onclick'=>'UNote.printNote(event,this);return false;']
 			);
 	}
 	public static function newActIcon ($id, $titl)
 	{
 		return HTMLHelper::link(
 				self::aiUrl('task=edit.addNote&pid='.$id),
-				self::ico('icon-file-plus'),
-				['title'=>$titl, 'class'=>'nav act-left']
+				self::ico('nn'),
+				['title'=>$titl, 'class'=>'act act-left']
 			);
 	}
 	public static function edtActIcon ($id, $titl)
 	{
 		return HTMLHelper::link(
 				self::aiUrl('task=edit.editNote&nid='.$id),
-				self::ico('icon-edit'),
-				['title'=>$titl, 'class'=>'nav act-left']
+				self::ico('en'),
+				['title'=>$titl, 'class'=>'act act-left']
 			);
 	}
 	public static function movActIcon ($id, $titl)
 	{
-		return '<a href="#" title="'.$titl.'" class="act-left" onclick="UNote.moveTo(event)">'.self::ico('icon-move').'</a>';
+		return '<a href="javascript:void(0);" title="'.$titl.'" class="act act-left" onclick="UNote.moveTo(event)">'.self::ico('mv').'</a>';
 	}
 	public static function attActIcon ($id, $titl)
 	{
-		return '<a href="#" title="'.$titl.'" class="act-left" onclick="UNote.addAttach(event)">'.self::ico('icon-attachment').'</a>';
+		return '<a href="javascript:void(0);" title="'.$titl.'" class="act act-left" onclick="UNote.addAttach(event)">'.self::ico('aa').'</a>';
 	}
 	public static function delActIcon ($id, $titl)
 	{
 		return HTMLHelper::link(
 				self::aiUrl('task=edit.deleteItem&iid='.$id),
-				self::ico('icon-file-minus idang'),
-				['title'=>$titl, 'class'=>'nav act-right sure', 'data-suremsg'=>strtolower($titl)]
+				self::ico('dn','idang'),
+				['title'=>$titl, 'class'=>'act act-right sure', 'data-suremsg'=>strtolower($titl)]
 			);
 	}
 	public static function fNewActIcon ($id, $titl)
 	{
 		return HTMLHelper::link(
 				self::aiUrl('task=edit.addFolder&type=f&pid='.$id),
-				self::ico('icon-folder-plus-2'),
-				['title'=>$titl, 'class'=>'nav act-left']
+				self::ico('nf'),
+				['title'=>$titl, 'class'=>'act act-left', 'onclick'=>'return UNote.newFolderDlg(event, this);']
 			);
 	}
 	public static function fEdtActIcon ($id, $titl)
 	{
 		return HTMLHelper::link(
-				self::aiUrl('task=edit.editFolder&type=f&nid='.$id),
-				self::ico('icon-edit'),
-				['title'=>$titl, 'class'=>'nav act-right']
+				//self::aiUrl('task=edit.editFolder&type=f&nid='.$id),
+				'javascript:void(0);',
+				self::ico('ef'),
+				['title'=>$titl, 'class'=>'act act-right', 'onclick'=>'return UNote.edtFolderDlg(event, this);']
 			);
 	}
 	public static function fDelActIcon ($id, $titl)
 	{
 		return HTMLHelper::link(
-				self::aiUrl('task=edit.deleteItem&iid='.$id),
-				self::ico('icon-folder-remove idang'),
-				['title'=>$titl, 'class'=>'nav act-right sure', 'data-suremsg'=>strtolower($titl)]
+				//self::aiUrl('task=edit.deleteItem&iid='.$id),
+				'javascript:void(0);',
+				self::ico('df','idang'),
+				['title'=>$titl, 'class'=>'act act act-right sure', 'data-suremsg'=>strtolower($titl)]
 			);
 	}
 	public static function toolActIcon ($id, $titl)
 	{
-		return '<a href="#" title="'.$titl.'" class="act-left" onclick="UNote.toolMenu(event);">'.self::ico('icon-wrench').'</a>';
+		return '<a href="javascript:void(0);" title="'.$titl.'" class="act act-left" onclick="UNote.toolMenu(event);">'.self::ico('to').'</a>';
 	}
 
 
-	public static function searchField ($pid)
+	public static function searchField ($pid, $val='')
 	{
 		$mnuId = self::mnuId();
 		$fact = self::aiUrl('');
@@ -115,7 +118,7 @@ abstract class JHtmlUsernotes
 		<input type="hidden" name="option" value="com_usernotes" />
 		<input type="hidden" name="Itemid" value="{$mnuId}" />
 		<input type="hidden" name="task" value="search" />
-		<input type="search" name="sterm" results="10" autosave="user_notes" placeholder="Search..." />
+		<input type="search" name="sterm" results="10" autosave="user_notes" placeholder="Search..." value="{$val}" />
 	</form>
 </div>
 EOD;
@@ -174,12 +177,12 @@ EOD;
 			$atch = $atchr[0];
 			if ($edt) {
 				$html .= '<br /><span>';
-				$html .= '<a href="#" title="'.Text::_('COM_USERNOTES_DEL_ATT').'" class="att-left" onclick="UNote.aj_delAttach(event,'.$cid.',\''.$atch.'\')">'.self::ico('icon-remove idang').'</a>';
-				$html .= '<a href="#" title="'.Text::_('COM_USERNOTES_REN_ATT').'" class="att-left" onclick="UNote.aj_renAttach(event,'.$cid.',\''.$atch.'\')">'.self::ico('icon-pencil-2 idarn').'</a>';
+				$html .= '<a href="javascript:void(0);" title="'.Text::_('COM_USERNOTES_DEL_ATT').'" class="att-left" onclick="UNote.aj_delAttach(event,'.$cid.',\''.$atch.'\')">'.self::ico('ax','idang').'</a>';
+				$html .= '<a href="javascript:void(0);" title="'.Text::_('COM_USERNOTES_REN_ATT').'" class="att-left" onclick="UNote.aj_renAttach(event,'.$cid.',\''.$atch.'\')">'.self::ico('ae','idarn').'</a>';
 				$html .= '&nbsp;'.$atch.'</span>';
 			} else {
 				$html .= '<div data-afile="'.rawurlencode($atch).'" class="atchlink">';
-				$html .= '<a href="#" class="noeffect" onclick="UNote.getAttach(event,this,true)" title="'.Text::_('COM_USERNOTES_DOWNFIL').'">'.self::ico('icon-download').'</a><a href="#" class="noeffect" onclick="UNote.getAttach(event,this,false)" title="'.Text::_('COM_USERNOTES_VIEWFIL').'">'.$atch.'</a>';
+				$html .= '<a href="javascript:void(0);" class="noeffect" onclick="UNote.getAttach(event,this,true)" title="'.Text::_('COM_USERNOTES_DOWNFIL').'">'.self::ico('dl').'</a><a href="javascript:void(0);" class="noeffect" onclick="UNote.getAttach(event,this,false)" title="'.Text::_('COM_USERNOTES_VIEWFIL').'">'.$atch.'</a>';
 				$html .= '</div>';
 			}
 		}
@@ -268,9 +271,32 @@ EOD;
 	}
 
 
-	private static function ico ($ico)
+	private static function ico ($ico, $clss='')
 	{
-		return '<i class="'.$ico.'"> </i>';
+		static $v;
+		static $icos;
+	
+		if (!isset($v)) {
+			$v = (int)JVERSION - 3;
+			$icos = [
+				'nf'=>['icon-folder-plus-2','fa fa-folder-plus'],
+				'ef'=>['icon-edit','fa fa-pencil-alt'],
+				'df'=>['icon-folder-remove','fa fa-folder-minus'],
+				'nn'=>['icon-file-plus','far fa-plus-square'],
+				'en'=>['icon-edit','fa fa-edit'],
+				'dn'=>['icon-file-minus','fa fa-minus'],
+				'aa'=>['icon-attachment','fa fa-paperclip'],
+				'ae'=>['icon-pencil-2','fa fa-pencil-alt'],
+				'ax'=>['icon-remove','fa fa-times-circle'],
+				'mv'=>['icon-move','fa fa-arrows-alt'],
+				'to'=>['icon-wrench','fa fa-wrench'],
+				'pr'=>['icon-print','fa fa-print'],
+				'dl'=>['icon-download','fa fa-download']
+			];
+		}
+
+		$icls = $icos[$ico][$v] . ($clss?(' '.$clss):'');
+		return '<i class="'.$icls.'"> </i>';
 		return '<i class="'.$ico.'" style="font-size:'.(IS_SMALL_DEVICE ? 28 : 16).'px"> </i>';
 	}
 

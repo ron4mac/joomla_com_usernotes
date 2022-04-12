@@ -121,7 +121,7 @@ class UserNotesModelEdit extends JModelForm
 		// get any data
 		$this->_data = $data;
 		// Get the form.
-		$form = $this->loadForm($src, $nam, ['control' => 'jform', 'load_data' => true]);
+		$form = $this->loadForm($src, $nam, ['control' => 'jform', 'load_data' => true], !$loadData);
 
 		if (empty($form)) {
 			return false;

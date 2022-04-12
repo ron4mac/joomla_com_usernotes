@@ -1,0 +1,91 @@
+/* container */
+#container #body {
+	margin-top: .6em;
+}
+#container.searchr #body {
+	border: 1px dashed #CCC;
+	box-shadow: 0 0 6px #d0d0d0;
+	padding: .4em;
+}
+
+
+/* lists of notes/folders */
+#itemsList .item {
+	display: flex;
+	padding: .2em 0;
+	overflow-x: hidden;
+}
+#itemsList .icn {
+	width: 2em;
+}
+#itemsList .itml {
+	padding-left: 2em;
+}
+#itemsList .itml:hover {
+	background-color: rgba(212,212,123,0.5);
+}
+#itemsList .foldm, #itemsList .docum {
+	background-size: contain;
+	background-repeat: no-repeat;
+	white-space: nowrap;
+}
+#itemsList .docum {
+	background-image: url('../imgs/note.png');
+}
+#itemsList .docum.isecure {
+	background-image: url('../imgs/key.png'), url('../imgs/note.png');
+	background-position: 0 0, 0 0;
+}
+#itemsList .foldm {
+	background-image: url('../imgs/folder.png');
+}
+#itemsList .foldm.isecure {
+	background-image: url('../imgs/locked-folder.png');
+}
+
+
+/** small static stars in item list **/
+.strate {
+	display: inline-block;
+	margin-left: .5em;
+}
+.strback {
+	position: relative;
+	display: inline-block;
+}
+.strback::before {
+	content: "☆☆☆☆☆";
+	color: #CCC;
+}
+.strating {
+	position: absolute;
+	top: 0;
+	overflow-x: hidden;
+	display: flex;
+}
+.strating::before {
+	content: "★★★★★";
+	color: #3af;
+}
+
+
+/* footer */
+#container .footer {
+	padding: .2em .6em;
+}
+#container .footer .act-left {
+	margin-right: .6em;
+}
+#container .footer .act-right {
+	float: right;
+	margin-left: .6em;
+}
+#container a:link {
+	text-decoration: none;
+}
+#container .idang:hover {
+	color:#D55;
+}
+#container .idarn {
+	color:orange;
+}

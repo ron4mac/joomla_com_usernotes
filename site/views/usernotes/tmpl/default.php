@@ -8,12 +8,17 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Layout\LayoutHelper;
 
 $jslang = [
 		'no_sterm' => Text::_('COM_USERNOTES_NO_STERM'),
 		'ru_sure' => Text::_('COM_USERNOTES_RU_SURE')
 	];
+$jsvars = [
+	'aBaseURL' => $this->aUrl('format=raw'),
+];
 $this->jDoc->addScriptDeclaration('UNote.L = '.json_encode($jslang).';
+UNote.V = '.json_encode($jsvars).';
 ');
 
 if (/*$this->state->secured*/ $this->item && $this->item->secured && $_SERVER['SERVER_PORT'] != 443) {
@@ -51,15 +56,15 @@ echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 // display the search field
 echo HTMLHelper::_('usernotes.searchField', $this->parentID);
 ?>
-<div id="container" style="margin-top:1em;">
+<div id="container">
 	<div id="body">
-	<ul id="itemsList">
+	<div id="itemsList">
 	<?php foreach($this->items as $item): ?>
-		<li class="<?=($item->isParent?'note fold':'note docu').($item->shared?'_s':'')?>">
+		<div class="item">
 			<?=HTMLHelper::_('usernotes.itemLink', $item);?>
-		</li>
+		</div>
 	<?php endforeach; ?>
-	</ul>
+	</div>
 	</div>
 	<div class="footer">
 		<?php if ($this->access & ITM_CAN_CREA) : ?>
@@ -79,3 +84,6 @@ echo HTMLHelper::_('usernotes.searchField', $this->parentID);
 	Version: <?php echo $this->cparams->get('version'); ?>
 </div>
 <?php endif; ?>
+<?php
+	if ($this->access & (ITM_CAN_CREA + ITM_CAN_EDIT + ITM_CAN_DELE)) echo LayoutHelper::render('folder', ['view'=>$this, 'vitm'=>$this->item, 'create'=>true]);
+?>

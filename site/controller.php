@@ -39,8 +39,11 @@ class UserNotesController extends JControllerLegacy
 			$view = $this->getView('startup','html');
 		} else {
 			$view = $this->getView('usernotes','html');
+			// provide the edit model for use, as well
+			$view->setModel($this->getModel('edit'));
 		}
 		$view->itemId = $this->mnuItm;
+
 		return parent::display($cachable, $urlparams);
 
 /*		if ($auth = UserNotesHelper::userAuth($this->uid)) {

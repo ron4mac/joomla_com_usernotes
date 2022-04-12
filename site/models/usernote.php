@@ -102,6 +102,9 @@ class UserNotesModelUserNote extends JModelItem
 	}
 
 
+	// save a new or edited folder item
+	// @data [itemID, title, ephrase, contentID, serial_content, parentID, maksec, pissec]
+	// @user user id#
 	public function storeNote (JInput $data, $user)
 	{
 		$iid = $data->getInt('itemID');
@@ -146,7 +149,9 @@ class UserNotesModelUserNote extends JModelItem
 		}
 	}
 
-
+	// save a new or edited folder item
+	// @data [itemID, title, parentID, maksec, pissec]
+	// @user user id#
 	public function storeFolder ($data, $user)
 	{
 		$iid = $data->getInt('itemID');
