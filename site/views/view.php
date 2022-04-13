@@ -43,6 +43,7 @@ class UsernotesViewBase extends JViewLegacy
 		$this->jDoc = Factory::getDocument();
 		// get static css/js for subclasses
 		HTMLHelper::stylesheet('components/com_usernotes/static/css/'.$this->usecss.'.css', ['version' => 'auto']);
+		if ((int)JVERSION<4) HTMLHelper::stylesheet('components/com_usernotes/static/css/legacy.css', ['version' => 'auto']);
 		HTMLHelper::_('jquery.framework', false);
 		$this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js', ['version' => 'auto']);
 	}
