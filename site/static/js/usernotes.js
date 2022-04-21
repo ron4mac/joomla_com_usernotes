@@ -60,7 +60,7 @@
 		estop(evt);
 		let fm = document.forms.un_edtfold;
 		if (document.formvalidator.isValid(fm))
-			postAction('edit.saveFolder', new FormData(fm), (rd) => {clodMdl('foldered-modal'); if (rd) {alert(rd);return;} window.location.reload(true)});
+			postAction('edit.saveFolder', new FormData(fm), (rd) => {closMdl('foldered-modal'); if (rd) {alert(rd);return;} window.location.reload(true)});
 		return false;
 	};
 
