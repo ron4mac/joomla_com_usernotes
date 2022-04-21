@@ -16,7 +16,11 @@
 		e.returnValue = false;
 	};
 
-	var closMdl = (eid) => _Id(eid).close();
+	// modal close for either J4 or J3
+	var closMdl = (eid) => {
+		let elm = _Id(eid);
+		elm.close ? elm.close() : jQuery("#"+eid).modal('hide');
+	};
 
 	var toFormData = (obj) => {
 		const formData = new FormData();
@@ -135,8 +139,6 @@
 		estop(evt);
 		ddlog = document.createElement("div");
 		ddlog.className = "utildlog";
-	//	ddlog.style.top = (evt.pageY - 100)+'px';
-	//	ddlog.style.left = (evt.pageX + 30)+'px';
 		_celm.appendChild(ddlog);
 		postAction('cat_hier', { iID: UNote.V.itemID, pID: UNote.V.parentID }, (data) => {
 			if (data) { ddlog.innerHTML = data; }
@@ -220,8 +222,6 @@
 		if (pum_menuitem) pum_menuitem.style.display = 'none';
 		// get new layer and show it
 		pum_menuitem = _Id(id);
-	//	pum_menuitem.style.left = xpos+'px';
-	//	pum_menuitem.style.top = ypos+'px';
 		pum_menuitem.style.display = 'block';
 		UNote.mclosetime(to);
 	};

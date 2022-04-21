@@ -71,7 +71,7 @@ abstract class JHtmlUsernotes
 	public static function delActIcon ($id, $titl)
 	{
 		return HTMLHelper::link(
-			//	'javascript:void(0)',
+			//	'javascript:;',
 				self::aiUrl('task=edit.deleteItem&iid='.$id),
 				self::ico('dn','idang'),
 				['title'=>$titl, 'class'=>'act act-right sure', 'data-suremsg'=>strtolower($titl)]
@@ -80,28 +80,24 @@ abstract class JHtmlUsernotes
 	public static function fNewActIcon ($id, $titl)
 	{
 		return HTMLHelper::link(
-			//	self::aiUrl('task=edit.addFolder&type=f&pid='.$id),
-				'javascript:void(0)',
+				'javascript:;',
 				self::ico('nf'),
-			//	['title'=>$titl, 'class'=>'act act-left', 'onclick'=>'return UNote.newFolderDlg(event, this);']
-				['title'=>$titl, 'class'=>'act act-left', 'data-bs-toggle'=>'modal', 'data-bs-target'=>'#foldercr-modal']
+				['title'=>$titl, 'class'=>'act act-left', M34C::bs('toggle')=>'modal', M34C::bs('target')=>'#foldercr-modal']
 			);
 	}
 	public static function fEdtActIcon ($id, $titl)
 	{
 		return HTMLHelper::link(
-				//self::aiUrl('task=edit.editFolder&type=f&nid='.$id),
-				'javascript:void(0);',
+				'javascript:;',
 				self::ico('ef'),
-			//	['title'=>$titl, 'class'=>'act act-right', 'onclick'=>'return UNote.edtFolderDlg(event, this);']
-				['title'=>$titl, 'class'=>'act act-right', 'data-bs-toggle'=>'modal', 'data-bs-target'=>'#foldered-modal']
+				['title'=>$titl, 'class'=>'act act-right', M34C::bs('toggle')=>'modal', M34C::bs('target')=>'#foldered-modal']
 			);
 	}
 	public static function fDelActIcon ($id, $titl)
 	{
 		return HTMLHelper::link(
 				self::aiUrl('task=edit.deleteItem&iid='.$id),
-			//	'javascript:void(0);',
+			//	'javascript:;',
 				self::ico('df','idang'),
 				['title'=>$titl, 'class'=>'act act-right sure', 'data-suremsg'=>strtolower($titl)]
 			);

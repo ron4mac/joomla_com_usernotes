@@ -12,9 +12,12 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 
-//HTMLHelper::_('behavior.formvalidator');
-$wa = $displayData['view']->document->getWebAssetManager();
-$wa->useScript('keepalive')->useScript('form.validate');
+if ((int)JVERSION<4) {
+	HTMLHelper::_('behavior.formvalidator');
+} else {
+	$wa = $displayData['view']->document->getWebAssetManager();
+	$wa->useScript('keepalive')->useScript('form.validate');
+}
 
 function un_formGet ($view, $vitm, $ed=false)
 {
