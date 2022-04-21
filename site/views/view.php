@@ -29,8 +29,10 @@ class UsernotesViewBase extends JViewLegacy
 	protected $instance;
 	protected $jDoc;
 
-	// allow subclass to specify alternate css file
+	// allow subclass to specify alternate css file(s)
 	protected $usecss = 'usernotes';
+	// allow subclass to specify alternate (or no) js file(s)
+	protected $usejs = 'usernotes';
 
 	public function __construct ($config = [])
 	{
@@ -41,11 +43,18 @@ class UsernotesViewBase extends JViewLegacy
 		}
 		$this->instance = Factory::getApplication()->getUserState('com_usernotes.instance', '::');
 		$this->jDoc = Factory::getDocument();
-		// get static css/js for subclasses
-		HTMLHelper::stylesheet('components/com_usernotes/static/css/'.$this->usecss.'.css', ['version' => 'auto']);
+		// get css's for subclasses
+		if (!is_array($this->usecss)) $this->usecss = [$this->usecss];
+		foreach ($this->usecss as $css) {
+			HTMLHelper::stylesheet('components/com_usernotes/static/css/'.$css.'.css', ['version' => 'auto']);
+		}
 		if ((int)JVERSION<4) HTMLHelper::stylesheet('components/com_usernotes/static/css/legacy.css', ['version' => 'auto']);
-		HTMLHelper::_('jquery.framework', false);
-		$this->jDoc->addScript('components/com_usernotes/static/js/usernotes.js', ['version' => 'auto']);
+		// get js's ... jQuery required for now
+//		HTMLHelper::_('jquery.framework', false);
+		if (!is_array($this->usejs)) $this->usejs = [$this->usejs];
+		foreach ($this->usejs as $js) {
+			$this->jDoc->addScript('components/com_usernotes/static/js/'.$js.'.js', ['version' => 'auto']);
+		}
 	}
 
 	// return an action url for use (mostly) with ajax/javascript

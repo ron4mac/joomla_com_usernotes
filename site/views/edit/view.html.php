@@ -21,6 +21,11 @@ class UsernotesViewEdit extends UsernotesViewBase
 
 	protected $smallDevice = false;
 
+	// use alternate css
+	protected $usecss = 'unote';
+	// use NO js
+//	protected $usejs = [];
+
 
 	public function display ($tpl = null)
 	{

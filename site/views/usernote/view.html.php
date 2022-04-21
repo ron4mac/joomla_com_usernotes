@@ -16,6 +16,9 @@ class UsernotesViewUsernote extends UsernotesViewBase
 	protected $params;
 	protected $smallDevice = false;
 
+	// use alternate css
+	protected $usecss = ['unotes','unote'];
+
 	public function display ($tpl = null)
 	{
 		$app = Factory::getApplication();

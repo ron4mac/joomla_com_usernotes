@@ -1,0 +1,200 @@
+#container{
+	position: relative;
+}
+
+#container a > * {
+  pointer-events: none;
+}
+
+
+/* ============================  star rating
+*/
+.rated {
+	float: right;
+	margin-top: 6px;
+}
+.rating {
+	display: none;
+	font-size: 24px;
+	font-weight: bold;
+	color: #3af;
+	white-space: nowrap;
+}
+
+.rating .star {
+	display: inline-block;
+	position: relative;
+	letter-spacing: 0.05em;
+}
+
+.rating .star::before {
+	display: inline-block;
+	color: #aaa;
+	content: '☆';
+	width: 1em;
+	height: 1em;
+}
+
+.rating .star::after {
+	display: inline-block;
+	position: absolute;
+	content: '★';
+	top: 0;
+	left: 0;
+	opacity: 0;
+	width: 0;
+	height: 0;
+	transition: all 0.1s linear;
+	overflow-x: hidden;
+}
+
+.rating:not([disabled]) .star:hover::after,
+.rating .star.active::after {
+	opacity: 1;
+	width: 1em;
+	height: 1.5em;
+}
+.rating:not([disabled]) .star:hover::after {
+	color: gold;
+}
+
+.rating .star.active.half::after {
+	width: 0.5em;
+}
+
+
+/* ============================ small static stars in item list
+*/
+/*.strate {
+	display: inline-block;
+}
+.strback {
+	position: relative;
+	display: inline-block;
+}
+.strback::before {
+	content: "☆☆☆☆☆";
+	color: #CCC;
+}
+.strating {
+	position: absolute;
+	top: 0;
+	overflow-x: hidden;
+	display: flex;
+}
+.strating::before {
+	content: "★★★★★";
+	color: #3af;
+}
+*/
+
+
+/* ============================ small utility dialog
+*/
+div.utildlog {
+	position: absolute;
+	bottom: 10px;
+	left: 50%;
+	transform: translate(-50%, 0);
+	padding: 6px;
+	background-color: #DFD;
+	border: 2px solid #CCC;
+	border-radius: 3px;
+	-webkit-box-shadow: 0 0 5px #D0D0D0;
+}
+
+
+/* ============================ small popup menu
+*/
+#spum {
+	margin: 0;
+	padding: 0;
+}
+
+#spum li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#spum li a {
+	display: block;
+	margin: 0;
+	padding: 4px 4px;
+	background: #FFD;
+	text-decoration: none;
+}
+
+#spum li a:hover {
+	background: #49A3FF;
+}
+
+div.pum {
+	position: absolute;
+	bottom: 24px;
+	left: 40px;
+	border: 1px solid #BBB;
+	border-radius: 3px;
+	box-shadow: 0 0 5px #888;
+}
+
+
+/* ============================ file upload dialog with drag and drop
+*/
+div.uplddlog {
+	position: absolute;
+	bottom: 10px;
+	left: 50%;
+	transform: translate(-50%, 0);
+	width: 300px;
+	padding: 6px;
+	background-color: #CEF;
+	border: 1px solid #999;
+	border-radius: 3px;
+	box-shadow: 0 0 5px #AAA;
+}
+div#dropArea {
+	border: 1px dashed #CCC;
+	width: 100%;
+	padding: .5em 0;
+	margin-bottom: 5px;
+	text-align: center;
+	border-radius: 5px;
+	cursor: auto;
+}
+div#dropArea.hover {
+	background-color: #DFD;
+	border: 1px solid #999;
+	box-shadow: inset 2px 2px 3px #999;
+}
+div#totprogress {
+	width: 100%;
+	height: 8px;
+	border: 1px solid #BBB;
+	border-radius: 3px;
+	background: #eee url("../imgs/progress_t.png") 100% 0 no-repeat;
+}
+#fprogress p {
+	display: block;
+	padding: 0 0 0 4px;
+	line-height: 1.4em;
+	margin: 2px 0;
+	border: 1px solid #BBB;
+	border-radius: 3px;
+	font-size: 0.9em;
+	background: #eee url("../imgs/progress_f.png") 100% 0 no-repeat;
+}
+#fprogress p.success {
+	background: #0C0 none 0 0 no-repeat;
+}
+#fprogress p.failure {
+	background: #F99 none 0 0 no-repeat;
+}
+
+@media print {
+	header.navigation-bar { display: none; }
+	div.crumbs { display: none; }
+	div.footer { display: none; }
+	img { display: none !important; }
+	button.btn { display: none; }
+}

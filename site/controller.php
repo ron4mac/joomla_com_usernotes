@@ -92,6 +92,16 @@ class UserNotesController extends JControllerLegacy
 	}
 
 
+	private function attsHtml ($mdl, $cid, $edt)
+	{
+		$atchs = $mdl->attachments($cid);
+		if ($atchs) {
+			return HTMLHelper::_('usernotes.att_list', $atchs, $cid, $edt);
+		}
+		return '';
+	}
+
+
 /** ajax calls **/
 
 	public function attach ()
@@ -117,8 +127,14 @@ class UserNotesController extends JControllerLegacy
 		if (JDEBUG) {
 			JLog::add("detach ... note: {$cid}  file: {$file}", JLog::INFO, 'com_usernotes');
 		}
+		$resp = [];
 		$r = $m->deleteAttachment($cid, $file);
-		if ($r) echo $r;
+		if ($r) {
+			$resp['err'] = $r;
+		} else {
+			$resp['htm'] = $this->attsHtml($m, $cid, true);
+		}
+		echo json_encode($resp);
 	}
 
 
@@ -131,8 +147,14 @@ class UserNotesController extends JControllerLegacy
 		if (JDEBUG) {
 			JLog::add("renAttach ... note: {$cid}  file: {$file} tofile: {$tofile}", JLog::INFO, 'com_usernotes');
 		}
+		$resp = [];
 		$r = $m->renameAttachment($cid, $file, $tofile);
-		if ($r) echo $r;
+		if ($r) {
+			$resp['err'] = $r;
+		} else {
+			$resp['htm'] = $this->attsHtml($m, $cid, true);
+		}
+		echo json_encode($resp);
 	}
 
 
@@ -141,10 +163,7 @@ class UserNotesController extends JControllerLegacy
 		$m = $this->getModel('usernote');
 		$cid = $this->input->post->getInt('contentID', 0);
 		$ined = $this->input->getInt('inedit', 0);
-		$atchs = $m->attachments($cid);
-		if ($atchs) {
-			echo HTMLHelper::_('usernotes.att_list', $atchs, $cid, $ined);
-		} else echo '';
+		echo $this->attsHtml($m, $cid, $ined);
 	}
 
 
@@ -184,9 +203,10 @@ class UserNotesController extends JControllerLegacy
 		$act = $this->input->post->getCmd('mnuact','');
 		$iid = $this->input->post->getInt('iID', 0);
 		$cid = $this->input->post->getInt('cID', 0);
-		$this->load->model('content_model', 'mycmodel');
-		$ictnt = $this->mycmodel->get_item($cid, $this->enty_item);
-		call_user_func([$ictnt, $act], $cid);
+	//	$this->load->model('content_model', 'mycmodel');
+	//	$ictnt = $this->mycmodel->get_item($cid, $this->enty_item);
+		$m = $this->getModel('usernote');
+		call_user_func([$m, $act], $cid);
 	}
 
 

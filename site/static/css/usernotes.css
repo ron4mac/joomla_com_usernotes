@@ -200,6 +200,7 @@ p.footer{
 }
 
 #container{
+	position: relative;
 	background-color: #FFF;
 	margin: 10px;
 	border: 1px solid #D0D0D0;
@@ -343,8 +344,9 @@ span.atchlink
 
 div.utildlog {
 	position: absolute;
-	top: 200px;
-	left: 200px;
+	bottom: 10px;
+	left: 50%;
+	transform: translate(-50%, 0);
 	padding: 6px;
 	background-color: #DFD;
 	border: 2px solid #CCC;
@@ -355,14 +357,15 @@ div.utildlog {
 /* file upload dialog with drag and drop */
 div.uplddlog {
 	position: absolute;
-	top: 300px;
-	left: 300px;
+	bottom: 10px;
+	left: 50%;
+	transform: translate(-50%, 0);
 	width: 300px;
 	padding: 6px;
 	background-color: #CEF;
 	border: 1px solid #999;
 	border-radius: 3px;
-	-webkit-box-shadow: 0 0 5px #AAA;
+	box-shadow: 0 0 5px #AAA;
 }
 div#dropArea {
 	border: 1px dashed #CCC;
@@ -523,8 +526,8 @@ img.x-att-del {
 
 div.pum {
 	position: absolute;
-	top: 10px;
-	left: 10px;
+	bottom: 24px;
+	left: 40px;
 	border: 1px solid #BBB;
 	border-radius: 3px;
 	box-shadow: 0 0 5px #888;

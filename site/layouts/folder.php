@@ -7,9 +7,14 @@
 defined('JPATH_BASE') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
+
+//HTMLHelper::_('behavior.formvalidator');
+$wa = $displayData['view']->document->getWebAssetManager();
+$wa->useScript('keepalive')->useScript('form.validate');
 
 function un_formGet ($view, $vitm, $ed=false)
 {
@@ -35,6 +40,8 @@ function un_formGet ($view, $vitm, $ed=false)
 	return $frhtm;
 }
 
+$instlink = Route::_('index.php?option=com_usernotes&Itemid='.$displayData['view']->itemId, false);
+
 if (!empty($displayData['vitm']->itemID)) echo HTMLHelper::_(
 	'bootstrap.renderModal',
 	'foldered-modal', // selector
@@ -42,9 +49,9 @@ if (!empty($displayData['vitm']->itemID)) echo HTMLHelper::_(
 		'title'  => Text::_('COM_USERNOTES_EDIT_FORM_EDIT_F'),
 		'footer' => '<button type="button" class="btn btn-secondary" '.M34C::bs('dismiss').'="modal">Close</button>
 					<button type="button" class="btn btn-primary" onclick="UNote.saveFolder(this)">Save Folder</button>',
-		'modalWidth' => 30
+		'modalWidth' => 20
 	),
-	'<form id="un_edtfold">' . un_formGet($displayData['view'], $displayData['vitm'], true) . '</form>'
+	'<form id="un_edtfold" method="POST" class="form-validate" onsubmit="return false">' . un_formGet($displayData['view'], $displayData['vitm'], true) . '</form>'
 );
 echo HTMLHelper::_(
 	'bootstrap.renderModal',
@@ -53,7 +60,7 @@ echo HTMLHelper::_(
 		'title'  => Text::_('COM_USERNOTES_EDIT_FORM_CREATE_F'),
 		'footer' => '<button type="button" class="btn btn-secondary" '.M34C::bs('dismiss').'="modal">Close</button>
 					<button type="button" class="btn btn-primary" onclick="UNote.newFolder(event, this)">Create Folder</button>',
-		'modalWidth' => 30
+		'modalWidth' => 20
 	),
-	'<form id="un_newfold">' . un_formGet($displayData['view'], $displayData['vitm']) . '</form>'
+	'<form id="un_newfold" method="POST" class="form-validate" onsubmit="return false">' . un_formGet($displayData['view'], $displayData['vitm']) . '</form>'
 );

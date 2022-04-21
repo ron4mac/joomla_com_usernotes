@@ -7,6 +7,9 @@
 	box-shadow: 0 0 6px #d0d0d0;
 	padding: .4em;
 }
+#container a > * {
+  pointer-events: none;
+}
 
 
 /* lists of notes/folders */

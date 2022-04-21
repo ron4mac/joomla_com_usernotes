@@ -78,44 +78,49 @@ if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
 		?>
 		&nbsp;<?=$this->footMsg?>
 	</div>
+	<?php if ($this->access & ITM_CAN_EDIT) : ?>
+	<div id="filupld" class="uplddlog" style="display:none;">
+		<span style="color:#36C;"><?=Text::_('COM_USERNOTES_MAXUPLD');?> <?=UserNotesHelper::formatBytes($this->maxUploadBytes)?></span>
+		<input type="file" id="upload_field" name="attm[]" multiple="multiple" />
+		<div id="dropArea"><?=Text::_('COM_USERNOTES_DROPFILS');?></div>
+		<div id="result"></div>
+		<div id="totprogress"></div>
+		<div id="fprogress"></div>
+		<hr />
+		<button onclick="this.parentNode.style.display='none'">Close</button>
+	</div>
+	<div id="putmenu" class="pum" style="display:none" onmouseover="UNote.mcancelclosetime()" onmouseout="UNote.mclosetime()">
+		<ul id="spum">
+			<li><a href="#" onclick="UNote.toolAct(event,'dofraction')" title="<?=Text::_('COM_USERNOTES_DOFRACT');?>"><?=Text::_('COM_USERNOTES_DOFRACTZ');?></a></li>
+			<li><a href="#" onclick="UNote.toolAct(event,'unfraction')" title="<?=Text::_('COM_USERNOTES_UNFRACT');?>"><?=Text::_('COM_USERNOTES_UNFRACT');?></a></li>
+		<?php if ($this->attached): ?>
+			<li><a href="#" onclick="UNote.toolAct(event,'deleteAttachments')" title="<?=Text::_('COM_USERNOTES_DELAATTS');?>" data-sure="<?=strtolower(Text::_('COM_USERNOTES_DELAATTS'));?>"><?=Text::_('COM_USERNOTES_DEL_ATTS');?></a></li>
+		<?php endif; ?>
+		</ul>
+	</div>
+	<?php endif; ?>
 <?php endif; ?>
 </div>
-<?php if ($this->access & ITM_CAN_EDIT) : ?>
-<div id="putmenu" class="pum" style="display:none" onmouseover="UNote.mcancelclosetime()" onmouseout="UNote.mclosetime()">
-	<ul id="spum">
-		<li><a href="#" onclick="UNote.toolAct(event,'dofrac')" title="<?=Text::_('COM_USERNOTES_DOFRACT');?>"><?=Text::_('COM_USERNOTES_DOFRACTZ');?></a></li>
-		<li><a href="#" onclick="UNote.toolAct(event,'unfrac')" title="<?=Text::_('COM_USERNOTES_UNFRACT');?>"><?=Text::_('COM_USERNOTES_UNFRACT');?></a></li>
-<?php if ($this->attached): ?>
-		<li><a href="#" onclick="UNote.toolAct(event,'delatts')" title="<?=Text::_('COM_USERNOTES_DELAATTS');?>" data-sure="<?=strtolower(Text::_('COM_USERNOTES_DELAATTS'));?>"><?=Text::_('COM_USERNOTES_DEL_ATTS');?></a></li>
-<?php endif; ?>
-	</ul>
-</div>
-<div id="filupld" class="uplddlog" style="display:none;">
-	<span style="color:#36C;"><?=Text::_('COM_USERNOTES_MAXUPLD');?> <?=UserNotesHelper::formatBytes($this->maxUploadBytes)?></span>
-	<input type="file" id="upload_field" name="attm[]" multiple="multiple" />
-	<div id="dropArea"><?=Text::_('COM_USERNOTES_DROPFILS');?></div>
-	<div id="result"></div>
-	<div id="totprogress"></div>
-	<div id="fprogress"></div>
-	<hr />
-	<button onclick="this.parentNode.style.display='none'">Close</button>
-</div>
-<?php endif; ?>
 <?php if ($this->attached): ?>
 <iframe id="dnldf" style="display:none;"></iframe>
 <?php endif; ?>
 <script>
 <?php if ($prning): ?>
-window.print();
 (function() {
+	let bpd = false;
+	let apd = false;
 
 	var beforePrint = function() {
+		if (bpd) return;
+		bpd = true;
 		console.log("Functionality to run before printing.");
 	};
 
 	var afterPrint = function() {
+		if (apd) return;
+		apd = true;
 		console.log("Functionality to run after printing");
-	//	window.close();
+		window.close();window.history.back();
 	};
 
 	if (window.matchMedia) {
@@ -129,9 +134,10 @@ window.print();
 		});
 	}
 
-	window.onbeforeprint = beforePrint;
-	window.onafterprint = afterPrint;
+	window.addEventListener('beforeprint', beforePrint);
+	window.addEventListener('afterprint', afterPrint);
 
+	window.print();
 }());
 <?php endif; ?>
 var rating = document.getElementById('unrating');

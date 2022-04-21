@@ -342,6 +342,52 @@ class UserNotesModelUserNote extends JModelItem
 	}
 
 
+	public function dofraction ($cid)
+	{
+		try
+		{
+			$db = $this->getDbo();
+			$db->setQuery('SELECT serial_content FROM content WHERE contentID='.$cid);
+			$cont = $db->loadResult();
+			$pattern = '/([^\d])(\d)\/(\d)([^\d])/';
+			$replacement = '$1&frac$2$3;$4';
+			$nutxt = preg_replace($pattern, $replacement, $cont);
+			$pattern = '/([^\d])(\d) (&frac)/';
+			$replacement = '$1$2$3';
+			$nutxt = preg_replace($pattern, $replacement, $nutxt);
+			$db->setQuery('UPDATE content SET serial_content='.$db->quote($nutxt).' WHERE contentID='.$cid);
+			$db->execute();
+		}
+		catch (Exception $e)
+		{
+			$this->setError($e);
+		}
+	}
+
+
+	public function unfraction ($cid)
+	{
+		try
+		{
+			$db = $this->getDbo();
+			$db->setQuery('SELECT serial_content FROM content WHERE contentID='.$cid);
+			$cont = $db->loadResult();
+			$pattern = '/([^\d])(\d)(&frac)/';
+			$replacement = '$1$2 $3';
+			$nutxt = preg_replace($pattern, $replacement, $cont);
+			$pattern = '/&frac(\d)(\d);/';
+			$replacement = '$1/$2';
+			$nutxt = preg_replace($pattern, $replacement, $nutxt);
+			$db->setQuery('UPDATE content SET serial_content='.$db->quote($nutxt).' WHERE contentID='.$cid);
+			$db->execute();
+		}
+		catch (Exception $e)
+		{
+			$this->setError($e);
+		}
+	}
+
+
 	public function deleteItem ($iid)
 	{
 		try
