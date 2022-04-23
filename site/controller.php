@@ -26,7 +26,9 @@ class UserNotesController extends JControllerLegacy
 		$this->uid = Factory::getUser()->get('id');
 		$this->mnuItm = $this->input->getInt('Itemid', 0);
 		if ($this->mnuItm) {
-			Factory::getApplication()->setUserState('com_usernotes.instance', $this->mnuItm.':'.UserNotesHelper::getStorageDir(true).':'.$this->uid);
+			$unid = $this->mnuItm.':'.UserNotesHelper::getStorageDir(true).':'.$this->uid;
+			Factory::getApplication()->setUserState('com_usernotes.instance', $unid);
+			file_put_contents('APPARMS.TXT',print_r($unid,true),FILE_APPEND);
 		}
 	}
 

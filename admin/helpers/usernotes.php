@@ -24,6 +24,7 @@ abstract class UserNotesHelper
 		if ($iid) {
 			self::$instanceID = $iid;
 		}
+		file_put_contents('APPARMS.TXT',print_r(self::$instanceID,true),FILE_APPEND);
 		return self::$instanceID;
 	}
 
@@ -309,7 +310,7 @@ abstract class UserNotesHelper
 				self::$instanceType = $nids[0];
 				self::$ownerID = $nids[1];
 			} else {
-				$params = $app->getParams();	file_put_contents('APPARMS.TXT',print_r($params,true),FILE_APPEND);
+				$params = $app->getParams();
 				self::$instanceType = $params->get('notes_type');
 				switch (self::$instanceType) {
 					case 0:
