@@ -6,24 +6,39 @@
 */
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Factory;
+//use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\MVC\Controller\FormController;
 
+JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 JLoader::register('JHtmlUsernotes', JPATH_COMPONENT . '/helpers/html/usernotes.php');
 
-class UsernotesControllerEdit extends JControllerForm
+class UsernotesControllerEdit extends FormController
 {
-	protected $mnuItm;
-	protected $uID;
+	protected $instanceObj;
 
-	public function __construct ($config = [])
+	public function __construct ($config = [], MVCFactoryInterface $factory = null, $app = null, $input = null)
 	{
-		parent::__construct($config);
+		parent::__construct($config, $factory, $app, $input);
 		if (JDEBUG) { JLog::addLogger(['text_file'=>'com_usernotes.log.php'], JLog::ALL, ['com_usernotes']); }
-		$this->mnuItm = $this->input->getInt('Itemid', 0);
-		$this->uID = Factory::getUser()->get('id');
+		$this->instanceObj = UserNotesHelper::getInstanceObject();
+
+		// fail if public access attempt to a 'user' instance
+		if ($this->instanceObj->type == 0 && !$this->instanceObj->uid) throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+
+		JHtmlUsernotes::setInstance($this->instanceObj);
+	}
+
+
+	public function display ($cachable = false, $urlparams = false)
+	{
+		if ($iv = $this->input->get('view', null)) {
+			$iview = $this->getView($iv,'html');
+//			$iview->unI = strtr(base64_encode($this->unI), '+/=', '._-');
+		}
+		return parent::display($cachable, $urlparams);
 	}
 
 
@@ -35,20 +50,6 @@ class UsernotesControllerEdit extends JControllerForm
 
 
 	public function editNote ()
-	{
-		$this->input->set('view', 'edit');
-		$this->display();
-	}
-
-
-	public function addFolder ()
-	{
-		$this->input->set('view', 'edit');
-		$this->display();
-	}
-
-
-	public function editFolder ()
 	{
 		$this->input->set('view', 'edit');
 		$this->display();
@@ -72,51 +73,40 @@ class UsernotesControllerEdit extends JControllerForm
 		} else {
 			$whr = 'pid=' . $pid;
 		}
-		$this->setRedirect(Route::_('index.php?option=com_usernotes&'.$whr.'&Itemid='.$this->mnuItm, false));
+		$this->setRedirect(Route::_('index.php?option=com_usernotes&'.$whr.'&Itemid='.$this->instanceObj->menuid, false));
 	}
 
 
 	public function saveNote ()
 	{
 		// Check for request forgeries.
-		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
-
-		$model = $this->getModel('usernote');
+		Session::checkToken() or throw new Exception(Text::_('JINVALID_TOKEN'), 403);
 
 		// Get the data from POST
 		$formData = new JInput($this->input->post->get('jform', [], 'array'));
 
-		$model->storeNote($formData, $this->uID);
+		// Check permissions
+		if (!(($formData->getInt('itemID', 0) && $this->instanceObj->canEdit()) || $this->instanceObj->canCreate())) throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+
+		$model = $this->getModel('usernote');
+		$model->storeNote($formData, $this->instanceObj->uid);
+
 		// checkin the item
 		$this->getModel()->checkIn($formData->getInt('itemID'));
-		
-		$this->setRedirect(Route::_('index.php?option=com_usernotes&pid='.$formData->getInt('parentID').'&Itemid='.$this->mnuItm, false));
-	}
 
-
-	public function saveFolder ()
-	{
-		// Check for request forgeries.
-		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
-
-		$model = $this->getModel('usernote');
-
-		// Get the data from POST
-		$formData = new JInput($this->input->post->get('jform', [], 'array'));
-
-		$pid = $model->storeFolder($formData, $this->uID);
-
-		$this->setRedirect(Route::_('index.php?option=com_usernotes&pid='.$pid.'&Itemid='.$this->mnuItm, false));
+		$this->setRedirect(Route::_('index.php?option=com_usernotes&pid='.$formData->getInt('parentID').'&Itemid='.$this->instanceObj->menuid, false));
 	}
 
 
 	public function deleteItem ()
 	{
-		if (!$this->uID) return;
+		if (!$this->instanceObj->canDelete()) throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+//		if (!$this->instanceObj->uid) return;
 		$model = $this->getModel('usernote');
 		$iid = $this->input->get('iid', 0, 'int');
 		$pid = $model->deleteItem($iid);
-		$this->setRedirect(Route::_('index.php?option=com_usernotes&pid='.$pid.'&Itemid='.$this->mnuItm, false));
+		$this->setRedirect(Route::_('index.php?option=com_usernotes&pid='.$pid.'&Itemid='.$this->instanceObj->menuid, false));
 	}
+
 
 }

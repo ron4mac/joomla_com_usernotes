@@ -13,6 +13,12 @@ use Joomla\CMS\HTML\HTMLHelper;
 
 abstract class JHtmlUsernotes
 {
+	protected static $instanceObj = null;
+
+	public static function setInstance (Object $obj)
+	{
+		self::$instanceObj = $obj;
+	}
 
 	public static function itemLink ($item)
 	{
@@ -110,7 +116,8 @@ abstract class JHtmlUsernotes
 
 	public static function searchField ($pid, $val='')
 	{
-		$mnuId = self::mnuId();
+//		$mnuId = self::mnuId();
+		$mnuId = self::$instanceObj->menuid;
 		$fact = self::aiUrl('');
 		return <<<EOD
 <div class="search">
@@ -175,16 +182,14 @@ EOD;
 		$html = '<span class="atchlbl">Attachments:</span>';
 		foreach ($atchs as $atchr) {
 			$atch = $atchr[0];
+			$html .= '<div data-afile="'.rawurlencode($atch).'" class="atchlink">';
+			$html .= '<a href="javascript:void(0);" class="noeffect" onclick="UNote.getAttach(event,this,true)" title="'.Text::_('COM_USERNOTES_DOWNFIL').'">'.self::ico('dl').'</a>';
+			$html .= ' <a href="javascript:void(0);" class="noeffect" onclick="UNote.getAttach(event,this,false)" title="'.Text::_('COM_USERNOTES_VIEWFIL').'">'.$atch.'</a>';
 			if ($edt) {
-				$html .= '<br /><span>';
-				$html .= '<a href="javascript:void(0);" title="'.Text::_('COM_USERNOTES_DEL_ATT').'" class="att-left" onclick="UNote.aj_delAttach(event,'.$cid.',\''.$atch.'\')">'.self::ico('ax','idang').'</a>';
-				$html .= '<a href="javascript:void(0);" title="'.Text::_('COM_USERNOTES_REN_ATT').'" class="att-left" onclick="UNote.aj_renAttach(event,'.$cid.',\''.$atch.'\')">'.self::ico('ae','idarn').'</a>';
-				$html .= '&nbsp;'.$atch.'</span>';
-			} else {
-				$html .= '<div data-afile="'.rawurlencode($atch).'" class="atchlink">';
-				$html .= '<a href="javascript:void(0);" class="noeffect" onclick="UNote.getAttach(event,this,true)" title="'.Text::_('COM_USERNOTES_DOWNFIL').'">'.self::ico('dl').'</a><a href="javascript:void(0);" class="noeffect" onclick="UNote.getAttach(event,this,false)" title="'.Text::_('COM_USERNOTES_VIEWFIL').'">'.$atch.'</a>';
-				$html .= '</div>';
+				$html .= ' <a href="javascript:void(0);" title="'.Text::_('COM_USERNOTES_DEL_ATT').'" class="att-left" onclick="UNote.aj_delAttach(event,'.$cid.',\''.$atch.'\')">'.self::ico('ax','idang').'</a>';
+				$html .= ' <a href="javascript:void(0);" title="'.Text::_('COM_USERNOTES_REN_ATT').'" class="att-left" onclick="UNote.aj_renAttach(event,'.$cid.',\''.$atch.'\')">'.self::ico('ae','idarn').'</a>';
 			}
+			$html .= '</div>';
 		}
 		return $html;
 	}
@@ -219,20 +224,20 @@ EOD;
 	private static function aiUrl ($prms, $xml=true)
 	{
 		if (is_array($prms)) $prms = http_build_query($prms);
-		$url = Route::_('index.php?option=com_usernotes'.($prms?('&'.$prms):'').'&Itemid='.self::mnuId(), $xml);
+		$url = Route::_('index.php?option=com_usernotes'.($prms?('&'.$prms):'').'&Itemid='.self::$instanceObj->menuid, $xml);
 		return $url;
 	}
 
 
-	private static function mnuId ()
-	{
-		static $mnuId = 0;
-
-		if (!$mnuId) {
-			$mnuId = Factory::getApplication()->input->getInt('Itemid', 0);
-		}
-		return $mnuId;
-	}
+//	private static function mnuId ()
+//	{
+//		static $mnuId = 0;
+//
+//		if (!$mnuId) {
+//			$mnuId = Factory::getApplication()->input->getInt('Itemid', 0);
+//		}
+//		return $mnuId;
+//	}
 
 
 	private static function form_prep ($str = '', $field_name = '')

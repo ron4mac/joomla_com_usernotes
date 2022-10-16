@@ -13,18 +13,62 @@ abstract class UserNotesHelper
 	const COMP = 'com_usernotes';
 	protected static $instanceID = null;
 	protected static $instanceType = null;
+	protected static $instanceObj = null;
 	protected static $ownerID = null;
 	protected static $udp = null;
 	protected static $idp = null;			// instance data path
+
+	public static function getInstanceObject ()
+	{
+		if (!empty(self::$instanceObj)) return self::$instanceObj;
+		$app = Factory::getApplication();
+		$menuid = $app->input->getInt('Itemid', 0);
+		if (!$menuid) throw new Exception('COM_USERNOTES_MISSING_MENUID');
+		$params = $app->getParams();
+	//	file_put_contents('APPARMS.TXT',print_r($params,true),FILE_APPEND);
+		$user = $app->getIdentity();
+		$uid = $user->get('id');
+		$ugrps = $user->get('groups');
+		$allperms = UnotesInstanceObject::CAN_CREA + UnotesInstanceObject::CAN_EDIT + UnotesInstanceObject::CAN_DELE;
+		$path = '';
+		$perms = 0;
+		switch ($params->get('notes_type')) {
+			case 0:	//user
+				if ($uid) $perms = $allperms;
+				$path = '@'.$uid;
+				break;
+			case 1:	//group
+				$auth = $params->get('group_auth');
+				$path = '_'.$auth;
+				if ($uid && in_array($auth, $ugrps)) $perms = $allperms;
+				break;
+			case 2:	//site
+				$auth = $params->get('site_auth');
+				$path = '_0';
+				if ($uid && in_array($auth, $ugrps)) $perms = $allperms;
+				break;
+		}
+		$obj = new UnotesInstanceObject($params->get('notes_type'), $menuid, $uid, $path, $perms);
+		file_put_contents('APPARMS.TXT',print_r($obj,true),FILE_APPEND);
+		self::$instanceObj = $obj;
+		return $obj;
+	}
 
 	public static function getInstanceID ()
 	{
 		if (self::$instanceID) return self::$instanceID;
 		$iid = Factory::getApplication()->getUserState('com_usernotes.instance', '');
+		$f='';
+		if (!$iid) {
+			$iid = Factory::getApplication()->getUserStateFromRequest('com_usernotes.instance', 'instance', '');
+			$iid2 = Factory::getApplication()->getUserStateFromRequest('com_usernotes.unI', 'unI', '');
+			$unI = base64_decode(strtr($iid2, '._-', '+/='));
+			$f=' fr '.$unI;
+		}
 		if ($iid) {
 			self::$instanceID = $iid;
 		}
-		file_put_contents('APPARMS.TXT',print_r(self::$instanceID,true),FILE_APPEND);
+		file_put_contents('APPARMS.TXT',print_r(self::$instanceID,true).$f."\n",FILE_APPEND);
 		return self::$instanceID;
 	}
 
@@ -60,7 +104,7 @@ abstract class UserNotesHelper
 
 		$sdp = self::getStorageBase();
 		$ndir = self::getStorageDir();
-		$cmp = JApplicationHelper::getComponentName();
+		$cmp = JApplicationHelper::getComponentName().'_'.self::$instanceObj->menuid;
 
 		self::$idp = $sdp.'/'.$ndir.'/'.$cmp;
 		return self::$idp;
@@ -72,7 +116,7 @@ abstract class UserNotesHelper
 
 		$sdp = self::getStorageBase();
 		$ndir = self::getStorageDir();
-		$cmp = JApplicationHelper::getComponentName();
+		$cmp = JApplicationHelper::getComponentName().'_'.self::$instanceObj->menuid;
 
 		self::$udp = $sdp.'/'.$ndir.'/'.$cmp;
 		return self::$udp;
@@ -81,7 +125,8 @@ abstract class UserNotesHelper
 	public static function getStorageDir ($force=false)
 	{
 		if (!$force) {
-			list(,$ddir,) = explode(':', self::getInstanceID());
+			return self::$instanceObj->path;
+			list(/*,*/$ddir,) = explode(':', self::getInstanceID()?:':?:');
 			return $ddir;
 		}
 
@@ -140,7 +185,7 @@ abstract class UserNotesHelper
 
 	public static function hashCookieName ($v1=0, $v2=0)
 	{
-		$uid = Factory::getUser()->get('id');
+		$uid = Factory::getApplication()->getIdentity()->get('id');
 		return md5(implode(':', [$uid, $v1, $v2]));
 	}
 
@@ -211,7 +256,7 @@ abstract class UserNotesHelper
 	public static function userAuth ($uid)
 	{
 		self::getTypeOwner();
-		$user = Factory::getUser();
+		$user = Factory::getApplication()->getIdentity();
 		$uid = $user->get('id');
 		$ugrps = $user->get('groups');
 		switch (self::$instanceType) {
@@ -225,15 +270,9 @@ abstract class UserNotesHelper
 		}
 	}
 
-	public static function _getInstanceID ()
-	{
-		if (is_null(self::$instanceType)) self::getTypeOwner();
-		return base64_encode(self::$instanceType.':'.self::$ownerID);
-	}
-
 	public static function getActions ()
 	{
-		$user = Factory::getUser();
+		$user = Factory::getApplication()->getIdentity();
 		$result = new JObject;
 
 		$actions = JAccess::getActionsFromFile(JPATH_ADMINISTRATOR . '/components/'.self::COMP.'/access.xml');
@@ -314,7 +353,7 @@ abstract class UserNotesHelper
 				self::$instanceType = $params->get('notes_type');
 				switch (self::$instanceType) {
 					case 0:
-						self::$ownerID = Factory::getUser()->get('id') ?: -1;
+						self::$ownerID = Factory::getApplication()->getIdentity()->get('id') ?: -1;
 						break;
 					case 1:
 						self::$ownerID = $params->get('group_auth');
@@ -325,6 +364,41 @@ abstract class UserNotesHelper
 				}
 			}
 		}
+	}
+
+}
+
+
+class UnotesInstanceObject
+{
+	protected $perms;
+	public $type, $menuid, $uid, $path;
+	public const CAN_CREA = 1;
+	public const CAN_EDIT = 2;
+	public const CAN_DELE = 4;
+
+	public function __construct ($type, $menuid, $uid, $path, $perms)
+	{
+		$this->type = $type;
+		$this->menuid = $menuid;
+		$this->uid = $uid;
+		$this->path = $path;
+		$this->perms = $perms;
+	}
+
+	public function canCreate ()
+	{
+		return ($this->perms & self::CAN_CREA);
+	}
+
+	public function canEdit ()
+	{
+		return ($this->perms & self::CAN_EDIT);
+	}
+
+	public function canDelete ()
+	{
+		return ($this->perms & self::CAN_DELE);
 	}
 
 }

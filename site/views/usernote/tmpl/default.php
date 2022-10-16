@@ -12,37 +12,28 @@ use Joomla\CMS\HTML\HTMLHelper;
 $this->jDoc->addScript('components/com_usernotes/static/js/upload5d.js', ['version' => 'auto']);
 $this->jDoc->addScript('components/com_usernotes/static/js/rating.js', ['version' => 'auto']);
 $jslang = [
-		'ru_sure' => Text::_('COM_USERNOTES_RU_SURE'),
-		'fsz2big' => Text::_('COM_USERNOTES_FSZ2BIG'),
-		'fbadtyp' => Text::_('COM_USERNOTES_FBADTYP')
-	];
+	'ru_sure' => Text::_('COM_USERNOTES_RU_SURE'),
+	'fsz2big' => Text::_('COM_USERNOTES_FSZ2BIG'),
+	'fbadtyp' => Text::_('COM_USERNOTES_FBADTYP'),
+	'sure_del_att' => Text::_('COM_USERNOTES_SURE_DEL_ATT'),
+	'rename_att' => Text::_('COM_USERNOTES_RENAME_ATT')
+];
 $jsvars = [
-//	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=',
-//	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&task=',
-//	'aBaseURL' => $this->aUrl('format=raw').'&task=',
 	'aBaseURL' => $this->aUrl('format=raw'),
 	'itemID' => $this->item->itemID,
-	'notesID' => urlencode($this->notesID),
 	'parentID' => $this->item->parentID,
 	'contentID' => ($this->item->contentID?:0)
 ];
 $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
-//var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=";
-//var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&task=";
-//var itemID = '.$this->item->itemID.';
-//var notesID = "'.urlencode($this->notesID).'";
-//var parentID = '.$this->item->parentID.';
-//var contentID = '.$this->item->contentID.';
-//var upldDestURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'";
-//var upldDestURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw";
 var upldDestURL = "'.$this->aUrl('format=raw').'";
-var fup_payload = {task:"attach", cID:'.$this->item->contentID.'};
+var fup_payload = {task:"edit.attach", cID:'.$this->item->contentID.'};
 var uploadMaxFilesize = '.$this->maxUploadBytes.';
 	UNote.L = '.json_encode($jslang).';
 	UNote.V = '.json_encode($jsvars).';
 ');
-//var_dump($this->item);
+
 $itemID = $this->item->itemID;
+
 $prning = ($this->state->get('task', 0) === 'printNote');
 //echo'<xmp>';var_dump($prning,$this->state->get('task', 0));echo'</xmp>';
 if ($prning) echo '<button type="button" class="btn btn-primary" onclick="window.close();window.history.back();">'.Text::_('COM_USERNOTES_PRNDONE').'</button>';
@@ -60,20 +51,20 @@ if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
 <?php if (!$prning): ?>
 	<div id="attachments">
 <?php if ($this->attached): ?>
-		<?=HTMLHelper::_('usernotes.att_list',$this->attached,$this->item->contentID)?>
+		<?=JHtmlUsernotes::att_list($this->attached,$this->item->contentID, ($this->access & ITM_CAN_EDIT+ITM_CAN_DELE))?>
 <?php endif; ?>
 	</div>
 	<div class="footer">
 		<?php
-			echo HTMLHelper::_('usernotes.prnActIcon',$itemID,Text::_('COM_USERNOTES_PRNNOTE'));
+			echo JHtmlUsernotes::prnActIcon($itemID,Text::_('COM_USERNOTES_PRNNOTE'));
 		if ($this->access & ITM_CAN_EDIT) {
-			echo HTMLHelper::_('usernotes.edtActIcon',$itemID,Text::_('COM_USERNOTES_EDTNOTE'));
-			echo HTMLHelper::_('usernotes.attActIcon',$itemID,Text::_('COM_USERNOTES_ADDATCH'));
-			echo HTMLHelper::_('usernotes.movActIcon',$itemID,Text::_('COM_USERNOTES_MOVNOTE'));
-			echo HTMLHelper::_('usernotes.toolActIcon',$itemID,Text::_('COM_USERNOTES_SPCTOOL'));
+			echo JHtmlUsernotes::edtActIcon($itemID,Text::_('COM_USERNOTES_EDTNOTE'));
+			echo JHtmlUsernotes::attActIcon($itemID,Text::_('COM_USERNOTES_ADDATCH'));
+			echo JHtmlUsernotes::movActIcon($itemID,Text::_('COM_USERNOTES_MOVNOTE'));
+			echo JHtmlUsernotes::toolActIcon($itemID,Text::_('COM_USERNOTES_SPCTOOL'));
 		}
 		if ($this->access & ITM_CAN_DELE) {
-			echo HTMLHelper::_('usernotes.delActIcon',$itemID,Text::_('COM_USERNOTES_DELNOTE'));
+			echo JHtmlUsernotes::delActIcon($itemID,Text::_('COM_USERNOTES_DELNOTE'));
 		}
 		?>
 		&nbsp;<?=$this->footMsg?>

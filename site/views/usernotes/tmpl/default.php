@@ -22,7 +22,6 @@ UNote.V = '.json_encode($jsvars).';
 ');
 
 if (/*$this->state->secured*/ $this->item && $this->item->secured && $_SERVER['SERVER_PORT'] != 443) {
-	//JError::raiseNotice(100, 'You do not have a secure connection!', 'error');
 	$this->nqMessage('<span style="color:red">'.Text::_('COM_USERNOTES_NOTICE_INSECURE').'</span>', 'warning');
 	//echo '<div style="background-color:red;color:white;">WARNING: You do not have a secure connection!</div>';
 }
@@ -54,27 +53,27 @@ if ($this->state->secured && $_SERVER['SERVER_PORT'] != 443) {
 // accommodate targeted breadcrumb module
 echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 // display the search field
-echo HTMLHelper::_('usernotes.searchField', $this->parentID);
+echo JHtmlUsernotes::searchField($this->parentID);
 ?>
 <div id="container">
 	<div id="body">
 	<div id="itemsList">
 	<?php foreach($this->items as $item): ?>
 		<div class="item">
-			<?=HTMLHelper::_('usernotes.itemLink', $item);?>
+			<?=JHtmlUsernotes::itemLink($item);?>
 		</div>
 	<?php endforeach; ?>
 	</div>
 	</div>
 	<div class="footer">
 		<?php if ($this->access & ITM_CAN_CREA) : ?>
-		<?=HTMLHelper::_('usernotes.newActIcon',$this->parentID, Text::_('COM_USERNOTES_EDIT_FORM_CREATE'))?><?=HTMLHelper::_('usernotes.fNewActIcon', $this->parentID.'&type=f',Text::_('COM_USERNOTES_EDIT_FORM_CREATE_F'))?>
+		<?=JHtmlUsernotes::newActIcon($this->parentID, Text::_('COM_USERNOTES_EDIT_FORM_CREATE'))?><?=JHtmlUsernotes::fNewActIcon($this->parentID.'&type=f',Text::_('COM_USERNOTES_EDIT_FORM_CREATE_F'))?>
 		<?php else : ?>
 		&nbsp;
 		<?php endif;?>
 		<?php if ($this->parentID) {
-			if ($this->access & ITM_CAN_DELE) echo HTMLHelper::_('usernotes.fDelActIcon', $this->parentID,Text::_('COM_USERNOTES_EDIT_FORM_DELETE_F'));
-			if ($this->access & ITM_CAN_EDIT) echo HTMLHelper::_('usernotes.fEdtActIcon', $this->parentID,Text::_('COM_USERNOTES_EDIT_FORM_EDIT_F'));
+			if ($this->access & ITM_CAN_DELE) echo JHtmlUsernotes::fDelActIcon($this->parentID,Text::_('COM_USERNOTES_EDIT_FORM_DELETE_F'));
+			if ($this->access & ITM_CAN_EDIT) echo JHtmlUsernotes::fEdtActIcon($this->parentID,Text::_('COM_USERNOTES_EDIT_FORM_EDIT_F'));
 			}
 		?>
 	</div>

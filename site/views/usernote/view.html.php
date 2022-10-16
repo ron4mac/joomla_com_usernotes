@@ -50,7 +50,7 @@ class UsernotesViewUsernote extends UsernotesViewBase
 		// Check for errors.
 		// @TODO: Maybe this could go into JComponentHelper::raiseErrors($this->get('Errors'))
 		if (count($errors = $this->get('Errors'))) {
-			JError::raiseWarning(500, implode("\n", $errors));
+			throw new Exception(implode("\n", $errors), 500);
 			return false;
 		}
 
@@ -68,7 +68,7 @@ class UsernotesViewUsernote extends UsernotesViewBase
 		$this->maxUploadBytes = $limits['maxUpload'];
 
 		// Escape strings for HTML output
-		$this->pageclass_sfx = htmlspecialchars($this->params->get('pageclass_sfx'));
+		$this->pageclass_sfx = htmlspecialchars($this->params->get('pageclass_sfx', ''));
 
 		$this->_prepareDocument();
 

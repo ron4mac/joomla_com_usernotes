@@ -24,14 +24,13 @@ class JFormFieldGmkbValue extends JFormField
 
 		// create the component default display
 		list($cdv,$cdm) = $this->num2gmkv($this->element['compdef']);
-		$mc = [' KB',' MB',' GB'];
+		$mc = ['KB','MB','GB'];
 		$compdef = $cdv.$mc[$cdm];
 
 		// class='required' for client side validation
 		$class = '';
 
-		if ($this->required)
-		{
+		if ($this->required) {
 			$class = ' class="required modal-value"';
 		}
 
@@ -42,7 +41,7 @@ class JFormFieldGmkbValue extends JFormField
 		$html	= [];
 
 		$html[] = '<input type="checkbox" id="'.$this->id.'_dchk" onclick="GMKBff.sDef(this)" '.($this->value ? '' : 'checked ').'style="vertical-align:initial" />';
-		$html[] = '<label for="'.$this->id.'_dchk" style="display:inline;margin-right:1em">'.Text::_('JDEFAULT').'</label>';
+		$html[] = '<label for="'.$this->id.'_dchk" style="display:inline;margin-right:1em">'.Text::_('JGLOBAL_USE_GLOBAL').'</label>';
 
 		$html[] = '<span class="input-gmkb'.($this->value ? '' : ' hidden').'">';
 		$html[] = '<input type="number" step="1" min="1" class="input-medium" id="' . $this->id . '_name" value="' . $uplsiz .'" onchange="GMKBff.sVal(this.parentNode)" onkeyup="GMKBff.sVal(this.parentNode)" style="width:4em;text-align:right" />';
@@ -61,27 +60,28 @@ class JFormFieldGmkbValue extends JFormField
 			$scripted = true;
 			$jdoc = Factory::getDocument();
 			$script = '
-var GMKBff = (function($) {
+var GMKBff = (function() {
 	return {
 		sDef: function (elm) {
+			let pel = elm.parentElement;
 			if (elm.checked) {
-				$(elm).siblings(".input-gmkb").addClass("hidden");
-				$(elm).siblings(".gmkb-dflt").removeClass("hidden");
-				$(elm).siblings(".input-gmkb").children(".gmkb-valu").val(0);
+				pel.querySelector(".input-gmkb").classList.add("hidden");
+				pel.querySelector(".gmkb-dflt").classList.remove("hidden");
+				pel.querySelector(".gmkb-valu").value = 0;
 			} else {
-				$(elm).siblings(".gmkb-dflt").addClass("hidden");
-				$(elm).siblings(".input-gmkb").removeClass("hidden");
-				this.sVal($(elm).siblings(".input-gmkb"));
+				pel.querySelector(".gmkb-dflt").classList.add("hidden");
+				pel.querySelector(".input-gmkb").classList.remove("hidden");
+				this.sVal(pel.querySelector(".input-gmkb"));
 			}
 		},
 		sVal: function (elm) {
-			var valu = $(elm).children(".gmkb-valu").eq(0);
-			var numb = +$(elm).children(".input-medium").val();
-			var shft = +$(elm).children(".gkmb-sel").val();
-			valu.val(numb * shft);
+			let vel = elm.querySelector(".gmkb-valu");
+			let numb = +elm.querySelector(".input-medium").value;
+			let shft = +elm.querySelector(".gkmb-sel").value;
+			vel.value = numb * shft;
 		}
 	};
-})(jQuery);
+})();
 '		;
 			$jdoc->addScriptDeclaration($script);
 			$jdoc->addStyleDeclaration('.gmkb-dflt { opacity:0.5;display:inline-block;padding-top:4px }');
@@ -94,8 +94,9 @@ var GMKBff = (function($) {
 		$parts = explode('/', $num);
 		if (isset($parts[1])) {
 			$num = $this->compoptv($parts[1], (int)$parts[0]);
+		} else {
+			$num = (int)$num;
 		}
-	//	var_dump($parts,$num);
 
 		$sizm = 0;
 		if ($num) {

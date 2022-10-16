@@ -119,6 +119,7 @@ UNote.Upld5d = (function(){
 				this.progress.className = "failure";
 				errCnt++;
 				UpdateTotalProgress(file.size);
+				this.xhr = null;
 				NextInQueue(true,'errM');
 				return;
 			}

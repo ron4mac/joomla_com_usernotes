@@ -8,6 +8,7 @@
 	let ddlog = null;
 	let _celm = null;
 
+	/** @noinline */
 	const _Id = (elm) => document.getElementById(elm);
 
 	var estop = (e, sp=false) => {
@@ -79,7 +80,7 @@
 	UNote.aj_delAttach = (evt, cid, fn) => {
 		estop(evt);
 		if (!confirm(UNote.L.sure_del_att)) return;
-		postAction('detach', { contentID: cid, file: fn }, (data) => {
+		postAction('edit.detach', { contentID: cid, file: fn }, (data) => {
 			if (data.err) { alert(data.err); }
 			else { _Id("attachments").innerHTML = data.htm; }
 		}, true);
@@ -90,7 +91,7 @@
 		estop(evt);
 		let nnam = prompt(UNote.L.rename_att, fn);
 		if (!nnam) return;
-		postAction('renAttach', { contentID: cid, file: fn, tofile: nnam }, (data) => {
+		postAction('edit.renAttach', { contentID: cid, file: fn, tofile: nnam }, (data) => {
 			if (data.err) { alert(data.err); }
 			else { _Id("attachments").innerHTML = data.htm; }
 		}, true);
@@ -105,18 +106,18 @@
 	};
 
 
-	UNote.reloadView = () => {
+/*	UNote.reloadView = () => {
 		let bdiv = _Id("body");
 		postAction('ajitem', { iID: UNote.V.itemID }, (data) => {
 			if (data) { bdiv.innerHTML = data; }
 			else { alert("no data"); }
 		});
 	};
-
+*/
 
 	UNote.fup_done = (rslt) => {
 		if (!rslt) _Id('filupld').style.display = "none";
-		postAction('attlist', { contentID: UNote.V.contentID }, (data) => {
+		postAction('edit.attlist', { contentID: UNote.V.contentID }, (data) => {
 			if (data) { _Id("attachments").innerHTML = data; }
 			else { alert("no data"); }
 		});
@@ -126,11 +127,12 @@
 	UNote.getAttach = (evt, elm, down) => {
 		estop(evt,true);
 		let afile = elm.parentNode.dataset.afile;
+		let aurl = UNote.V.aBaseURL+"&view=atvue&cat="+UNote.V.contentID+"|"+afile;
 		if (down) {
 			let dlf = _Id("dnldf");
-			dlf.src = UNote.V.aBaseURL+"&view=atvue&format=raw&cat="+UNote.V.contentID+"|"+afile+"&down=1";
+			dlf.src = aurl + "&down=1";
 		} else {
-			window.location = UNote.V.aBaseURL+"&view=atvue&format=raw&cat="+UNote.V.contentID+"|"+afile;
+			window.location = aurl;
 		}
 	};
 
@@ -140,7 +142,7 @@
 		ddlog = document.createElement("div");
 		ddlog.className = "utildlog";
 		_celm.appendChild(ddlog);
-		postAction('cat_hier', { iID: UNote.V.itemID, pID: UNote.V.parentID }, (data) => {
+		postAction('edit.cat_hier', { iID: UNote.V.itemID, pID: UNote.V.parentID }, (data) => {
 			if (data) { ddlog.innerHTML = data; }
 			else { alert("no data"); }
 		});
@@ -157,7 +159,7 @@
 
 	UNote.doMove = (doit) => {
 		if (doit) {
-			postAction('movitm', { iID: UNote.V.itemID, pID: _Id('moveTo').value }, (data) => {
+			postAction('edit.movitm', { iID: UNote.V.itemID, pID: _Id('moveTo').value }, (data) => {
 					if (data) { alert(data); }
 					else { window.location.reload(); }
 			});
@@ -178,7 +180,7 @@
 			if (!confirm(UNote.sprintf(UNote.L.ru_sure, evt.target.dataset.sure))) return;
 		}
 		estop(evt);
-		postAction('tool', { mnuact: act, iID: UNote.V.itemID, cID: UNote.V.contentID }, (data) => {
+		postAction('edit.tool', { mnuact: act, iID: UNote.V.itemID, cID: UNote.V.contentID }, (data) => {
 			if (data) { alert(data); }
 			else { window.location.reload(); }
 		});
@@ -259,6 +261,8 @@
 	document.addEventListener('DOMContentLoaded', () => {
 		_celm = _Id('container');
 		_celm && _celm.addEventListener('click', evtHandler);
+		let dlg = _Id("foldercr-modal");
+		dlg && dlg.addEventListener("shown.bs.modal", () => _Id("jform_title").focus() );
 	});
 
 })(window.UNote = window.UNote || {});

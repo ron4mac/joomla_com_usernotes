@@ -22,12 +22,6 @@ $jsvars = [
 ];
 
 $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
-//var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=";
-//var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&task=";
-//var itemID = '.$this->item->itemID.';
-//var notesID = "'.urlencode($this->notesID).'";
-//var parentID = '.$this->item->parentID.';
-//var contentID = '.$this->item->contentID.';
 	UNote.L = '.json_encode($jslang).';
 	UNote.V = '.json_encode($jsvars).';
 ');

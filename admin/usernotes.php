@@ -16,7 +16,7 @@ $j_version = preg_replace('#[^0-9\.]#i','',JVERSION);
 define('USERNOTES_J30', version_compare($j_version,'3.0.0','>=') ? true : false);
 
 if (!Factory::getUser()->authorise('core.manage', 'com_usernotes')) {
-	return JError::raiseWarning(404, Text::_('JERROR_ALERTNOAUTHOR'));
+	throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 404);
 }
 
 $controller = BaseController::getInstance('UserNotes');

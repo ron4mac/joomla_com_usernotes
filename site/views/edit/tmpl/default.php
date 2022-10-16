@@ -11,32 +11,19 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 
 HTMLHelper::_('behavior.keepalive');
-//HTMLHelper::_('bootstrap.tooltip');
 HTMLHelper::_('behavior.formvalidator');
 
 // Build values for javascript use
 $jsvars = [
-//	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=',
-//	'aBaseURL' => JUri::base().'index.php?option=com_usernotes&format=raw&task=',
-//	'aBaseURL' => $this->aUrl('format=raw').'&task=',
 	'aBaseURL' => $this->aUrl('format=raw'),
 	'itemID' => $this->item->itemID,
-	'notesID' => urlencode($this->notesID),
 	'parentID' => $this->item->parentID,
 	'contentID' => ($this->item->contentID?:0)
 ];
 $jslang = [
-		'sure_del_att' => Text::_('COM_USERNOTES_SURE_DEL_ATT'),
-		'rename_att' => Text::_('COM_USERNOTES_RENAME_ATT'),
 		'ru_sure' => Text::_('COM_USERNOTES_RU_SURE')
 	];
 $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
-//var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&unID='.urlencode($this->notesID).'&task=";
-//var aBaseURL = "'.JUri::base().'index.php?option=com_usernotes&format=raw&task=";
-//var itemID = '.$this->item->itemID.';
-//var notesID = "'.urlencode($this->notesID).'";
-//var parentID = '.$this->item->parentID.';
-//var contentID = '.($this->item->contentID?:0).';
 	UNote.L = '.json_encode($jslang).';
 	UNote.V = '.json_encode($jsvars).';
 ');
@@ -68,12 +55,11 @@ echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 			</div>
 		</fieldset>
 		<input type="hidden" name="task" value="<?=$task?>" />
+		<input type="hidden" name="instance" value="<?=$this->instance?>" />
 		<input type="hidden" name="Itemid" value="<?=$this->itemId?>" />
 		<?php echo HTMLHelper::_('form.token'); ?>
 	</form>
-	<?php if (isset($this->attached) && $this->attached): ?>
-	<div id="attachments">
-		<?=HTMLHelper::_('usernotes.att_list', $this->attached, $this->item->contentID, true)?>
-	</div>
-	<?php endif; ?>
 </div>
+<script>
+	if (!UNote.V.itemID) document.getElementById('jform_title').focus();
+</script>

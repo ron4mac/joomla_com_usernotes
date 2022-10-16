@@ -6,6 +6,11 @@
   pointer-events: none;
 }
 
+#note {
+	padding: 1rem;
+	border: 1px dashed #CCC;
+	overflow-wrap: break-word;
+}
 
 /* ============================  star rating
 */
@@ -100,7 +105,7 @@ div.utildlog {
 	background-color: #DFD;
 	border: 2px solid #CCC;
 	border-radius: 3px;
-	-webkit-box-shadow: 0 0 5px #D0D0D0;
+	box-shadow: 0 0 5px #D0D0D0;
 }
 
 
@@ -153,7 +158,7 @@ div.uplddlog {
 	border-radius: 3px;
 	box-shadow: 0 0 5px #AAA;
 }
-div#dropArea {
+#dropArea {
 	border: 1px dashed #CCC;
 	width: 100%;
 	padding: .5em 0;
@@ -162,12 +167,12 @@ div#dropArea {
 	border-radius: 5px;
 	cursor: auto;
 }
-div#dropArea.hover {
+#dropArea.hover {
 	background-color: #DFD;
 	border: 1px solid #999;
 	box-shadow: inset 2px 2px 3px #999;
 }
-div#totprogress {
+#totprogress {
 	width: 100%;
 	height: 8px;
 	border: 1px solid #BBB;
@@ -190,6 +195,10 @@ div#totprogress {
 #fprogress p.failure {
 	background: #F99 none 0 0 no-repeat;
 }
+#fprogress .abortX {
+	float: right;
+	cursor: pointer;
+}
 
 @media print {
 	header.navigation-bar { display: none; }
@@ -197,4 +206,8 @@ div#totprogress {
 	div.footer { display: none; }
 	img { display: none !important; }
 	button.btn { display: none; }
+	#note {
+		padding: 0;
+		border: none;
+	}
 }

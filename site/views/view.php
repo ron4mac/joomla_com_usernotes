@@ -9,6 +9,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\MVC\View\HtmlView;
 
 define('ITM_CAN_EDIT', 1);
 define('ITM_CAN_DELE', 2);
@@ -17,7 +18,7 @@ define('IS_SMALL_DEVICE', 0);
 
 JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 
-class UsernotesViewBase extends JViewLegacy
+class UsernotesViewBase extends HtmlView
 {
 	protected $userID;
 	protected $notesID;
@@ -37,7 +38,7 @@ class UsernotesViewBase extends JViewLegacy
 	public function __construct ($config = [])
 	{
 		parent::__construct($config);
-		$this->userID = Factory::getUser()->get('id');
+		$this->userID = Factory::getApplication()->getIdentity()->get('id');
 		if (empty($this->itemId)) {
 			$this->itemId = Factory::getApplication()->input->getInt('Itemid', 0);
 		}

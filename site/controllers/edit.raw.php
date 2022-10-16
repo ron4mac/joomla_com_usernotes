@@ -6,54 +6,26 @@
 */
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Factory;
-use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\MVC\Controller\BaseController;
 
+JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 JLoader::register('JHtmlUsernotes', JPATH_COMPONENT . '/helpers/html/usernotes.php');
 
-class UsernotesControllerEdit extends JControllerForm
+class UsernotesControllerEdit extends BaseController
 {
-	protected $mnuItm;
-	protected $uID;
+	protected $instanceObj;
 
-	public function __construct ($config = [])
+	public function __construct ($config = [], MVCFactoryInterface $factory = null, $app = null, $input = null)
 	{
-		parent::__construct($config);
+		parent::__construct($config, $factory, $app, $input);
 		if (JDEBUG) { JLog::addLogger(['text_file'=>'com_usernotes.log.php'], JLog::ALL, ['com_usernotes']); }
-		$this->mnuItm = $this->input->getInt('Itemid', 0);
-		$this->uID = Factory::getUser()->get('id');
+		$this->instanceObj = UserNotesHelper::getInstanceObject();
 	}
 
 
-	public function addNote ()
-	{
-		$this->input->set('view', 'edit');
-		$this->display();
-	}
-
-
-	public function editNote ()
-	{
-		$this->input->set('view', 'edit');
-		$this->display();
-	}
-
-
-	public function addFolder ()
-	{
-		// Check for request forgeries.
-		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
-	}
-
-
-	public function editFolder ()
-	{
-		$this->input->set('view', 'edit');
-		$this->display();
-	}
-
+/**** ajax calls *******************************/
 
 	public function saveFolder ()
 	{
@@ -64,18 +36,119 @@ class UsernotesControllerEdit extends JControllerForm
 
 		// Get the data from POST
 		$formData = new JInput($this->input->post->get('jform', [], 'array'));
+		file_put_contents('APPARMS.TXT',print_r($formData,true),FILE_APPEND);
 
-		$pid = $model->storeFolder($formData, $this->uID);
+		// Check permissions
+		if (!(($formData->getInt('itemID', 0) && $this->instanceObj->canEdit()) || $this->instanceObj->canCreate())) jexit(Text::_('JERROR_ALERTNOAUTHOR'));
+
+		$pid = $model->storeFolder($formData, $this->instanceObj->uid);
 	}
 
 
-	public function deleteItem ()
+	public function cat_hier ()
 	{
-		if (!$this->uID) return;
-		$model = $this->getModel('usernote');
-		$iid = $this->input->get('iid', 0, 'int');
-		$pid = $model->deleteItem($iid);
-		$this->setRedirect(Route::_('index.php?option=com_usernotes&pid='.$pid.'&Itemid='.$this->mnuItm, false));
+		$pid = $this->input->post->getInt('pID', 0);
+		$m = $this->getModel('usernotes');
+		$hier = $m->get_item_hier($this->instanceObj->uid);
+		echo '<span>Move item to:</span><br />';
+		echo JHtmlUsernotes::form_dropdown('moveTo', $hier, $pid, 'id="moveTo"');
+		echo '<br /><hr />'.JHtmlUsernotes::form_button('moveto', 'Move', 'style="float:right" onclick="UNote.doMove(true)"');
+		echo JHtmlUsernotes::form_button('cancel', 'Cancel', 'style="float:right" onclick="UNote.doMove(false)"');
+	}
+
+
+	public function movitm ()
+	{
+		$iid = $this->input->post->getInt('iID', 0);
+		$pid = $this->input->post->getInt('pID', 0);
+		$m = $this->getModel('usernotes');
+		echo $m->moveItem($iid, $pid);
+	}
+
+
+	public function tool ()
+	{
+		$act = $this->input->post->getCmd('mnuact','');
+		$iid = $this->input->post->getInt('iID', 0);
+		$cid = $this->input->post->getInt('cID', 0);
+	//	$this->load->model('content_model', 'mycmodel');
+	//	$ictnt = $this->mycmodel->get_item($cid, $this->enty_item);
+		$m = $this->getModel('usernote');
+		call_user_func([$m, $act], $cid);
+	}
+
+
+	public function attach ()
+	{
+		$m = $this->getModel('usernote');
+		$cid = $this->input->post->getInt('cID', 0);
+		$files = $this->input->files->get('attm', null, 'raw');
+		if (JDEBUG) {
+			$fdmp = print_r($files, true);
+			JLog::add("attach ... notesID: {$notesid}  note: {$cid}  file(s): {$fdmp}", JLog::INFO, 'com_usernotes');
+		}
+		$msg = $m->add_attached($cid, $files);
+		if ($msg) { header($_SERVER['SERVER_PROTOCOL'].' 500 '.$msg); jexit(); }
+	}
+
+
+	public function detach ()
+	{
+		$m = $this->getModel('usernote');
+		$cid = $this->input->post->getInt('contentID', 0);
+		$file = $this->input->post->getString('file', '');
+		if (JDEBUG) {
+			JLog::add("detach ... note: {$cid}  file: {$file}", JLog::INFO, 'com_usernotes');
+		}
+		$resp = [];
+		$r = $m->deleteAttachment($cid, $file);
+		if ($r) {
+			$resp['err'] = $r;
+		} else {
+			$resp['htm'] = $this->attsHtml($m, $cid, true);
+		}
+		echo json_encode($resp);
+	}
+
+
+	public function renAttach ()
+	{
+		$m = $this->getModel('usernote');
+		$cid = $this->input->post->getInt('contentID', 0);
+		$file = $this->input->post->getString('file', '');
+		$tofile = $this->input->post->getString('tofile', '');
+		if (JDEBUG) {
+			JLog::add("renAttach ... note: {$cid}  file: {$file} tofile: {$tofile}", JLog::INFO, 'com_usernotes');
+		}
+		$resp = [];
+		$r = $m->renameAttachment($cid, $file, $tofile);
+		if ($r) {
+			$resp['err'] = $r;
+		} else {
+			$resp['htm'] = $this->attsHtml($m, $cid, true);
+		}
+		echo json_encode($resp);
+	}
+
+
+	public function attlist ()
+	{
+		$m = $this->getModel('usernote');
+		$cid = $this->input->post->getInt('contentID', 0);
+		$ined = $this->input->getInt('inedit', 0);
+		echo $this->attsHtml($m, $cid, $ined);
+	}
+
+
+/**** private functions ************************/
+
+	private function attsHtml ($mdl, $cid, $edt)
+	{
+		$atchs = $mdl->attachments($cid);
+		if ($atchs) {
+			return JHtmlUsernotes::att_list($atchs, $cid, $edt);
+		}
+		return '';
 	}
 
 }

@@ -75,7 +75,7 @@ class UserNotesModelUserNotes extends JModelList
 			$this->sstrs[] = $sterm;
 		}
 
-		$userID = Factory::getUser()->get('id');
+		$userID = Factory::getApplication()->getIdentity();
 
 		$db = $this->getDbo();
 		$db->getConnection()->sqliteCreateFunction('sfunc', [$this,'sfunc'], 1);
@@ -216,7 +216,7 @@ class UserNotesModelUserNotes extends JModelList
 		$this->setState('cparams', $params);
 
 		// set whether secured item should be shown
-		$userID = Factory::getUser()->get('id');
+		$userID = Factory::getApplication()->getIdentity()->get('id');
 		$this->setState('hide-secure', !(bool)$userID);
 	}
 

@@ -30,7 +30,7 @@ function un_formGet ($view, $vitm, $ed=false)
 		$pid = empty($vitm->itemID) ? 0 : $vitm->itemID;
 		$vitm = (object) ['itemID'=>0,'parentID'=>$pid,'contentID'=>null,'checked_out'=>null,'secured'=>($vitm->secured?'1':null)];
 	} else {
-		$m->checkOut($vitm->itemID);
+//		$m->checkOut($vitm->itemID);
 		if ($vitm->secured) $vitm->title = base64_decode($vitm->title);
 	}		//echo'<xmp>';var_dump($vitm);echo'</xmp>';
 	$form = $m->getForm($vitm, $ed);

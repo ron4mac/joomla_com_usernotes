@@ -213,6 +213,9 @@ p.footer{
 #note td, #note th {
 	padding: 4px 6px;
 }
+#note td {
+	font-family: Monaco;
+}
 
 .addattach
 {

@@ -15,7 +15,7 @@ class UsernotesViewStartup extends JViewLegacy
 
 	public function display ($tpl = null)
 	{
-		$this->user = Factory::getUser();
+		$this->user = Factory::getApplication()->getIdentity();
 		$this->auth = UserNotesHelper::userAuth($this->user->get('id'));
 
 		$limits = UserNotesHelper::getLimits();

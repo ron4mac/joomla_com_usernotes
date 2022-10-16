@@ -19,7 +19,7 @@ use Joomla\CMS\Language\Text;
 </div> 
 <div>
 	<form action="<?=Route::_('index.php?option=com_usernotes&Itemid='.$this->itemId, false)?>" method="POST">
-		<button type="submit"><?=Text::_('Start My Notes Collection');?></button>
+		<button type="submit" class="btn btn-primary"><?=Text::_('Start My Notes Collection');?></button>
 		<input type="hidden" name="task" value="begin" />
 	</form>
 </div>

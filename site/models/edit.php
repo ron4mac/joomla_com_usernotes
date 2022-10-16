@@ -8,10 +8,11 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\FormModel;
 
 JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 
-class UserNotesModelEdit extends JModelForm
+class UserNotesModelEdit extends FormModel
 {
 	const DBFILE = '/usernotes.db3';
 	protected $_context = 'com_usernotes.usernote';
@@ -47,7 +48,7 @@ class UserNotesModelEdit extends JModelForm
 			$data = $db->loadObject();
 
 			if (empty($data)) {
-				JError::raiseError(404, Text::_('COM_USERNOTES_ERROR_NOTE_NOT_FOUND'));
+				throw new Exception(Text::_('COM_USERNOTES_ERROR_NOTE_NOT_FOUND'), 404);
 			} else {
 				if ($data->serial_content) {
 					if ($nm = @unserialize($data->serial_content)) {
@@ -71,7 +72,7 @@ class UserNotesModelEdit extends JModelForm
 	public function checkOut ($nid=null)
 	{
 		if (!$nid) return true;
-		$uid = Factory::getUser()->get('id');
+		$uid = Factory::getApplication()->getIdentity()->get('id');
 		if (!$uid) return false;
 		$db = $this->getDbo();
 		$db->setQuery('UPDATE notes SET checked_out = '.$uid.', checked_out_time = '.time().' WHERE itemID == '.$nid);
@@ -82,7 +83,7 @@ class UserNotesModelEdit extends JModelForm
 	public function checkIn ($nid=null)
 	{
 		if (!$nid) return true;
-		$uid = Factory::getUser()->get('id');
+		$uid = Factory::getApplication()->getIdentity()->get('id');
 		if (!$uid) return false;
 		$db = $this->getDbo();
 		$db->setQuery('UPDATE notes SET checked_out = 0, checked_out_time = NULL WHERE itemID == '.$nid);

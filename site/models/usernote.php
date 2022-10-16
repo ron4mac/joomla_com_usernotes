@@ -8,10 +8,11 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\ItemModel;
 
 JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 
-class UserNotesModelUserNote extends JModelItem
+class UserNotesModelUserNote extends ItemModel
 {
 	const DBFILE = '/usernotes.db3';
 	protected $_context = 'com_usernotes.usernote';
@@ -53,7 +54,7 @@ class UserNotesModelUserNote extends JModelItem
 				$data = $db->loadObject();
 
 				if (empty($data)) {
-					JError::raiseError(404, Text::_('COM_USERNOTES_ERROR_NOTE_NOT_FOUND'));
+					throw new Exception(Text::_('COM_USERNOTES_ERROR_NOTE_NOT_FOUND'), 404);
 				} else {
 					if ($nm = @unserialize($data->serial_content)) {
 						$data->serial_content = $nm->rendered();
@@ -205,7 +206,7 @@ class UserNotesModelUserNote extends JModelItem
 	}
 
 
-	public function add_attached ($contentID=0, $files=NULL, $notesid=null)
+	public function add_attached ($contentID=0, $files=NULL)
 	{
 		if (!$contentID || !$files) return;
 		$path = JPATH_BASE.'/'.UserNotesHelper::userDataPath().'/attach/'.$contentID;
