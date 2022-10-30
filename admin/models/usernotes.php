@@ -36,14 +36,18 @@ class UsernotesModelUsernotes extends JModelList
 		$unotes = [];
 		$folds = UserNotesHelper::getDbPaths($this->relm, 'usernotes', true);
 		foreach ($folds as $fold) {
+			$msgs = [];
 			$ufold = basename(dirname(dirname($fold)));
 			$userid = (int)substr($ufold,1);
+			$menuid = (int)substr(strrchr($fold, '_'), 1);
+			if (!$menuid) $msgs[] = 'Requires alignment with menu item';
 			$info = UserNotesHelperDb::getInfo($fold);
+			if ($info['dbv']<1) $msgs[] = 'Database needs to be updated';
 			if ($this->relm == 'u') {
 				$user = JUser::getInstance($userid);
-				$unotes[] = ['name'=>$user->name,'uname'=>$user->username,'uid'=>$userid, 'info'=>$info];
+				$unotes[] = ['name'=>$user->name,'uname'=>$user->username,'uid'=>$userid.'|'.$menuid, 'info'=>$info, 'msgs'=>$msgs];
 			} else {
-				$unotes[] = ['uname'=> $userid ? UserNotesHelper::getGroupTitle($userid) : '[ Site ]','name'=>'group','uid'=>$userid, 'info'=>$info];
+				$unotes[] = ['uname'=> $userid ? UserNotesHelper::getGroupTitle($userid) : '[ Site ]','name'=>'group','uid'=>$userid.'|'.$menuid, 'info'=>$info, 'msgs'=>$msgs];
 			}
 		}
 		$this->_total = count($unotes);

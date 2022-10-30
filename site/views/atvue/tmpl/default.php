@@ -28,8 +28,8 @@ if (file_exists($this->fpath)) {
 	readfile($this->fpath);
 } else {
 	if ($this->down) {
-		echo '<script>alert("'.Text::_('Not able to access this file for download.').'")</script>';
+		echo '<script>alert("'.Text::_('COM_USERNOTES_NO_FILE').'")</script>';
 	} else {
-		echo '<p style="font-size:1.5em">'.Text::_('Not able to access this file.').'</p>';
+		echo '<p style="font-size:1.5em">'.Text::_('COM_USERNOTES_NO_FILE').'</p>';
 	}
 }

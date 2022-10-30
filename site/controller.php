@@ -19,7 +19,7 @@ class UserNotesController extends BaseController
 	protected $instanceObj;
 
 	public function __construct ($config = [], MVCFactoryInterface $factory = null, $app = null, $input = null)
-	{
+	{	//file_put_contents('REQUEST.txt',print_r($input,true),FILE_APPEND);
 		parent::__construct($config, $factory, $app, $input);
 		if (JDEBUG) { JLog::addLogger(['text_file'=>'com_usernotes.log.php'], JLog::ALL, ['com_usernotes']); }
 		$this->instanceObj = UserNotesHelper::getInstanceObject();
@@ -46,7 +46,7 @@ class UserNotesController extends BaseController
 			// provide the edit model for use, as well
 			$view->setModel($this->getModel('edit'));
 		}
-		$view->itemId = $this->instanceObj->menuid;
+		$view->menuid = $this->instanceObj->menuid;
 
 		return parent::display($cachable, $urlparams);
 	}
@@ -86,28 +86,12 @@ class UserNotesController extends BaseController
 	public function addRating ()
 	{
 		$rate = $this->input->post->getInt('rate', 0);
-		if ($rate == 0 && UserNotesHelper::userAuth($this->instanceObj->uid) < 2) die('0:(0):NOT ALLOWED');
+		// don't let unauthorized users cause a ratings reset
+		if ($rate == 0 && UserNotesHelper::userAuth() < 2) die(json_encode(['err'=>'NOT AUTHORIZED']));
+		// add the rating to the item
 		$iid = $this->input->post->getInt('iID', 0);
 		$m = $this->getModel('usernote');
-		echo $m->addRating($iid, $rate);
-	}
-
-
-	public function ajitem ()
-	{
-		$id = $this->input->post->getInt('iID', 0);
-		$this->load->model($this->enty_base.'_model','mymodel');
-		$item = $this->mymodel->get_item($id);
-		$this->load->model($this->enty_item.'_model','myimodel');
-		$ctnt = $item->contentID ? $this->myimodel->get_item($item->contentID) : NULL;
-		$atch = $item->contentID ? $this->myimodel->get_attached($item->contentID) : NULL;
-		$this->load->view($this->enty_base.'/ajax',
-				[
-				'contentID'=>$item->contentID,
-				$this->enty_item=>$ctnt ? $ctnt->rendered(true) : '[MISSING CONTENT]',
-				'attached'=>$atch
-				]
-			);
+		echo json_encode($m->addRating($iid, $rate));
 	}
 
 /** end ajax calls **/

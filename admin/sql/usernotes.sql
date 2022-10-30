@@ -1,3 +1,4 @@
+PRAGMA user_version=1;
 BEGIN TRANSACTION;
 CREATE TABLE notes(
 	itemID INTEGER PRIMARY KEY NOT NULL,
@@ -23,4 +24,6 @@ CREATE TABLE fileatt (
 	attached TEXT
 	);
 CREATE VIEW attsizsum AS SELECT SUM(fsize) AS totatt FROM fileatt;
+CREATE TABLE uratings (iid INTEGER,uid INTEGER,rdate INTEGER);
+CREATE TABLE gratings (iid INTEGER,ip INTEGER,rdate INTEGER);
 COMMIT

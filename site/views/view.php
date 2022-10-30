@@ -20,14 +20,15 @@ JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/use
 
 class UsernotesViewBase extends HtmlView
 {
-	protected $userID;
+//	protected $userID;
 	protected $notesID;
 	protected $access = 0;
 	protected $item;
 	protected $footMsg;
 	protected $attached;
 
-	protected $instance;
+	protected $instanceObj;
+//	protected $instance;
 	protected $jDoc;
 
 	// allow subclass to specify alternate css file(s)
@@ -38,11 +39,12 @@ class UsernotesViewBase extends HtmlView
 	public function __construct ($config = [])
 	{
 		parent::__construct($config);
-		$this->userID = Factory::getApplication()->getIdentity()->get('id');
-		if (empty($this->itemId)) {
-			$this->itemId = Factory::getApplication()->input->getInt('Itemid', 0);
+		$this->instanceObj = UserNotesHelper::getInstanceObject();
+//		$this->userID = $this->instanceObj->uid;
+		if (empty($this->menuid)) {
+			$this->menuid = $this->instanceObj->menuid;
 		}
-		$this->instance = Factory::getApplication()->getUserState('com_usernotes.instance', '::');
+//		$this->instance = Factory::getApplication()->getUserState('com_usernotes.instance', '::');
 		$this->jDoc = Factory::getDocument();
 		// get css's for subclasses
 		if (!is_array($this->usecss)) $this->usecss = [$this->usecss];
@@ -62,7 +64,7 @@ class UsernotesViewBase extends HtmlView
 	protected function aUrl ($prms, $sep='&')
 	{
 		if (is_array($prms)) $prms = http_build_query($prms, '', $sep);
-		return Route::_('index.php?option=com_usernotes'.$sep.'Itemid='.$this->itemId.$sep.$prms, false);
+		return Route::_('index.php?option=com_usernotes'.$sep.'Itemid='.$this->menuid.$sep.$prms, false);
 	}
 
 	protected function buildPathway ($to)
@@ -77,7 +79,7 @@ class UsernotesViewBase extends HtmlView
 				$r['title'] = base64_decode($r['title']);
 			}
 //			array_unshift($crums, [$r['title'],'index.php?option=com_usernotes&pid='.$to]);
-//			array_unshift($crums, [$r['title'], Route::_('index.php?option=com_usernotes&pid='.$to.'&Itemid='.$this->itemId, false)]);
+//			array_unshift($crums, [$r['title'], Route::_('index.php?option=com_usernotes&pid='.$to.'&Itemid='.$this->menuid, false)]);
 			array_unshift($crums, [$r['title'], $this->aUrl('pid='.$to)]);
 			$to = $r['parentID'];
 		}
@@ -88,9 +90,9 @@ class UsernotesViewBase extends HtmlView
 
 	protected function _prepareDocument ($ePhrase = false)
 	{
-		if ($this->userID) {
-			if (UserNotesHelper::userAuth($this->userID) > 1) {
-				if ($this->item && $this->item->checked_out && $this->item->checked_out != $this->userID) {
+		if ($this->instanceObj->uid) {
+			if (UserNotesHelper::userAuth() > 1) {
+				if ($this->item && $this->item->checked_out && $this->item->checked_out != $this->instanceObj->uid) {
 					$this->footMsg = 'Checked out by '.Factory::getUser($this->item->checked_out)->get('username').'.';
 				} else {
 					$this->access = 15;

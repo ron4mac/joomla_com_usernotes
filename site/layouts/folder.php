@@ -43,7 +43,7 @@ function un_formGet ($view, $vitm, $ed=false)
 	return $frhtm;
 }
 
-$instlink = Route::_('index.php?option=com_usernotes&Itemid='.$displayData['view']->itemId, false);
+$instlink = Route::_('index.php?option=com_usernotes&Itemid='.$displayData['view']->menuid, false);
 
 if (!empty($displayData['vitm']->itemID)) echo HTMLHelper::_(
 	'bootstrap.renderModal',

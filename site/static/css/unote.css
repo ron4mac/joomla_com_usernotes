@@ -3,7 +3,7 @@
 }
 
 #container a > * {
-  pointer-events: none;
+	pointer-events: none;
 }
 
 #note {
@@ -12,12 +12,80 @@
 	overflow-wrap: break-word;
 }
 
-/* ============================  star rating
+
+/* ============================  ranger star rating
 */
 .rated {
 	float: right;
-	margin-top: 6px;
+	margin-top: 8px;
+	display: inline-flex;
 }
+#ratep {
+	font-size: 1.1rem;
+}
+#ratep.active {
+	cursor: pointer;
+}
+.rrating {
+	--dir: right;
+	--fill: gold;
+	--fillbg: rgba(100, 100, 100, 0.15);
+	--heart: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22"><path d="M12 21.328l-1.453-1.313q-2.484-2.25-3.609-3.328t-2.508-2.672-1.898-2.883-0.516-2.648q0-2.297 1.57-3.891t3.914-1.594q2.719 0 4.5 2.109 1.781-2.109 4.5-2.109 2.344 0 3.914 1.594t1.57 3.891q0 1.828-1.219 3.797t-2.648 3.422-4.664 4.359z"/></svg>');
+	--star: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22"><path d="M12 17.25l-6.188 3.75 1.641-7.031-5.438-4.734 7.172-0.609 2.813-6.609 2.813 6.609 7.172 0.609-5.438 4.734 1.641 7.031z"/></svg>');
+	--stars: 5;
+	--starsize: 1.5rem;
+	--symbol: var(--star);
+	--value: 1;
+	--w: calc(var(--stars) * var(--starsize));
+	--x: calc(100% * (var(--value) / var(--stars)));
+	background-color: transparent;
+	margin: 0.5rem 0;
+	block-size: var(--starsize);
+	inline-size: var(--w);
+	position: relative;
+	touch-action: manipulation;
+	-webkit-appearance: none;
+}
+[dir="rtl"] .rrating {
+	--dir: left;
+}
+.rrating::-moz-range-track {
+	background: linear-gradient(to var(--dir), var(--fill) 0 var(--x), var(--fillbg) 0 var(--x));
+	block-size: 100%;
+	mask: repeat left center/var(--starsize) var(--symbol);
+}
+.rrating::-webkit-slider-runnable-track {
+	background: linear-gradient(to var(--dir), var(--fill) 0 var(--x), var(--fillbg) 0 var(--x));
+	block-size: 100%;
+	mask: repeat left center/var(--starsize) var(--symbol);
+	-webkit-mask: repeat left center/var(--starsize) var(--symbol);
+}
+.rrating::-moz-range-thumb {
+	height: var(--starsize);
+	opacity: 0;
+	width: var(--starsize);
+}
+.rrating::-webkit-slider-thumb {
+	height: var(--starsize);
+	opacity: 0;
+	width: var(--starsize);
+	-webkit-appearance: none;
+}
+.rrating, .rrating-label {
+	display: block;
+	font-family: ui-sans-serif, system-ui, sans-serif;
+}
+.rrating-label {
+	margin-block-end: 1rem;
+}
+
+/* ============================  star rating
+*/
+/*
+.rated {
+	float: right;
+	margin-top: 6px;
+}*/
 .rating {
 	display: none;
 	font-size: 24px;
@@ -68,6 +136,20 @@
 }
 
 
+/* ============================ popup for rating an item
+*/
+
+#popRate {
+	position: absolute;
+	top: 3rem;
+	right: 8rem;
+	background-color: #ced4da;
+	padding: 0 .5rem;
+	border: 1px solid #AAA;
+	border-radius: 5px;
+	box-shadow: 0 0 5px #AAA;
+}
+
 /* ============================ small static stars in item list
 */
 /*.strate {
@@ -98,7 +180,8 @@
 */
 div.utildlog {
 	position: absolute;
-	bottom: 10px;
+	min-width: 300px;
+	bottom: 36px;
 	left: 50%;
 	transform: translate(-50%, 0);
 	padding: 6px;
@@ -106,6 +189,9 @@ div.utildlog {
 	border: 2px solid #CCC;
 	border-radius: 3px;
 	box-shadow: 0 0 5px #D0D0D0;
+}
+div.utildlog button {
+	margin-left: 0.5rem;
 }
 
 
@@ -146,18 +232,45 @@ div.pum {
 
 /* ============================ file upload dialog with drag and drop
 */
+
+
+.pbwrp {
+	position:relative;
+	border:1px solid #BBB;
+	border-radius:3px;
+	boxsizing:border-box;
+}
+.normpb, .chnkpb, .indeterm {
+	position: absolute;
+	width:0;
+	min-height:100%;
+/*	z-index:-1;*/
+}
+.normpb { background-color:#AAD7FD; }
+.chnkpb { background-color:#D9D2FF; }
+.indeterm { background: #efefef url(indtrm.gif) repeat-x top; }
+.pbfinf {
+	padding: 3px 4px;
+	position:relative;
+	z-index: 1;
+}
+.pbfinf.failure {background-color: #F99}
+.pbfinf.success {background-color: #CFC}
+
+
 div.uplddlog {
 	position: absolute;
-	bottom: 10px;
+	top: 60px;
 	left: 50%;
 	transform: translate(-50%, 0);
-	width: 300px;
+	width: 400px;
 	padding: 6px;
 	background-color: #CEF;
 	border: 1px solid #999;
 	border-radius: 3px;
 	box-shadow: 0 0 5px #AAA;
 }
+div.uplddlog input { width: 100% }
 #dropArea {
 	border: 1px dashed #CCC;
 	width: 100%;
@@ -172,12 +285,15 @@ div.uplddlog {
 	border: 1px solid #999;
 	box-shadow: inset 2px 2px 3px #999;
 }
-#totprogress {
-	width: 100%;
-	height: 8px;
+.prgwrp {
 	border: 1px solid #BBB;
 	border-radius: 3px;
-	background: #eee url("../imgs/progress_t.png") 100% 0 no-repeat;
+}
+#totprogress {
+	width: 0;
+	height: 8px;
+	background-color: blue;
+/*	background: #eee url("../imgs/progress_t.png") 100% 0 no-repeat;*/
 }
 #fprogress p {
 	display: block;
@@ -196,7 +312,9 @@ div.uplddlog {
 	background: #F99 none 0 0 no-repeat;
 }
 #fprogress .abortX {
-	float: right;
+	position: absolute;
+	top: 3px;
+	right: 3px;
 	cursor: pointer;
 }
 

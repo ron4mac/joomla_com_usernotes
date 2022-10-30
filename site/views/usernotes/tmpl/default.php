@@ -6,6 +6,7 @@
 */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Layout\LayoutHelper;
@@ -26,7 +27,7 @@ if (/*$this->state->secured*/ $this->item && $this->item->secured && $_SERVER['S
 	//echo '<div style="background-color:red;color:white;">WARNING: You do not have a secure connection!</div>';
 }
 
-if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
+if (RJC_DBUG) echo '<div>'.json_encode($this->instanceObj).'</div>';
 
 if (isset($this->posq)) {
 	$svty = 'notice';
@@ -50,6 +51,8 @@ if ($this->state->secured && $_SERVER['SERVER_PORT'] != 443) {
 	echo '</div>';
 }
 
+$ratings = $this->mparams->get('ratings', false);
+
 // accommodate targeted breadcrumb module
 echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 // display the search field
@@ -60,7 +63,7 @@ echo JHtmlUsernotes::searchField($this->parentID);
 	<div id="itemsList">
 	<?php foreach($this->items as $item): ?>
 		<div class="item">
-			<?=JHtmlUsernotes::itemLink($item);?>
+			<?=JHtmlUsernotes::itemLink($item, $ratings);?>
 		</div>
 	<?php endforeach; ?>
 	</div>
@@ -77,6 +80,13 @@ echo JHtmlUsernotes::searchField($this->parentID);
 			}
 		?>
 	</div>
+</div>
+<div style="display:none">
+<form name="actForm" action="<?=$this->aUrl('')?>" method="POST">
+<input type="hidden" name="task">
+<input type="hidden" name="iid" value="<?=$this->item->itemID?>">
+<?php echo HTMLHelper::_('form.token'); ?>
+</form>
 </div>
 <?php if ($this->cparams->get('show_version',0) && !$this->parentID): ?>
 <div class="verdisp">

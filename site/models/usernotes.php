@@ -13,11 +13,12 @@ JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/use
 class UserNotesModelUserNotes extends JModelList
 {
 	const DBFILE = '/usernotes.db3';
+	protected $instanceObj;
 	protected $_storPath = null;
-
 
 	public function __construct ($config = [])
 	{
+		$this->instanceObj = UserNotesHelper::getInstanceObject();
 		$this->_storPath = UserNotesHelper::userDataPath();
 		$udbPath = $this->_storPath.self::DBFILE;
 		$doInit = !file_exists($udbPath);
@@ -75,7 +76,7 @@ class UserNotesModelUserNotes extends JModelList
 			$this->sstrs[] = $sterm;
 		}
 
-		$userID = Factory::getApplication()->getIdentity();
+		$userID = $this->instanceObj->uid;
 
 		$db = $this->getDbo();
 		$db->getConnection()->sqliteCreateFunction('sfunc', [$this,'sfunc'], 1);
@@ -216,7 +217,7 @@ class UserNotesModelUserNotes extends JModelList
 		$this->setState('cparams', $params);
 
 		// set whether secured item should be shown
-		$userID = Factory::getApplication()->getIdentity()->get('id');
+		$userID = $this->instanceObj->uid;
 		$this->setState('hide-secure', !(bool)$userID);
 	}
 

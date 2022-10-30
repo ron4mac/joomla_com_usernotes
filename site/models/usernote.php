@@ -80,25 +80,58 @@ class UserNotesModelUserNote extends ItemModel
 
 	public function addRating ($iid, $rate)
 	{
+		$uid = $ip = 0;
+		$db = $this->getDbo();
+
 		try
 		{
-			$db = $this->getDbo();
-			$db->transactionStart();
-			if ($rate) {
-				$db->setQuery('SELECT vcount,vtotal FROM notes WHERE itemID='.$iid);
-				$data = $db->loadRow();
-				$data[0]++; $data[1] += $rate;
-			} else {
-				$data = [0,0];
+			if ($rate == 0) {	// clearing item ratings
+				// delete rating history for item
+				$db->setQuery('DELETE FROM uratings WHERE iid='.$iid)->execute();
+				$db->setQuery('DELETE FROM gratings WHERE iid='.$iid)->execute();
+				// reset item rating data
+				$db->setQuery('UPDATE notes SET vcount=0 ,vtotal=0 WHERE itemID='.$iid)->execute();
+				// return zero(s)
+				return ['ravg'=>0, 'rcnt'=>0];
 			}
-			$db->setQuery('UPDATE notes SET vcount='.$data[0].' ,vtotal='.$data[1].' WHERE itemID='.$iid);
-			$db->execute();
+
+			// see if user (or IP) has already rated this
+			if ($uid = UserNotesHelper::getInstanceObject()->uid) {
+				$db->setQuery('SELECT COUNT() FROM uratings WHERE iid='.$iid.' AND uid='.$uid);
+			} else {
+				$ip = Factory::getApplication()->input->server->get('REMOTE_ADDR');
+				$db->setQuery('SELECT COUNT() FROM gratings WHERE iid='.$iid.' AND ip='.$ip);
+			}
+			if ($db->loadResult()) return ['err'=>Text::_('COM_USERNOTES_RATED')];
+
+			// update the item rating values
+			$db->transactionStart();
+			$db->setQuery('SELECT vcount,vtotal FROM notes WHERE itemID='.$iid);
+			$data = $db->loadRow();
+			$data[0]++; $data[1] += $rate;
+			$db->setQuery('UPDATE notes SET vcount='.$data[0].' ,vtotal='.$data[1].' WHERE itemID='.$iid)->execute();
 			$db->transactionCommit();
-			return ($data[0] ? $data[1]/$data[0] : 0).':('.$data[0].')';
+
+			// mark the user or IP as having rated this
+			if ($uid) {
+				$db->setQuery('INSERT INTO uratings (iid,uid,rdate) VALUES ('.$iid.','.$uid.','.time().')');
+			} else {
+				$db->setQuery('INSERT INTO gratings (iid,ip,rdate) VALUES ('.$iid.','.$ip.','.time().')');
+			}
+			$db->execute();
+
+			// clear old rating history
+			$bfd = time()-7776000;	// 90 days (could make configurable)
+			$db->setQuery('DELETE FROM uratings WHERE rdate<'.$bfd)->execute();
+			$db->setQuery('DELETE FROM gratings WHERE rdate<'.$bfd)->execute();
+
+			// return average rating and rating count
+			return ['ravg'=>$data[1]/$data[0], 'rcnt'=>$data[0]];
 		}
 		catch (Exception $e)
 		{
 			$this->setError($e);
+			return ['err'=>$e->getMessage()];
 		}
 	}
 
@@ -224,7 +257,7 @@ class UserNotesModelUserNote extends ItemModel
 				else $msg .= Text::_('COM_USERNOTES_NOUPLOAD');
 			}
 			elseif ($file['error'] != UPLOAD_ERR_NO_FILE) {
-				$msg .= sprintf(Text::_('COM_USERNOTES_UPLOADERR'), $file['error']);
+				$msg .= Text::sprintf('COM_USERNOTES_UPLOADERR', $file['error']);
 			}
 		}
 		if ($fns) {
@@ -237,11 +270,10 @@ class UserNotesModelUserNote extends ItemModel
 					$r = $db->loadResult();
 					if ($r) {
 						$db->setQuery('UPDATE fileatt SET fsize='.$fsz.' WHERE contentID='.$contentID.' AND attached='.$db->quote($fn));
-						$db->execute();
 					} else {
 						$db->setQuery('INSERT INTO fileatt (contentID,fsize,attached) VALUES ('.$contentID.','.$fsz.','.$db->quote($fn).')');
-						$db->execute();
 					}
+					$db->execute();
 				}
 			}
 			catch (Exception $e)
@@ -281,6 +313,7 @@ class UserNotesModelUserNote extends ItemModel
 				->where('attached='.$db->quote($file));
 			$db->setQuery($q)->execute();
 			unlink($this->_storPath.'/attach/'.$contentID.'/'.$file);
+			// *** maybe query here for other attachments and delete folder if none
 		}
 		catch (Exception $e)
 		{

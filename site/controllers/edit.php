@@ -20,7 +20,7 @@ class UsernotesControllerEdit extends FormController
 	protected $instanceObj;
 
 	public function __construct ($config = [], MVCFactoryInterface $factory = null, $app = null, $input = null)
-	{
+	{	//file_put_contents('REQUEST.txt',print_r($input,true),FILE_APPEND);
 		parent::__construct($config, $factory, $app, $input);
 		if (JDEBUG) { JLog::addLogger(['text_file'=>'com_usernotes.log.php'], JLog::ALL, ['com_usernotes']); }
 		$this->instanceObj = UserNotesHelper::getInstanceObject();
@@ -51,8 +51,15 @@ class UsernotesControllerEdit extends FormController
 
 	public function editNote ()
 	{
-		$this->input->set('view', 'edit');
-		$this->display();
+		$nid = $this->input->getInt('nid', 0);
+		list($ckd,$unm) = $this->getModel()->checkedOut($nid);
+		if ($ckd && $ckd != $this->instanceObj->uid) {
+			JHtmlUsernotes::nqMessage(Text::sprintf('COM_USERNOTES_CHECKED_OUT',$unm), 'warning');
+			$this->setRedirect(Route::_('index.php?option=com_usernotes&view=usernote&nid='.$nid.'&Itemid='.$this->instanceObj->menuid, false));
+		} else {
+			$this->input->set('view', 'edit');
+			$this->display();
+		}
 	}
 
 
@@ -80,7 +87,7 @@ class UsernotesControllerEdit extends FormController
 	public function saveNote ()
 	{
 		// Check for request forgeries.
-		Session::checkToken() or throw new Exception(Text::_('JINVALID_TOKEN'), 403);
+		if (!Session::checkToken()) throw new Exception(Text::_('JINVALID_TOKEN'), 401);
 
 		// Get the data from POST
 		$formData = new JInput($this->input->post->get('jform', [], 'array'));
@@ -100,6 +107,9 @@ class UsernotesControllerEdit extends FormController
 
 	public function deleteItem ()
 	{
+		// Check for request forgeries.
+		if (!Session::checkToken()) throw new Exception(Text::_('JINVALID_TOKEN'), 401);
+
 		if (!$this->instanceObj->canDelete()) throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
 //		if (!$this->instanceObj->uid) return;
 		$model = $this->getModel('usernote');

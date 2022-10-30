@@ -28,7 +28,7 @@ $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 	UNote.V = '.json_encode($jsvars).';
 ');
 
-if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
+if (RJC_DBUG) echo '<div>'.json_encode($this->instanceObj).'</div>';
 
 $task = $this->type == 'f' ? 'edit.saveFolder' : 'edit.saveNote';
 $lgnd = $this->type == 'f' ? '_F' : '';
@@ -55,8 +55,7 @@ echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 			</div>
 		</fieldset>
 		<input type="hidden" name="task" value="<?=$task?>" />
-		<input type="hidden" name="instance" value="<?=$this->instance?>" />
-		<input type="hidden" name="Itemid" value="<?=$this->itemId?>" />
+		<input type="hidden" name="Itemid" value="<?=$this->instanceObj->menuid?>" />
 		<?php echo HTMLHelper::_('form.token'); ?>
 	</form>
 </div>

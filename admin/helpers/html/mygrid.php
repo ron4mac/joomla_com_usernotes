@@ -28,13 +28,13 @@ abstract class JHtmlMyGrid
 		foreach ($data as $k=>$v) {
 			switch ($k) {
 				case 'size':
-					$html .= '<dt>'.'Storage Use: '.'</dt><dd>'.JHtmlNumber::bytes($v, 'auto', 1).'</dd><br>';
+					$html .= '<dt>'.'Storage Use:'.'</dt><dd>'.JHtmlNumber::bytes($v, 'auto', 1).'</dd>';
 					break;
 				case 'notes':
-					$html .= '<dt>'.'Notes: '.'</dt><dd>'.$v.'</dd><br>';
+					$html .= '<dt>'.'Notes:'.'</dt><dd>'.$v.'</dd>';
 					break;
 				case 'atts':
-					$html .= '<dt>'.'Attachments: '.'</dt><dd>'.$v.'</dd><br>';
+					$html .= '<dt>'.'Attachments:'.'</dt><dd>'.$v.'</dd>';
 					break;
 			}
 		}

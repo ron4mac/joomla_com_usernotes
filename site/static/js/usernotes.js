@@ -3,6 +3,8 @@
 * @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
+'use strict';
+
 (function(UNote) {
 
 	let ddlog = null;
@@ -11,19 +13,22 @@
 	/** @noinline */
 	const _Id = (elm) => document.getElementById(elm);
 
-	var estop = (e, sp=false) => {
+
+	const estop = (e, sp=false) => {
 		if (sp && e.stopPropagation) e.stopPropagation();
 		if (e.preventDefault) e.preventDefault();
 		e.returnValue = false;
 	};
 
+
 	// modal close for either J4 or J3
-	var closMdl = (eid) => {
+	const closMdl = (eid) => {
 		let elm = _Id(eid);
 		elm.close ? elm.close() : jQuery("#"+eid).modal('hide');
 	};
 
-	var toFormData = (obj) => {
+
+	const toFormData = (obj) => {
 		const formData = new FormData();
 		Object.keys(obj).forEach(key => {
 			if (typeof obj[key] !== 'object') formData.append(key, obj[key]);
@@ -33,7 +38,7 @@
 	};
 
 
-	var postAction = (task, parms={}, cb=()=>{}, json=false) => {
+	const postAction = (task, parms={}, cb=()=>{}, json=false) => {
 		if (typeof parms === 'object') {
 			if (!(parms instanceof FormData)) parms = toFormData(parms);
 		} else if (typeof parms === 'string') {
@@ -77,6 +82,14 @@
 	};
 
 
+	UNote.deleteItem = (evt) => {
+		let aform = document.forms.actForm;
+		aform.task.value = 'edit.deleteItem';
+		aform.submit();
+		return false;
+	};
+
+
 	UNote.aj_delAttach = (evt, cid, fn) => {
 		estop(evt);
 		if (!confirm(UNote.L.sure_del_att)) return;
@@ -106,18 +119,9 @@
 	};
 
 
-/*	UNote.reloadView = () => {
-		let bdiv = _Id("body");
-		postAction('ajitem', { iID: UNote.V.itemID }, (data) => {
-			if (data) { bdiv.innerHTML = data; }
-			else { alert("no data"); }
-		});
-	};
-*/
-
 	UNote.fup_done = (rslt) => {
 		if (!rslt) _Id('filupld').style.display = "none";
-		postAction('edit.attlist', { contentID: UNote.V.contentID }, (data) => {
+		postAction('edit.attlist', { contentID: UNote.V.contentID, inedit: 1 }, (data) => {
 			if (data) { _Id("attachments").innerHTML = data; }
 			else { alert("no data"); }
 		});
@@ -170,7 +174,7 @@
 
 
 	UNote.addRating = (val, cbk) => {
-		postAction('addRating', { rate: val, iID: UNote.V.itemID }, cbk);
+		postAction('addRating', { rate: val, iID: UNote.V.itemID }, cbk, true);
 	};
 
 
@@ -217,7 +221,7 @@
 	let pum_closetimer = null;
 	let pum_menuitem = 0;
 	// open hidden layer
-	var mopen = (id, xpos, ypos, to=3500) => {
+	const mopen = (id, xpos, ypos, to=3500) => {
 		// cancel close timer
 		UNote.mcancelclosetime();
 		// close old layer
@@ -228,15 +232,18 @@
 		UNote.mclosetime(to);
 	};
 
+
 	// close showed layer
-	var mclose = () => {
+	const mclose = () => {
 		if (pum_menuitem) pum_menuitem.style.display = 'none';
 	};
+
 
 	// go close timer
 	UNote.mclosetime = (to) => {
 		pum_closetimer = window.setTimeout(mclose, to);
 	};
+
 
 	// cancel close timer
 	UNote.mcancelclosetime = () => {
@@ -245,6 +252,7 @@
 			pum_closetimer = null;
 		}
 	};
+
 
 	// handle action item clicks
 	const evtHandler = (e) => {
@@ -257,6 +265,7 @@
 			window.location.href = se.href;
 		}
 	};
+
 
 	document.addEventListener('DOMContentLoaded', () => {
 		_celm = _Id('container');

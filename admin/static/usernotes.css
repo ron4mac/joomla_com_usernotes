@@ -1,3 +1,19 @@
+.UN-info { line-height: 1rem; margin-bottom: 0; }
 .UN-info dt, .UN-info dd {
-	display: inline-block;
+/*	display: inline-block;*/
+	margin-right: 0.5rem;
+}
+.UN-info dt {
+	float: left;
+	clear: left;
+	widthh: 100px;
+	text-alignn: right;
+	font-weight: bold;
+	colorr: green;
+}
+.UN-info-not dt::after {
+	content: ":";
+}
+.UN-item .errm {
+	color: red;
 }

@@ -20,16 +20,20 @@ abstract class JHtmlUsernotes
 		self::$instanceObj = $obj;
 	}
 
-	public static function itemLink ($item)
+	public static function itemStars ($item)
+	{
+		$p = $item->vcount ? (int)($item->vtotal/$item->vcount/5*100) : 0;
+		return ' <div class="strate"><div class="strback"><div class="strating" style="width:'.$p.'%"></div></div></div>';
+	}
+	public static function itemLink ($item, $ratings=false)
 	{
 		$strate = '';
 		if ($item->isParent) {
 			$param = 'pid=';
 		} else {
 			$param = 'view=usernote&nid=';
-			if ($item->vtotal) {
-				$p = (int)($item->vtotal/$item->vcount/5*100);
-				$strate = ' <div class="strate"><div class="strback"><div class="strating" style="width:'.$p.'%"></div></div></div>';
+			if ($ratings && $item->vtotal) {
+				$strate = self::itemStars($item);
 			}
 		}
 		$ttl = $item->secured ? base64_decode($item->title) : $item->title;
@@ -77,8 +81,8 @@ abstract class JHtmlUsernotes
 	public static function delActIcon ($id, $titl)
 	{
 		return HTMLHelper::link(
-			//	'javascript:;',
-				self::aiUrl('task=edit.deleteItem&iid='.$id),
+				'javascript:UNote.deleteItem(event);',
+			//	self::aiUrl('task=edit.deleteItem&iid='.$id),
 				self::ico('dn','idang'),
 				['title'=>$titl, 'class'=>'act act-right sure', 'data-suremsg'=>strtolower($titl)]
 			);
@@ -102,8 +106,8 @@ abstract class JHtmlUsernotes
 	public static function fDelActIcon ($id, $titl)
 	{
 		return HTMLHelper::link(
-				self::aiUrl('task=edit.deleteItem&iid='.$id),
-			//	'javascript:;',
+			//	self::aiUrl('task=edit.deleteItem&iid='.$id),
+				'javascript:UNote.deleteItem(event);',
 				self::ico('df','idang'),
 				['title'=>$titl, 'class'=>'act act-right sure', 'data-suremsg'=>strtolower($titl)]
 			);
@@ -121,14 +125,18 @@ abstract class JHtmlUsernotes
 		$fact = self::aiUrl('');
 		return <<<EOD
 <div class="search">
-	<form name="sqry" action="{$fact}" method="GET" onsubmit="return UNote.performSearch(this,{$pid})">
-		<input type="hidden" name="option" value="com_usernotes" />
-		<input type="hidden" name="Itemid" value="{$mnuId}" />
+	<form name="sqry" action="{$fact}" method="POST" onsubmit="return UNote.performSearch(this,{$pid})">
 		<input type="hidden" name="task" value="search" />
 		<input type="search" name="sterm" results="10" autosave="user_notes" placeholder="Search..." value="{$val}" />
 	</form>
 </div>
 EOD;
+	}
+
+
+	public static function nqMessage ($msg, $svrty)
+	{
+		Factory::getApplication()->enqueueMessage($msg, $svrty);
 	}
 
 

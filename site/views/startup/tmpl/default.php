@@ -15,14 +15,14 @@ use Joomla\CMS\Language\Text;
 <h1>User Notes Startup Screen</h1>
 <div>
 	<p><?=Text::_('COM_USERNOTES_START1');?></p>
-	<p><?=sprintf(Text::_('COM_USERNOTES_START2'), $this->quota, $this->maxfs);?></p>
+	<p><?=Text::sprintf('COM_USERNOTES_START2', $this->quota, $this->maxfs);?></p>
 </div> 
 <div>
-	<form action="<?=Route::_('index.php?option=com_usernotes&Itemid='.$this->itemId, false)?>" method="POST">
-		<button type="submit" class="btn btn-primary"><?=Text::_('Start My Notes Collection');?></button>
+	<form action="<?=Route::_('index.php?option=com_usernotes&Itemid='.$this->menuid, false)?>" method="POST">
+		<button type="submit" class="btn btn-primary"><?=Text::_('COM_USERNOTES_STARTIT');?></button>
 		<input type="hidden" name="task" value="begin" />
 	</form>
 </div>
 <?php else: ?>
-<h3><?=Text::_('This notes collection has not yet been initiated');?></h3>
+<h3><?=Text::_('COM_USERNOTES_NO_INSTANCE');?></h3>
 <?php endif; ?>

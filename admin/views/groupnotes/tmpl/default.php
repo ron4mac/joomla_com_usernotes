@@ -7,6 +7,7 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 
 // Include the component HTML helpers.
@@ -35,7 +36,7 @@ $canDo = UserNotesHelper::getActions();
 						<?php echo HTMLHelper::_('grid.sort', 'COM_USERNOTES_GROUPID', 'userid', $listDirn, $listOrder); ?>
 					</th>
 					<th width="30%">
-						&#160;
+						<span class="d-none d-md-inline"><?php echo Text::_('COM_USERNOTES_INFO'); ?></span>
 					</th>
 				</tr>
 			</thead>
@@ -48,7 +49,7 @@ $canDo = UserNotesHelper::getActions();
 			</tfoot>
 			<tbody>
 			<?php foreach ($this->items as $i => $item) : ?>
-				<tr class="row<?php echo $i % 2; ?>">
+				<tr class="row<?php echo $i % 2; ?> UN-item">
 					<td class="right">
 						<?php echo $i + 1 + $this->pagination->limitstart; ?>
 					</td>
@@ -63,7 +64,12 @@ $canDo = UserNotesHelper::getActions();
 						<?php echo $item['uid'] ?>
 					</td>
 					<td>
-						<?php echo HTMLHelper::_('myGrid.info', $item['info']); ?>
+						<?php
+						echo HTMLHelper::_('myGrid.info', $item['info']);
+						foreach ($item['msgs'] as $msg) {
+							echo '<div class="errm">'.$msg.'</div>';
+						}
+						?>
 					</td>
 				</tr>
 			<?php endforeach; ?>

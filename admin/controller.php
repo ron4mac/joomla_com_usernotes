@@ -21,10 +21,12 @@ class UserNotesController extends JControllerLegacy
 		$view = $this->input->get('view');
 		$tc = $view == 'usernotes' ? '@' : '_';
 		foreach ($cids as $cid) {
-			UserNotesHelperDb::convertDb(JPATH_ROOT.'/'.$sdp.'/'.$tc.$cid.'/'.JApplicationHelper::getComponentName());
-			$dbpath = JPATH_ROOT.'/'.$sdp.'/'.$tc.$cid.'/'.JApplicationHelper::getComponentName();
+			list($uid,$iid) = explode('|', $cid);
+			$mid = $iid ? ('_'.$iid) : '';
+			$msgs = UserNotesHelperDb::convertDb(JPATH_ROOT.'/'.$sdp.'/'.$tc.$uid.'/'.JApplicationHelper::getComponentName().$mid);
+			$dbpath = JPATH_ROOT.'/'.$sdp.'/'.$tc.$uid.'/'.JApplicationHelper::getComponentName().$mid;
 		}
-		$this->setRedirect('index.php?option=com_usernotes&view='.$view, Text::_('COM_USERNOTES_MSG_COMPLETE').$dbpath);
+		$this->setRedirect('index.php?option=com_usernotes&view='.$view, Text::_('COM_USERNOTES_DBUP_DONE').($msgs ? '<br>'.implode('<br>',$msgs) : ''));
 	}
 
 }

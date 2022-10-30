@@ -38,11 +38,31 @@ abstract class UserNotesHelperDb
 		$size += $atsz;
 		$notes = $db->setQuery('SELECT COUNT(*) FROM notes')->loadResult();
 		$atts = $db->setQuery('SELECT COUNT(*) FROM fileatt')->loadResult();
-		return ['size'=>$size,'notes'=>$notes,'atts'=>$atts,'hasold'=>false];
+		$dbv = $db->setQuery('PRAGMA user_version')->loadResult();
+		return ['size'=>$size,'notes'=>$notes,'atts'=>$atts,'hasold'=>false,'dbv'=>$dbv];
 	}
 
 
 	public static function convertDb ($udbPath)
+	{
+		if (!file_exists($udbPath)) return;
+		$db = JDatabaseDriver::getInstance(['driver'=>'sqlite', 'database'=>$udbPath.'/usernotes.db3']);
+		$dbver = $db->setQuery('PRAGMA user_version')->loadResult();
+		$msgs = [];
+		if (file_exists(JPATH_COMPONENT_ADMINISTRATOR.'/sql/upd_'.$dbver.'.sql')) {
+			$execs = explode(';', file_get_contents(JPATH_COMPONENT_ADMINISTRATOR.'/sql/upd_'.$dbver.'.sql'));
+			foreach ($execs as $exec) {
+				$msg = null;
+				$exec = trim($exec);
+				if ($exec && $exec[0] != '#') $msg = self::dbnofail($db, $exec);
+				if ($msg) $msgs[] = $msg;
+			}
+		}
+		return $msgs;
+	}
+
+
+	public static function ccconvertDb ($udbPath)
 	{
 		if (!file_exists($udbPath)) return;
 		$attsDir = $udbPath.'/attach/';
@@ -80,6 +100,9 @@ abstract class UserNotesHelperDb
 		// add `vtotal` and `vcount` column to `notes` for star rating
 		self::dbnofail($db, 'ALTER TABLE notes ADD COLUMN vcount INTEGER DEFAULT 0');
 		self::dbnofail($db, 'ALTER TABLE notes ADD COLUMN vtotal INTEGER DEFAULT 0');
+		self::dbnofail($db, 'CREATE TABLE IF NOT EXISTS uratings (iid INTEGER,uid INTEGER,rdate DATETIME DEFAULT CURRENT_TIMESTAMP)');
+		self::dbnofail($db, 'CREATE TABLE IF NOT EXISTS gratings (iid INTEGER,ip INTEGER,rdate DATETIME DEFAULT CURRENT_TIMESTAMP)');
+
 
 		// convert all content
 		$qry = $db->getQuery(true)
@@ -114,7 +137,7 @@ abstract class UserNotesHelperDb
 			$db->setQuery($q);
 			@$db->execute();
 		} catch (Exception $e) {
-			// ignore
+			return $e->getMessage();
 		}
 	}
 

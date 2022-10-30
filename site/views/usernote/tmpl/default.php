@@ -26,7 +26,7 @@ $jsvars = [
 ];
 $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 var upldDestURL = "'.$this->aUrl('format=raw').'";
-var fup_payload = {task:"edit.attach", cID:'.$this->item->contentID.'};
+var fup_payload = {task:"edit.attach", cID:'.$this->item->contentID.', [Joomla.getOptions("csrf.token", "")]:"1"};
 var uploadMaxFilesize = '.$this->maxUploadBytes.';
 	UNote.L = '.json_encode($jslang).';
 	UNote.V = '.json_encode($jsvars).';
@@ -40,11 +40,76 @@ if ($prning) echo '<button type="button" class="btn btn-primary" onclick="window
 // if not printing, accommodate targeted breadcrumb module
 if (!$prning) echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 
-if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
+$ratings = $this->params->get('ratings', 0);
+
+if (RJC_DBUG) echo '<div>'.json_encode($this->instanceObj).'</div>';
+
+$bottoms = '';
+
+if ($ratings) {
+	$bottoms .= '
+//	let rating = document.getElementById("unrating");
+	//let r = new SimpleStarRating(rating);
+//	let r = UNote.hoistRating(rating);
+//	UNote.robj = r;
+	';
+	if (UserNotesHelper::userCanRate()) {
+		$bottoms .= '
+	//	rating.addEventListener("rate", UNote.rateEvt);
+		let popr = document.getElementById("popRate");	console.log(popr);
+		popr.querySelector(".rating").addEventListener("rate", UNote.rateEvt);';
+	} else {
+		$bottoms .= 'r.disable();';
+	}
+}
+
+if ($prning) $bottoms .= '
+(function() {
+	let bpd = false;
+	let apd = false;
+
+	const beforePrint = () => {
+		if (bpd) return;
+		bpd = true;
+		console.log("Functionality to run before printing.");
+	};
+
+	const afterPrint = () => {
+		if (apd) return;
+		apd = true;
+		console.log("Functionality to run after printing");
+		window.close();
+		window.history.back();
+	};
+
+	if (window.matchMedia) {
+		let mediaQueryList = window.matchMedia("print");
+		mediaQueryList.addListener( (mql) => {
+			if (mql.matches) {
+				beforePrint();
+			} else {
+				afterPrint();
+			}
+		});
+	}
+
+	window.addEventListener("beforeprint", beforePrint);
+	window.addEventListener("afterprint", afterPrint);
+
+	window.print();
+}());
+';
 ?>
 <div id="container">
 	<div id="body">
-		<div class="rated"><span id="unrating" class="rating" data-default-rating="<?=$this->rating?>"></span> <span id="numrats">(<?=$this->ratcnt?>)</span></div>
+		<?php if($ratings): ?>
+		<div class="rated"><span id="numrats">(<?=$this->item->vcount?>)</span></div>
+		<?php if (UserNotesHelper::userCanRate()): ?>
+		<div id="ratep" class="rated active" onclick="UNote.popRate()"><?=JHtmlUsernotes::itemStars($this->item)?></div>
+		<?php else: ?>
+		<div class="rated"><?=JHtmlUsernotes::itemStars($this->item)?></div>
+		<?php endif; ?>
+		<?php endif; ?>
 		<h3><?php if ($this->item->secured) echo'<span class="icon-unlock" style="font-size:.8em;opacity:0.5"></span>'; ?><?=$this->item->title?></h3>
 		<div id="note"><?=$this->item->serial_content?></div>
 	</div>
@@ -75,7 +140,7 @@ if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
 		<input type="file" id="upload_field" name="attm[]" multiple="multiple" />
 		<div id="dropArea"><?=Text::_('COM_USERNOTES_DROPFILS');?></div>
 		<div id="result"></div>
-		<div id="totprogress"></div>
+		<div class="prgwrp"><div id="totprogress"></div></div>
 		<div id="fprogress"></div>
 		<hr />
 		<button onclick="this.parentNode.style.display='none'">Close</button>
@@ -89,64 +154,20 @@ if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
 		<?php endif; ?>
 		</ul>
 	</div>
+	<div id="popRate" class="popRate" style="display:none">
+		<span class="rating" data-default-rating="0"></span>
+	</div>
 	<?php endif; ?>
 <?php endif; ?>
+</div>
+<div style="display:none">
+<form name="actForm" action="<?=$this->aUrl('')?>" method="POST">
+<input type="hidden" name="task">
+<input type="hidden" name="iid" value="<?=$this->item->itemID?>">
+<?php echo HTMLHelper::_('form.token'); ?>
+</form>
 </div>
 <?php if ($this->attached): ?>
 <iframe id="dnldf" style="display:none;"></iframe>
 <?php endif; ?>
-<script>
-<?php if ($prning): ?>
-(function() {
-	let bpd = false;
-	let apd = false;
-
-	var beforePrint = function() {
-		if (bpd) return;
-		bpd = true;
-		console.log("Functionality to run before printing.");
-	};
-
-	var afterPrint = function() {
-		if (apd) return;
-		apd = true;
-		console.log("Functionality to run after printing");
-		window.close();window.history.back();
-	};
-
-	if (window.matchMedia) {
-		var mediaQueryList = window.matchMedia("print");
-		mediaQueryList.addListener(function(mql) {
-			if (mql.matches) {
-				beforePrint();
-			} else {
-				afterPrint();
-			}
-		});
-	}
-
-	window.addEventListener('beforeprint', beforePrint);
-	window.addEventListener('afterprint', afterPrint);
-
-	window.print();
-}());
-<?php endif; ?>
-var rating = document.getElementById('unrating');
-var r = new SimpleStarRating(rating);
-rating.addEventListener('rate', function(e) {	console.log(e);
-	if (e.detail === 0) {
-		if (!confirm("Clear rating for this item?")) return;
-	}
-	UNote.addRating(e.detail, function (newr) {
-		var rslt = newr.split(":");
-		if (rslt[2]) {
-			alert(rslt[2]);
-//			r.showDefaultRating();
-		} else {
-			if (rslt[0] == 0) r.setDefaultRating(0);
-			r.setCurrentRating(rslt[0]);
-			document.getElementById('numrats').innerHTML = rslt[1];
-		}
-	});
-});
-</script>
+<?php if ($bottoms) echo '<script>'.$bottoms.'</script>'; ?>

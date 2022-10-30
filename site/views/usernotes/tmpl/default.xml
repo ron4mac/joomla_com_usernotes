@@ -49,13 +49,14 @@
 				showon="notes_type:2"
 			/>
 
-			<field name="secured" type="radio" class="btn-group"
+			<field name="secured" type="radio"
 				default="0"
+				layout="joomla.form.field.radio.switcher"
 				description="COM_USERNOTES_CONFIG_SECURED_DESC"
 				label="COM_USERNOTES_CONFIG_SECURED_LABEL"
 			>
-				<option value="1">JYES</option>
 				<option value="0">JNO</option>
+				<option value="1">JYES</option>
 			</field>
 
 		</fieldset>
@@ -68,15 +69,38 @@
 				description="COM_USERNOTES_CONFIG_QUOTA_DESC"
 				default="0"
 				compdef="134217728/storQuota" />
+
 			<field name="i_maxUpload" type="GmkbValue"
 				label="COM_USERNOTES_CONFIG_MAXUPLD_LABEL"
 				description="COM_USERNOTES_CONFIG_MAXUPLD_DESC"
 				default="0"
 				compdef="4194304/maxUpload" />
+
+			<field name="ratings" type="radio"
+				default="0"
+				layout="joomla.form.field.radio.switcher"
+				description="COM_USERNOTES_CONFIG_RATINGS_DESC"
+				label="COM_USERNOTES_CONFIG_RATINGS_LABEL"
+			>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
+			<field name="pubrate" type="radio"
+				default="0"
+				showon="ratings:1"
+				layout="joomla.form.field.radio.switcher"
+				description="COM_USERNOTES_CONFIG_PUBRATE_DESC"
+				label="COM_USERNOTES_CONFIG_PUBRATE_LABEL"
+			>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 			<field
 				name="hide_secure"
 				type="radio"
-				class="btn-group btn-group-yesno"
+				layout="joomla.form.field.radio.buttons"
 				default=""
 				label="COM_USERNOTES_CONFIG_HIDSECUR_LABEL"
 				description="COM_USERNOTES_CONFIG_HIDSECUR_DESC"

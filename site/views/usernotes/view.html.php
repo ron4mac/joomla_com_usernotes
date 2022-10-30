@@ -46,13 +46,15 @@ class UsernotesViewUsernotes extends UsernotesViewBase
 
 		// Get the component parameters
 		$this->cparams = JComponentHelper::getParams('com_usernotes');
+		// and the menu instance parameters
+		$this->mparams = $app->getParams();	//echo'<xmp>';var_dump($this->mparams);echo'</xmp>';
+		
 
 		$this->_prepareDocument();
 
 		// If user can edit and at the root, check storage useage and queue a message if near quota
 		if ($this->access && !$this->parentID) {
-			$mparams = $app->getParams();	//echo'<xmp>';var_dump($mparams);echo'</xmp>';
-			$storQuota = (int) $mparams->get('storQuota', 0);
+			$storQuota = (int) $this->mparams->get('storQuota', 0);
 			if (!$storQuota) $storQuota = (int) $this->state->cparams->get('storQuota', 0);
 			if ($storQuota) {
 				$storSize = $this->get('StorSize');

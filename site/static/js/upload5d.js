@@ -3,6 +3,8 @@
 * @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
+'use strict';
+
 UNote.Upld5d = (function(){
 
 	var isInitted = false;
@@ -22,20 +24,28 @@ UNote.Upld5d = (function(){
 
 	var filFldNam = 'user_file[]';
 
-	// getElementById
-	function $id(id) {
-		return document.getElementById(id);
-	}
+	/** @noinline */
+	const _Id = (elm) => document.getElementById(elm);
+
+	// utility element creator
+	const CreateElement = (type, cont, attr) => {
+		let elem = document.createElement(type);
+		if (cont) elem.innerHTML = cont;
+		for (let key in attr) {
+			elem.setAttribute(key, attr[key]);
+		}
+		return elem;
+	};
 
 	// file drag hover
-	function FileDragHover(e) {
+	const FileDragHover = (e) => {
 		e.stopPropagation();
 		e.preventDefault();
 		e.target.className = (e.type == "dragover" ? "hover" : "");
 	}
 
 	// file selection
-	function FileSelectHandler(e) {
+	const FileSelectHandler = (e) => {
 
 		// cancel event and hover styling
 		FileDragHover(e);
@@ -51,7 +61,7 @@ UNote.Upld5d = (function(){
 		}
 	}
 
-	function NextInQueue(decr,tag) {
+	const NextInQueue = (decr,tag) => {
 		if (decr) {
 			if (! --inPrg) {
 				if (typeof(UNote.fup_done == 'function')) UNote.fup_done(errCnt);
@@ -65,40 +75,76 @@ UNote.Upld5d = (function(){
 		}
 	}
 
-	function UpdateTotalProgress(adsz) {
+	const UpdateTotalProgress = (adsz) => {
 		if (!totProgressDiv) return;
 		totalDone += adsz;
-		var pc = Math.max(parseInt(100 - (totalDone / total2do * 100)), 0);
-		totProgressDiv.style.backgroundPosition = pc + "% 0";
+		let pc = 100 * totalDone / total2do;
+		totProgressDiv.style.width = pc + "%";
+	}
+
+	// progress bar object
+	function ProgressBar (fileObj, sclass) {
+		let $ = this;
+		
+		$.show = (percent) => {
+			let p = 100 * percent;
+			$.pb.style.width = p + "%";
+			if (percent === 1) {
+				$.pb.className = 'indeterm';
+			}
+		};
+		$.msg = (msg, err) => {
+			$.pbi.innerHTML += '<br />' + msg;
+			if (err) {
+				$.pbi.className = 'pbfinf failure';
+				errCnt++;
+			}
+		};
+		$.rmov = () => {
+			$.pbw._ufo = null;
+			progressDiv.removeChild($.pbw);
+			$.fObj = null;
+		};
+
+		// create progress bar
+		let pbw = CreateElement('div', '', {class:'pbwrp'});
+		$.pb = pbw.appendChild(CreateElement('div', '', {class:sclass}));
+		let pbv = fileObj.fn + '<i class="fa fa-window-close abortX" aria-hidden="true" onclick="this.parentNode.parentNode._ufo.doAbort(true);"></i>';
+		$.pbi = pbw.appendChild(CreateElement('div', pbv, {class:'pbfinf'}));
+		progressDiv.appendChild(pbw);
+		$.pbw = pbw;
+		$.pbw._ufo = fileObj;
+		$.fObj = fileObj;
+		return $;
 	}
 
 	function UploadFileObj (file) {
-		var self = this;
-		var errM = null;
+		let $ = this;
+		let errM = null;
 
-		this.lastsz = 0;
-		this.fsize = file.size;
+		$.fn = file.fileName || file.name;
+		$.lastsz = 0;
+		$.fsize = file.size;
 
-		this.doAbort = function() {
-			if (this.xhr) { this.xhr.abort(); }
-			else progressDiv.removeChild(this.progress);
+		$.doAbort = function() {
+			if ($.xhr) { $.xhr.abort(); }
+			else $.progress.rmov();
 		};
 
-		this.xhr = new XMLHttpRequest();
-		if (this.xhr.upload) {
+		$.xhr = new XMLHttpRequest();
+		if ($.xhr.upload) {
 
-			this.xhr._fName = file.name;
-			this.xhr.upload.onabort = function(evt) {
-				UpdateTotalProgress(self.fsize - self.lastsz);
+			$.xhr._fName = file.name;
+			$.xhr.upload.onabort = function(evt) {
+				UpdateTotalProgress($.fsize - $.lastsz);
 			};
 
-			this.xhr.upload.onloadstart = function(evt) {
-				this.onprogress = function(e) {
+			$.xhr.upload.onloadstart = function(evt) {
+				$.xhr.upload.onprogress = function(e) {
 					if (!e.lengthComputable) return;
-					var pc = parseInt(100 - (e.loaded / e.total * 100));
-					self.progress.style.backgroundPosition = pc + "% 0";
-					UpdateTotalProgress(e.loaded - self.lastsz);
-					self.lastsz = e.loaded;
+					$.progress.show(e.loaded / e.total);
+					UpdateTotalProgress(e.loaded - $.lastsz);
+					$.lastsz = e.loaded;
 					};
 			};
 
@@ -109,66 +155,57 @@ UNote.Upld5d = (function(){
 			}
 
 			// create progress bar
-			this.progress = progressDiv.appendChild(document.createElement("p"));
-			this.progress.appendChild(document.createTextNode(file.name));
-			this.progress.innerHTML = this.progress.innerHTML + '<img src="'+baseURL+'components/com_usernotes/static/imgs/redX.png" class="abortX" onclick="AbortUpload(this)" />';
-			this.progress._upld = this;
-
+			$.progress = new ProgressBar($, 'normpb');
+			
 			if (errM) {
-				this.progress.innerHTML = this.progress.innerHTML + '<br />' +errM;
-				this.progress.className = "failure";
-				errCnt++;
+				$.progress.msg(errM, true);
 				UpdateTotalProgress(file.size);
-				this.xhr = null;
+				$.xhr = null;
 				NextInQueue(true,'errM');
 				return;
 			}
 
 			// file received/failed
-			this.xhr.onreadystatechange = function(e) {
-				if (self.xhr.readyState == 4) {
-					//self.progress.className = (self.xhr.status == 200 ? "success" : "failure");
+			$.xhr.onreadystatechange = function(e) {
+				if ($.xhr.readyState == 4) {
 					// on good result, remove progress bar
-					if (self.xhr.status == 200) {
-						self.progress.className = "success";
-						progressDiv.removeChild(self.progress);
-						responses+=self.xhr.responseText;
+					if ($.xhr.status == 200) {
+						$.progress.rmov();
+						responses+=$.xhr.responseText;
 					} else {
-						errCnt++;
-						self.progress.className = "failure";
-						if (self.xhr.status == 0) self.progress.innerHTML = self.progress.innerHTML + '<br />-- aborted'
-						else self.progress.innerHTML = self.progress.innerHTML + '<br />' + self.xhr.status + ': ' + self.xhr.statusText;
-						console.log(self.xhr);
+						let msg =  ($.xhr.status == 0) ? '-- aborted' : ($.xhr.status + ': ' + ($.xhr.statusText || $.xhr.responseText));
+						$.progress.msg(msg, true);
+						console.log($.xhr);
 					}
-					self.xhr = null;
+					$.xhr = null;
 					NextInQueue(true,'rst');
 				}
 			};
 
 			// start upload
-			this.xhr.open("POST", upldDestURL, true);
-			//this.xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest");
+			$.xhr.open("POST", upldDestURL, true);
+			//$.xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest");
 			if (fup_payload) {
 				var formData = new FormData();
 				formData.append(filFldNam, file);
 				for (var key in fup_payload) {
 					formData.append(key, fup_payload[key]);
 				}
-				this.xhr.send(formData);
+				$.xhr.send(formData);
 			} else {
-				this.xhr.setRequestHeader("Content-Type", "application/octet-stream");
-				this.xhr.setRequestHeader("X_FILENAME", file.name);
-				this.xhr.send(file);
+				$.xhr.setRequestHeader("Content-Type", "application/octet-stream");
+				$.xhr.setRequestHeader("X_FILENAME", file.name);
+				$.xhr.send(file);
 			}
 		}
 	}
 
 	return {
-		Init: function () {
+		Init: () => {
 			if (isInitted) return;
-			var fileselect = $id("upload_field"),
-				filedrag = $id("dropArea"),
-				submitbutton = $id("submitbutton");
+			var fileselect = _Id("upload_field"),
+				filedrag = _Id("dropArea"),
+				submitbutton = _Id("submitbutton");
 	
 			// file select
 			if (fileselect) {
@@ -190,11 +227,8 @@ UNote.Upld5d = (function(){
 				if (submitbutton) submitbutton.style.display = "none";
 	
 				// progress display area
-				totProgressDiv = $id("totprogress");
-				progressDiv = $id("fprogress");
-				//totalProgressElem = progressDiv.appendChild(document.createElement("p"));
-				//totalProgressElem.appendChild(document.createTextNode('- total progress -'));
-				//totalProgressElem.style.textAlign = "center";
+				totProgressDiv = _Id("totprogress");
+				progressDiv = _Id("fprogress");
 			}
 			xhr = null;
 			isInitted = true;
@@ -202,7 +236,3 @@ UNote.Upld5d = (function(){
 	};
 
 })();
-
-function AbortUpload (node) {
-	node.parentNode._upld.doAbort();
-}

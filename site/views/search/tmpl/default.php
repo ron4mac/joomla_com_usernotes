@@ -8,7 +8,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\HTML\HTMLHelper;
 
-if (RJC_DBUG) echo '<div>'.$this->instance.'</div>';
+if (RJC_DBUG) echo '<div>'.json_encode($this->instanceObj).'</div>';
 
 // accommodate targeted breadcrumb module
 echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');

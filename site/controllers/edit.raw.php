@@ -16,11 +16,13 @@ JLoader::register('JHtmlUsernotes', JPATH_COMPONENT . '/helpers/html/usernotes.p
 class UsernotesControllerEdit extends BaseController
 {
 	protected $instanceObj;
+	protected $app;
 
 	public function __construct ($config = [], MVCFactoryInterface $factory = null, $app = null, $input = null)
-	{
+	{	//file_put_contents('REQUEST.txt',print_r($input,true),FILE_APPEND);
 		parent::__construct($config, $factory, $app, $input);
 		if (JDEBUG) { JLog::addLogger(['text_file'=>'com_usernotes.log.php'], JLog::ALL, ['com_usernotes']); }
+		$this->app = $app;
 		$this->instanceObj = UserNotesHelper::getInstanceObject();
 	}
 
@@ -80,6 +82,8 @@ class UsernotesControllerEdit extends BaseController
 
 	public function attach ()
 	{
+		$this->tokenCheck();
+
 		$m = $this->getModel('usernote');
 		$cid = $this->input->post->getInt('cID', 0);
 		$files = $this->input->files->get('attm', null, 'raw');
@@ -149,6 +153,15 @@ class UsernotesControllerEdit extends BaseController
 			return JHtmlUsernotes::att_list($atchs, $cid, $edt);
 		}
 		return '';
+	}
+
+	private function tokenCheck ()
+	{
+		if (!Session::checkToken()) {
+			//$this->app->setHeader('status', 401, true);
+			header('HTTP/1.1 401 Unauthorized');
+			jexit(Text::_('JINVALID_TOKEN'));
+		}
 	}
 
 }

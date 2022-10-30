@@ -17,10 +17,12 @@ class UserNotesModelEdit extends FormModel
 	const DBFILE = '/usernotes.db3';
 	protected $_context = 'com_usernotes.usernote';
 	protected $_data;
+	protected $instanceObj;
 
 
 	public function __construct ($config = [])
 	{
+		$this->instanceObj = UserNotesHelper::getInstanceObject();
 		$udbPath = UserNotesHelper::userDataPath().self::DBFILE;
 		$db = JDatabaseDriver::getInstance(['driver'=>'sqlite', 'database'=>$udbPath]);
 
@@ -72,7 +74,7 @@ class UserNotesModelEdit extends FormModel
 	public function checkOut ($nid=null)
 	{
 		if (!$nid) return true;
-		$uid = Factory::getApplication()->getIdentity()->get('id');
+		$uid = $this->instanceObj->uid;
 		if (!$uid) return false;
 		$db = $this->getDbo();
 		$db->setQuery('UPDATE notes SET checked_out = '.$uid.', checked_out_time = '.time().' WHERE itemID == '.$nid);
@@ -83,11 +85,22 @@ class UserNotesModelEdit extends FormModel
 	public function checkIn ($nid=null)
 	{
 		if (!$nid) return true;
-		$uid = Factory::getApplication()->getIdentity()->get('id');
-		if (!$uid) return false;
+		if (!$this->instanceObj->uid) return false;
 		$db = $this->getDbo();
 		$db->setQuery('UPDATE notes SET checked_out = 0, checked_out_time = NULL WHERE itemID == '.$nid);
 		$db->execute();
+	}
+
+
+	public function checkedOut ($nid=null)
+	{
+		if (!$nid) return [false,false];
+		$db = $this->getDbo();
+		$db->setQuery('SELECT checked_out FROM notes WHERE itemID='.$nid);
+		$cou = $db->loadResult();
+		if (!$cou) return [false,false];
+		$unam = Factory::getUser($cou)->get('username');
+		return [$cou,$unam];
 	}
 
 

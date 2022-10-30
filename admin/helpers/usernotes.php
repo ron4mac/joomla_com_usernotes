@@ -18,15 +18,15 @@ abstract class UserNotesHelper
 	protected static $udp = null;
 	protected static $idp = null;			// instance data path
 
-	public static function getInstanceObject ()
+	public static function getInstanceObject ()	// SO
 	{
 		if (!empty(self::$instanceObj)) return self::$instanceObj;
 		$app = Factory::getApplication();
 		$menuid = $app->input->getInt('Itemid', 0);
-		if (!$menuid) throw new Exception('COM_USERNOTES_MISSING_MENUID');
+		if (!$menuid) throw new Exception('COM_USERNOTES_MISSING_MENUID', 400);
 		$params = $app->getParams();
 	//	file_put_contents('APPARMS.TXT',print_r($params,true),FILE_APPEND);
-		$user = $app->getIdentity();
+		$user = (int)JVERSION > 3 ? $app->getIdentity() : Factory::getUser();
 		$uid = $user->get('id');
 		$ugrps = $user->get('groups');
 		$allperms = UnotesInstanceObject::CAN_CREA + UnotesInstanceObject::CAN_EDIT + UnotesInstanceObject::CAN_DELE;
@@ -54,7 +54,7 @@ abstract class UserNotesHelper
 		return $obj;
 	}
 
-	public static function getInstanceID ()
+	public static function getInstanceID ()	// SO
 	{
 		if (self::$instanceID) return self::$instanceID;
 		$iid = Factory::getApplication()->getUserState('com_usernotes.instance', '');
@@ -72,14 +72,14 @@ abstract class UserNotesHelper
 		return self::$instanceID;
 	}
 
-	public static function getStorageBase ()
+	public static function getStorageBase ()	// BOTH
 	{
 		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath', []);
 		$sdp = isset($result[0]) ? trim($result[0]) : 'userstor';
 		return $sdp;
 	}
 
-	public static function getLimits ()
+	public static function getLimits ()	// SO
 	{
 		$app = Factory::getApplication();
 
@@ -98,53 +98,19 @@ abstract class UserNotesHelper
 		return ['storQuota'=>$storQuota, 'maxUpload'=>min($maxUpload, $sysMaxUp)];
 	}
 
-	public static function instanceDataPath ()
-	{
-		if (self::$idp) return self::$idp;
-
-		$sdp = self::getStorageBase();
-		$ndir = self::getStorageDir();
-		$cmp = JApplicationHelper::getComponentName().'_'.self::$instanceObj->menuid;
-
-		self::$idp = $sdp.'/'.$ndir.'/'.$cmp;
-		return self::$idp;
-	}
-
-	public static function userDataPath ()
+	public static function userDataPath ()	// SO
 	{
 		if (self::$udp) return self::$udp;
 
 		$sdp = self::getStorageBase();
-		$ndir = self::getStorageDir();
+		$ndir = self::$instanceObj->path;
 		$cmp = JApplicationHelper::getComponentName().'_'.self::$instanceObj->menuid;
 
 		self::$udp = $sdp.'/'.$ndir.'/'.$cmp;
 		return self::$udp;
 	}
 
-	public static function getStorageDir ($force=false)
-	{
-		if (!$force) {
-			return self::$instanceObj->path;
-			list(/*,*/$ddir,) = explode(':', self::getInstanceID()?:':?:');
-			return $ddir;
-		}
-
-		self::getTypeOwner();
-		switch (self::$instanceType) {
-			case 0:
-				return '@'. self::$ownerID;
-				break;
-			case 1:
-				return '_'. self::$ownerID;
-				break;
-			case 2:
-				return '_0';
-				break;
-		}
-	}
-
-	public static function getDbPaths ($which, $dbname, $full=false, $cmp='')
+	public static function getDbPaths ($which, $dbname, $full=false, $cmp='')	// AO
 	{
 		$paths = [];
 		if (!$cmp) $cmp = JApplicationHelper::getComponentName();
@@ -163,12 +129,15 @@ abstract class UserNotesHelper
 		if (is_dir($dpath) && ($dh = opendir($dpath))) {
 			while (($file = readdir($dh)) !== false) {
 				if ($file[0]==$char1) {
-					$ptf = $dpath.$file.'/'.$cmp.'/'.$dbname.'.sql3';
-					if (file_exists($ptf))
-						$paths[] = $full ? $ptf : $file;
-					$ptf = $dpath.$file.'/'.$cmp.'/'.$dbname.'.db3';
-					if (file_exists($ptf))
-						$paths[] = $full ? $ptf : $file;
+//					foreach (glob($dpath.$file.'/'.$cmp.'_[0-9]*') as $mid) {
+					foreach (glob($dpath.$file.'/'.$cmp.'*') as $mid) {
+						$ptf = $mid.'/'.$dbname.'.sql3';
+						if (file_exists($ptf))
+							$paths[] = $full ? $ptf : $file;
+						$ptf = $mid.'/'.$dbname.'.db3';
+						if (file_exists($ptf))
+							$paths[] = $full ? $ptf : $file;
+					}
 				}
 			}
 			closedir($dh);
@@ -176,20 +145,20 @@ abstract class UserNotesHelper
 		return $paths;
 	}
 
-	public static function getGroupTitle ($gid)
+	public static function getGroupTitle ($gid)	// AO
 	{
 		$db = Factory::getDbo();
 		$db->setQuery('SELECT title FROM #__usergroups WHERE id='.$gid);
 		return $db->loadResult();
 	}
 
-	public static function hashCookieName ($v1=0, $v2=0)
+	public static function hashCookieName ($v1=0, $v2=0)	// SO
 	{
-		$uid = Factory::getApplication()->getIdentity()->get('id');
+		$uid = self::$instanceObj->uid;
 		return md5(implode(':', [$uid, $v1, $v2]));
 	}
 
-	public static function doCrypt ($pass, $dat, $de=false, $sm = 2)
+	public static function doCrypt ($pass, $dat, $de=false, $sm = 2)	// SO
 	{
 		if ($sm == 2) {	// use OpenSSL
 			if ($de) {
@@ -253,10 +222,18 @@ abstract class UserNotesHelper
 	}
 	// =======================
 
-	public static function userAuth ($uid)
+	public static function userCanRate ()	// SO
+	{
+	//	self::getTypeOwner();
+		$user = (int)JVERSION > 3 ? Factory::getApplication()->getIdentity() : Factory::getUser();
+		$uid = $user->get('id');
+		return ($uid || Factory::getApplication()->getParams()->get('pubrate', false));
+	}
+
+	public static function userAuth ()	// SO vet this more
 	{
 		self::getTypeOwner();
-		$user = Factory::getApplication()->getIdentity();
+		$user = (int)JVERSION > 3 ? Factory::getApplication()->getIdentity() : Factory::getUser();
 		$uid = $user->get('id');
 		$ugrps = $user->get('groups');
 		switch (self::$instanceType) {
@@ -270,9 +247,36 @@ abstract class UserNotesHelper
 		}
 	}
 
-	public static function getActions ()
+	private static function getTypeOwner ()	// SO vet this more
 	{
-		$user = Factory::getApplication()->getIdentity();
+		if (is_null(self::$instanceType)) {
+			$app = Factory::getApplication();
+			$notesid = '';	//$app->input->getBase64('unID');
+			if ($notesid) {
+				$nids = explode(':',base64_decode($notesid));
+				self::$instanceType = $nids[0];
+				self::$ownerID = $nids[1];
+			} else {
+				$params = $app->getParams();
+				self::$instanceType = $params->get('notes_type');
+				switch (self::$instanceType) {
+					case 0:
+						self::$ownerID = self::$instanceObj->uid ?: -1;
+						break;
+					case 1:
+						self::$ownerID = $params->get('group_auth');
+						break;
+					case 2:
+						self::$ownerID = $params->get('site_auth');
+						break;
+				}
+			}
+		}
+	}
+
+	public static function getActions ()	// AO
+	{
+		$user = (int)JVERSION > 3 ? Factory::getApplication()->getIdentity() : Factory::getUser();
 		$result = new JObject;
 
 		$actions = JAccess::getActionsFromFile(JPATH_ADMINISTRATOR . '/components/'.self::COMP.'/access.xml');
@@ -284,7 +288,7 @@ abstract class UserNotesHelper
 	}
 
 	// convert string in form n(K|M|G) to an integer value
-	public static function to_bytes ($val)
+	private static function to_bytes ($val)	// SO
 	{
 		$val = trim($val);
 		$last = strtolower($val[strlen($val)-1]);
@@ -298,7 +302,7 @@ abstract class UserNotesHelper
 	}
 
 	// convert integer value to n(K|M|G) string
-	public static function to_KMG ($val=0)
+/*	public static function to_KMG ($val=0)	// NOT ACTUALLY USED
 	{
 		$sizm = 'K';
 		if ($val) {
@@ -314,8 +318,9 @@ abstract class UserNotesHelper
 		}
 		return $val.$sizm;
 	}
+*/
 
-	public static function formatBytes ($bytes, $precision=2, $sep=' ')
+	public static function formatBytes ($bytes, $precision=2, $sep=' ')	// SO
 	{
 		$units = ['B','KB','MB','GB','TB'];
 		$bytes = max($bytes, 0);
@@ -326,7 +331,7 @@ abstract class UserNotesHelper
 	}
 
 	// return the max file upload size as set by the php config
-	public static function phpMaxUp ()
+	public static function phpMaxUp ()	// SO
 	{
 		$u = self::to_bytes(ini_get('upload_max_filesize'));
 		$p = self::to_bytes(ini_get('post_max_size'));
@@ -334,42 +339,15 @@ abstract class UserNotesHelper
 	}
 
 	//correctly format a string value from a table before showing it
-	public static function fs_db ($value)
+	public static function fs_db ($value)	// SO
 	{
 		return htmlspecialchars(stripslashes($value));
-	}
-
-	private static function getTypeOwner ()
-	{
-		if (is_null(self::$instanceType)) {
-			$app = Factory::getApplication();
-			$notesid = '';	//$app->input->getBase64('unID');
-			if ($notesid) {
-				$nids = explode(':',base64_decode($notesid));
-				self::$instanceType = $nids[0];
-				self::$ownerID = $nids[1];
-			} else {
-				$params = $app->getParams();
-				self::$instanceType = $params->get('notes_type');
-				switch (self::$instanceType) {
-					case 0:
-						self::$ownerID = Factory::getApplication()->getIdentity()->get('id') ?: -1;
-						break;
-					case 1:
-						self::$ownerID = $params->get('group_auth');
-						break;
-					case 2:
-						self::$ownerID = $params->get('site_auth');
-						break;
-				}
-			}
-		}
 	}
 
 }
 
 
-class UnotesInstanceObject
+class UnotesInstanceObject	// SO
 {
 	protected $perms;
 	public $type, $menuid, $uid, $path;
