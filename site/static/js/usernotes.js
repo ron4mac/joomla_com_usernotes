@@ -24,7 +24,7 @@
 	// modal close for either J4 or J3
 	const closMdl = (eid) => {
 		let elm = _Id(eid);
-		elm.close ? elm.close() : jQuery("#"+eid).modal('hide');
+		elm.close ? elm.close() : jQuery('#'+eid).modal('hide');
 	};
 
 
@@ -95,7 +95,7 @@
 		if (!confirm(UNote.L.sure_del_att)) return;
 		postAction('edit.detach', { contentID: cid, file: fn }, (data) => {
 			if (data.err) { alert(data.err); }
-			else { _Id("attachments").innerHTML = data.htm; }
+			else { _Id('attachments').innerHTML = data.htm; }
 		}, true);
 	};
 
@@ -106,7 +106,7 @@
 		if (!nnam) return;
 		postAction('edit.renAttach', { contentID: cid, file: fn, tofile: nnam }, (data) => {
 			if (data.err) { alert(data.err); }
-			else { _Id("attachments").innerHTML = data.htm; }
+			else { _Id('attachments').innerHTML = data.htm; }
 		}, true);
 	};
 
@@ -120,10 +120,10 @@
 
 
 	UNote.fup_done = (rslt) => {
-		if (!rslt) _Id('filupld').style.display = "none";
+		if (!rslt) _Id('filupld').style.display = 'none';
 		postAction('edit.attlist', { contentID: UNote.V.contentID, inedit: 1 }, (data) => {
-			if (data) { _Id("attachments").innerHTML = data; }
-			else { alert("no data"); }
+			if (data) { _Id('attachments').innerHTML = data; }
+			else { alert('no data'); }
 		});
 	};
 
@@ -131,10 +131,10 @@
 	UNote.getAttach = (evt, elm, down) => {
 		estop(evt,true);
 		let afile = elm.parentNode.dataset.afile;
-		let aurl = UNote.V.aBaseURL+"&view=atvue&cat="+UNote.V.contentID+"|"+afile;
+		let aurl = UNote.V.aBaseURL+'&view=atvue&cat='+UNote.V.itemID+'|'+UNote.V.contentID+'|'+afile;
 		if (down) {
-			let dlf = _Id("dnldf");
-			dlf.src = aurl + "&down=1";
+			let dlf = _Id('dnldf');
+			dlf.src = aurl + '&down=1';
 		} else {
 			window.location = aurl;
 		}
@@ -143,12 +143,12 @@
 
 	UNote.moveTo = (evt) => {
 		estop(evt);
-		ddlog = document.createElement("div");
-		ddlog.className = "utildlog";
+		ddlog = document.createElement('div');
+		ddlog.className = 'utildlog';
 		_celm.appendChild(ddlog);
 		postAction('edit.cat_hier', { iID: UNote.V.itemID, pID: UNote.V.parentID }, (data) => {
 			if (data) { ddlog.innerHTML = data; }
-			else { alert("no data"); }
+			else { alert('no data'); }
 		});
 		return false;
 	};
@@ -157,7 +157,7 @@
 	UNote.addAttach = (evt) => {
 		estop(evt);
 		UNote.Upld5d.Init();
-		_Id('filupld').style.display = "block";
+		_Id('filupld').style.display = 'block';
 	};
 
 
@@ -201,11 +201,11 @@
 		estop(evt);
 		let dlURL = UNote.V.aBaseURL+'adnld/' + UNote.V.contentID + '/' +wich.rel;
 		//alert(dlURL); return;
-		let dlframe = document.createElement("iframe");
+		let dlframe = document.createElement('iframe');
 		// set source to desired file
 		dlframe.src = dlURL;
 		// This makes the IFRAME invisible to the user.
-		dlframe.style.display = "none";
+		dlframe.style.display = 'none';
 		// Add the IFRAME to the page. This will trigger the download
 		document.body.appendChild(dlframe);
 	};
@@ -270,15 +270,15 @@
 	document.addEventListener('DOMContentLoaded', () => {
 		_celm = _Id('container');
 		_celm && _celm.addEventListener('click', evtHandler);
-		let dlg = _Id("foldercr-modal");
-		dlg && dlg.addEventListener("shown.bs.modal", () => _Id("jform_title").focus() );
+		let dlg = _Id('foldercr-modal');
+		dlg && dlg.addEventListener('shown.bs.modal', () => _Id('jform_title').focus() );
 	});
 
 })(window.UNote = window.UNote || {});
 
-if (typeof Joomla != "undefined")
+if (typeof Joomla != 'undefined')
 	Joomla.submitbutton = function (butt) {
 		let bp = butt.split('.');
-		if (bp[1] == "cancel") return true;
+		if (bp[1] == 'cancel') return true;
 		Joomla.submitform(butt);
 	};

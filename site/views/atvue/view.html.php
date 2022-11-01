@@ -9,6 +9,7 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Factory;
 
 JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
+JLoader::register('UserNotesFileEncrypt', JPATH_COMPONENT.'/classes/file_encrypt.php');
 
 class UsernotesViewAtvue extends JViewLegacy
 {
@@ -25,18 +26,22 @@ class UsernotesViewAtvue extends JViewLegacy
 
 		// Get view related request variables.
 		$this->down = $app->input->get('down',0,'int');
-		$cat = explode('|',$app->input->getString('cat'),2);
-		$this->fnam = $cat[1];
+		$cat = explode('|',$app->input->getString('cat'),3);
+		$this->fnam = $cat[2];
+
+		$m = $this->getModel();
+		$this->isecure = $m->itemIsSecure($cat[0]);
+		if ($this->isecure) {
+			$cookn = UserNotesHelper::hashCookieName($cat[0], $cat[1]);
+			$cookv = $app->input->cookie->getBase64($cookn);
+			$this->key = UserNotesHelper::doCrypt($cat[0].'-@:'.$cat[1], $cookv, true);
+		}
 
 		// Get path to file
 		$udp = UserNotesHelper::userDataPath();
-		$this->fpath = JPATH_BASE.'/'.$udp.'/attach/'.$cat[0].'/'.$cat[1];
+		$this->fpath = JPATH_BASE.'/'.$udp.'/attach/'.$cat[1].'/'.$cat[2];
 
-		// Get file mime type
-		if (file_exists($this->fpath)) {
-			$finfo = finfo_open(FILEINFO_MIME_TYPE);
-			$this->mime = finfo_file($finfo, $this->fpath);
-		}
+		$this->attProps = $m->atFileProps($cat[1]);
 
 		return parent::display($tpl);
 	}

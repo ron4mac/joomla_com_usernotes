@@ -41,6 +41,7 @@ class UserNotesController extends BaseController
 			if ($iv = $this->input->get('view', null)) {
 				$iview = $this->getView($iv,'html');
 				$iview->instObj = $this->instanceObj;
+//				if ($iv == 'atvue') $iview->setModel($this->getModel('usernote'), true);
 			}
 			$view = $this->getView('usernotes','html');
 			// provide the edit model for use, as well

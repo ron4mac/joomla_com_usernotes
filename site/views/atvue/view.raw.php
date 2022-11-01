@@ -10,7 +10,7 @@ use Joomla\CMS\Factory;
 
 JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 
-class UsernotesViewAtvue extends JViewLegacy
+class UsernotesViewAtvuee extends JViewLegacy
 {
 	protected $fnam;
 	protected $fpath;

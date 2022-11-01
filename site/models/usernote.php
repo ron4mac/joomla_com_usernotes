@@ -11,6 +11,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\ItemModel;
 
 JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
+JLoader::register('UserNotesFileEncrypt', JPATH_COMPONENT.'/classes/file_encrypt.php');
 
 class UserNotesModelUserNote extends ItemModel
 {
@@ -239,7 +240,16 @@ class UserNotesModelUserNote extends ItemModel
 	}
 
 
-	public function add_attached ($contentID=0, $files=NULL)
+	public function itemIsSecure ($nid)
+	{
+		if (!$nid) return false;
+		$db = $this->getDbo();
+		$db->setQuery('SELECT secured FROM notes WHERE itemID='.$nid);
+		return $db->loadResult();
+	}
+
+
+	public function add_attached ($contentID=0, $files=NULL, $key=false)
 	{
 		if (!$contentID || !$files) return;
 		$path = JPATH_BASE.'/'.UserNotesHelper::userDataPath().'/attach/'.$contentID;
@@ -249,10 +259,21 @@ class UserNotesModelUserNote extends ItemModel
 			if ($file['error'] == UPLOAD_ERR_OK) {
 				$tmp_name = $file['tmp_name'];
 				if (is_uploaded_file($tmp_name)) {
+					// create the path
 					@mkdir($path);
-					$name = $file['name'];
-					move_uploaded_file($tmp_name, $path.'/'.$name);
-					$fns[] = $name;
+					// get file info before it is changed (encrypted)
+					$fsize = filesize($tmp_name);
+					$finfo = finfo_open(FILEINFO_MIME_TYPE);
+					$fmime = finfo_file($finfo, $tmp_name);
+					$fname = $file['name'];
+					// encrypt it into position or just move it there
+					if ($key) {
+						UserNotesFileEncrypt::save($key, $tmp_name, $path.'/'.$fname);
+						unlink($tmp_name);
+					} else {
+						move_uploaded_file($tmp_name, $path.'/'.$fname);
+					}
+					$fns[] = [$fname,$fsize,$fmime];
 				}
 				else $msg .= Text::_('COM_USERNOTES_NOUPLOAD');
 			}
@@ -261,17 +282,18 @@ class UserNotesModelUserNote extends ItemModel
 			}
 		}
 		if ($fns) {
+			// store file properties in the db
 			try
 			{
 				$db = $this->getDbo();
 				foreach ($fns as $fn) {
-					$fsz = filesize($path.'/'.$fn);
-					$db->setQuery('SELECT attached FROM fileatt WHERE contentID='.$contentID.' AND attached='.$db->quote($fn));
+					list($fname,$fsize,$fmime) = $fn;
+					$db->setQuery('SELECT attached FROM fileatt WHERE contentID='.$contentID.' AND attached='.$db->quote($fname));
 					$r = $db->loadResult();
 					if ($r) {
-						$db->setQuery('UPDATE fileatt SET fsize='.$fsz.' WHERE contentID='.$contentID.' AND attached='.$db->quote($fn));
+						$db->setQuery('UPDATE fileatt SET fsize='.$fsize.' WHERE contentID='.$contentID.' AND attached='.$db->quote($fname));
 					} else {
-						$db->setQuery('INSERT INTO fileatt (contentID,fsize,attached) VALUES ('.$contentID.','.$fsz.','.$db->quote($fn).')');
+						$db->setQuery('INSERT INTO fileatt (contentID,fsize,attached,mtype) VALUES ('.$contentID.','.$fsize.','.$db->quote($fname).','.$db->quote($fmime).')');
 					}
 					$db->execute();
 				}

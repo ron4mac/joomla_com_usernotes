@@ -85,13 +85,20 @@ class UsernotesControllerEdit extends BaseController
 		$this->tokenCheck();
 
 		$m = $this->getModel('usernote');
+		$iid = $this->input->post->getInt('iID', 0);
 		$cid = $this->input->post->getInt('cID', 0);
 		$files = $this->input->files->get('attm', null, 'raw');
 		if (JDEBUG) {
 			$fdmp = print_r($files, true);
 			JLog::add("attach ... notesID: {$notesid}  note: {$cid}  file(s): {$fdmp}", JLog::INFO, 'com_usernotes');
 		}
-		$msg = $m->add_attached($cid, $files);
+		$key = false;
+		if ($m->itemIsSecure($iid)) {
+			$cookn = UserNotesHelper::hashCookieName($iid, $cid);
+			$cookv = $this->input->cookie->getBase64($cookn);
+			$key = UserNotesHelper::doCrypt($iid.'-@:'.$cid, $cookv, true);
+		}
+		$msg = $m->add_attached($cid, $files, $key);
 		if ($msg) { header($_SERVER['SERVER_PROTOCOL'].' 500 '.$msg); jexit(); }
 	}
 

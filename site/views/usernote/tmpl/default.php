@@ -26,7 +26,7 @@ $jsvars = [
 ];
 $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 var upldDestURL = "'.$this->aUrl('format=raw').'";
-var fup_payload = {task:"edit.attach", cID:'.$this->item->contentID.', [Joomla.getOptions("csrf.token", "")]:"1"};
+var fup_payload = {task:"edit.attach",iID:'.$this->item->itemID.',cID:'.$this->item->contentID.',[Joomla.getOptions("csrf.token","")]:"1"};
 var uploadMaxFilesize = '.$this->maxUploadBytes.';
 	UNote.L = '.json_encode($jslang).';
 	UNote.V = '.json_encode($jsvars).';

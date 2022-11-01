@@ -7,7 +7,7 @@
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@jrjconline.net</authorEmail>
 	<authorUrl>rjconline.net</authorUrl>
-	<version>1.2.6</version>
+	<version>1.2.7</version>
 	<updater jver="(3\.[89])||(3\.1\d)||(4\.[01])" pver="7.0" />
 	<description>COM_USERNOTES_XML_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
@@ -20,6 +20,7 @@
 		<folder>static</folder>
 		<folder>models</folder>
 		<folder>views</folder>
+		<folder>classes</folder>
 		<folder>layouts</folder>
 		<folder>language</folder>
 	</files>

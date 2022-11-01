@@ -21,6 +21,7 @@ CREATE TABLE content(
 CREATE TABLE fileatt (
 	contentID INTEGER NOT NULL,
 	fsize INTEGER,
+	mtype TEXT,
 	attached TEXT
 	);
 CREATE VIEW attsizsum AS SELECT SUM(fsize) AS totatt FROM fileatt;

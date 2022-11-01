@@ -18,14 +18,20 @@ if (file_exists($this->fpath)) {
 		header('Content-Disposition: attachment; filename="'.$this->fnam.'"');
 		header("Content-Transfer-Encoding: binary");
 	} else {
-		$this->jDoc->setMimeEncoding($this->mime);
+//		$this->jDoc->setMimeEncoding($this->mime);
+		$this->jDoc->setMimeEncoding($this->attProps->mtype);
 	}
-	header('Content-Length: '.filesize($this->fpath));
+//	header('Content-Length: '.filesize($this->fpath));
+	header('Content-Length: '.$this->attProps->fsize);
 	if (JDEBUG) {
 		$hdmp = print_r(headers_list(), true);
 		JLog::add("download headers: {$hdmp}", JLog::INFO, 'com_usernotes');
 	}
-	readfile($this->fpath);
+	if ($this->isecure) {
+		UserNotesFileEncrypt::output($this->key, $this->fpath);
+	} else {
+		readfile($this->fpath);
+	}
 } else {
 	if ($this->down) {
 		echo '<script>alert("'.Text::_('COM_USERNOTES_NO_FILE').'")</script>';
