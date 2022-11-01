@@ -19,7 +19,7 @@ if (file_exists($this->fpath)) {
 		header("Content-Transfer-Encoding: binary");
 	} else {
 //		$this->jDoc->setMimeEncoding($this->mime);
-		$this->jDoc->setMimeEncoding($this->attProps->mtype);
+		$this->jDoc->setMimeEncoding($this->attProps->mtype ?: $this->mtype);
 	}
 //	header('Content-Length: '.filesize($this->fpath));
 	header('Content-Length: '.$this->attProps->fsize);

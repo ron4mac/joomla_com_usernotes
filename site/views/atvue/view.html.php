@@ -40,6 +40,8 @@ class UsernotesViewAtvue extends JViewLegacy
 		// Get path to file
 		$udp = UserNotesHelper::userDataPath();
 		$this->fpath = JPATH_BASE.'/'.$udp.'/attach/'.$cat[1].'/'.$cat[2];
+		$finfo = finfo_open(FILEINFO_MIME_TYPE);
+		$this->mtype = finfo_file($finfo, $this->fpath);
 
 		$this->attProps = $m->atFileProps($cat[1]);
 

@@ -42,7 +42,7 @@ class UsernotesModelUsernotes extends JModelList
 			$menuid = (int)substr(strrchr($fold, '_'), 1);
 			if (!$menuid) $msgs[] = 'Requires alignment with menu item';
 			$info = UserNotesHelperDb::getInfo($fold);
-			if ($info['dbv']<1) $msgs[] = 'Database needs to be updated';
+			if ($info['dbv']<2) $msgs[] = 'Database needs to be updated';
 			if ($this->relm == 'u') {
 				$user = JUser::getInstance($userid);
 				$unotes[] = ['name'=>$user->name,'uname'=>$user->username,'uid'=>$userid.'|'.$menuid, 'info'=>$info, 'msgs'=>$msgs];
