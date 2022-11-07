@@ -162,7 +162,7 @@ class UserNotesModelUserNote extends ItemModel
 				$db->setQuery($q);
 				$db->execute();
 				$q = $db->getQuery(true);
-				$q->update('notes')->set('title='.$db->quote($ntitl).', secured='.$secured)->where('itemID='.$iid);
+				$q->update('notes')->set('title='.$db->quote($ntitl).', secured='.$secured.', mdate='.time())->where('itemID='.$iid);
 				$db->setQuery($q);
 				$db->execute();
 			} else {
@@ -172,8 +172,8 @@ class UserNotesModelUserNote extends ItemModel
 				$db->execute();
 				$cid = $db->insertid();
 				$q = $db->getQuery(true);
-				$q->insert('notes')->columns('ownerID,shared,isParent,title,contentID,parentID,secured')
-								->values(implode(',', [$user, 1, 0, $db->quote($ntitl), $cid, $data->getInt('parentID'), $secured]));
+				$q->insert('notes')->columns('ownerID,shared,isParent,title,contentID,parentID,secured,cdate')
+								->values(implode(',', [$user, 1, 0, $db->quote($ntitl), $cid, $data->getInt('parentID'), $secured, time()]));
 				$db->setQuery($q);
 				$db->execute();
 			}

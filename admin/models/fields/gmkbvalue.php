@@ -8,8 +8,11 @@ defined('JPATH_BASE') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\Registry\Registry;
+use Joomla\CMS\Form\FormField;
+use Joomla\CMS\Component\ComponentHelper;
 
-class JFormFieldGmkbValue extends JFormField
+class JFormFieldGmkbValue extends FormField
 {
 	const COMP = 'com_usernotes';
 	protected $type = 'GmkbValue';
@@ -53,7 +56,7 @@ class JFormFieldGmkbValue extends JFormField
 		$html[] = '<input type="hidden" class="gmkb-valu" id="' . $this->id . '_id"' . $class . ' name="' . $this->name . '" value="' . $this->value . '" />';
 		$html[] = '</span>';
 
-		$html[] = '<span class="gmkb-dflt'.($this->value ? ' hidden' : '').'">'.$compdef.'</span>';
+		$html[] = '<span class="gmkb-dflt'.($this->value ? ' hidden invisible' : '').'">'.$compdef.'</span>';
 
 		static $scripted;
 		if (!$scripted) {
@@ -66,10 +69,10 @@ var GMKBff = (function() {
 			let pel = elm.parentElement;
 			if (elm.checked) {
 				pel.querySelector(".input-gmkb").classList.add("hidden");
-				pel.querySelector(".gmkb-dflt").classList.remove("hidden");
-				pel.querySelector(".gmkb-valu").value = 0;
+				pel.querySelector(".gmkb-dflt").classList.remove("hidden","invisible");
+				pel.querySelector(".gmkb-valu").value = null;
 			} else {
-				pel.querySelector(".gmkb-dflt").classList.add("hidden");
+				pel.querySelector(".gmkb-dflt").classList.add("hidden","invisible");
 				pel.querySelector(".input-gmkb").classList.remove("hidden");
 				this.sVal(pel.querySelector(".input-gmkb"));
 			}
@@ -87,6 +90,19 @@ var GMKBff = (function() {
 			$jdoc->addStyleDeclaration('.gmkb-dflt { opacity:0.5;display:inline-block;padding-top:4px }');
 		}
 		return implode("\n", $html);
+	}
+
+	public function filter ($value, $group = null, Registry $input = null)
+	{
+        // Get the field filter type.
+        $filter = (string) $this->element['filter'];
+        if (!$filter) return $value;
+        if ($filter=='zeronull') {
+			$v = (int)$value;
+			if ($v==0) $v = null;//	var_dump([$v,$value,$filter]); jexit();
+			return $v;
+        }
+        return $value;
 	}
 
 	private function num2gmkv ($num)
@@ -120,7 +136,7 @@ var GMKBff = (function() {
 	{
 		static $opts = null;
 		if (!$opts) {
-			$opts = JComponentHelper::getParams(self::COMP);
+			$opts = ComponentHelper::getParams(self::COMP);
 		}
 		$val = (int)$opts->get($opt);
 		return $val ?: $def;

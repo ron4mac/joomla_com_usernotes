@@ -8,6 +8,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
 
 include_once JPATH_COMPONENT.'/views/view.php';
 
@@ -38,16 +39,16 @@ class UsernotesViewUsernotes extends UsernotesViewBase
 		$this->buildPathway($this->parentID);
 
 		// Check for errors.
-		// @TODO: Maybe this could go into JComponentHelper::raiseErrors($this->get('Errors'))
+		// @TODO: Maybe this could go into ComponentHelper::raiseErrors($this->get('Errors'))
 		if (count($errors = $this->get('Errors'))) {
 			throw new Exception(implode("\n", $errors), 500);
 			return false;
 		}
 
 		// Get the component parameters
-		$this->cparams = JComponentHelper::getParams('com_usernotes');
+		$this->cparams = ComponentHelper::getParams('com_usernotes');		//echo'<xmp>';var_dump($this->cparams);echo'</xmp>';
 		// and the menu instance parameters
-		$this->mparams = $app->getParams();	//echo'<xmp>';var_dump($this->mparams);echo'</xmp>';
+		$this->mparams = $app->getParams();		//echo'<xmp>';var_dump($this->mparams);echo'</xmp>';
 		
 
 		$this->_prepareDocument();
@@ -55,9 +56,9 @@ class UsernotesViewUsernotes extends UsernotesViewBase
 		// If user can edit and at the root, check storage useage and queue a message if near quota
 		if ($this->access && !$this->parentID) {
 			$storQuota = (int) $this->mparams->get('storQuota', 0);
-			if (!$storQuota) $storQuota = (int) $this->state->cparams->get('storQuota', 0);
+			if (!$storQuota) $storQuota = (int) $this->state->cparams->get('storQuota', 67108864);		//echo'<xmp>';var_dump($storQuota,$this->cparams);echo'</xmp>';
 			if ($storQuota) {
-				$storSize = $this->get('StorSize');
+				$storSize = $this->get('StorSize');		//echo '=========================================== '.$storSize;
 				$posq = $storSize / $storQuota;
 				if ($posq > 0.8) {
 					$svty = 'notice';
