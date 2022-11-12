@@ -1,4 +1,4 @@
-PRAGMA user_version=1;
+PRAGMA user_version=3;
 BEGIN TRANSACTION;
 CREATE TABLE notes(
 	itemID INTEGER PRIMARY KEY NOT NULL,
@@ -9,6 +9,8 @@ CREATE TABLE notes(
 	contentID INTEGER,
 	parentID INTEGER NOT NULL DEFAULT 0,
 	secured BOOLEAN DEFAULT NULL,
+	cdate INTEGER,
+	udate INTEGER,
 	checked_out INTEGER DEFAULT 0,
 	checked_out_time DATETIME DEFAULT NULL,
 	vcount INTEGER DEFAULT 0,

@@ -6,7 +6,7 @@
 */
 defined('_JEXEC') or die;
 
-define('FILE_ENCRYPTION_BLOCKS', 10000);
+define('FILE_ENCRYPTION_BLOCKS', 32768);
 
 abstract class UserNotesFileEncrypt
 {
@@ -51,9 +51,9 @@ abstract class UserNotesFileEncrypt
 			// Get the initialzation vector from the beginning of the file
 			$iv = fread($fpIn, $ivl);
 			while (!feof($fpIn)) {
-				$cdata = fread($fpIn, $ivl * (FILE_ENCRYPTION_BLOCKS + 1)); // we have to read one block more for decrypting than for encrypting
+				$cdata = fread($fpIn, $ivl * FILE_ENCRYPTION_BLOCKS);
 				$data = openssl_decrypt($cdata, self::METHOD, $key, OPENSSL_RAW_DATA, $iv);
-				// Use the first 16 bytes of the ciphertext as the next initialization vector
+				// Use the first xx bytes of the ciphertext as the next initialization vector
 				$iv = substr($cdata, 0, $ivl);
 				echo $data;
 			}

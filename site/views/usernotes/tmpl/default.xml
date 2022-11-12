@@ -64,16 +64,18 @@
 		<!-- Basic options. -->
 		<fieldset name="basic" label="COM_USERNOTES_MENU_FIELDSET_OPTIONS_LABEL" addfieldpath="/administrator/components/com_usernotes/models/fields">
 
-			<field name="i_storQuota" type="GmkbValue"
+			<field name="storQuota" type="GmkbValue"
 				label="COM_USERNOTES_CONFIG_QUOTA_LABEL"
 				description="COM_USERNOTES_CONFIG_QUOTA_DESC"
-				default="0"
+				default=""
+				filter="zeronull"
 				compdef="134217728/storQuota" />
 
-			<field name="i_maxUpload" type="GmkbValue"
+			<field name="maxUpload" type="GmkbValue"
 				label="COM_USERNOTES_CONFIG_MAXUPLD_LABEL"
 				description="COM_USERNOTES_CONFIG_MAXUPLD_DESC"
-				default="0"
+				default=""
+				filter="zeronull"
 				compdef="4194304/maxUpload" />
 
 			<field name="ratings" type="radio"

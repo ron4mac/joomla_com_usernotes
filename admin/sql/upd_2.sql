@@ -1,0 +1,3 @@
+ALTER TABLE notes ADD COLUMN cdate INTEGER;
+ALTER TABLE notes ADD COLUMN mdate INTEGER;
+PRAGMA user_version=3

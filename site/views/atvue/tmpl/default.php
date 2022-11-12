@@ -18,17 +18,16 @@ if (file_exists($this->fpath)) {
 		header('Content-Disposition: attachment; filename="'.$this->fnam.'"');
 		header("Content-Transfer-Encoding: binary");
 	} else {
-//		$this->jDoc->setMimeEncoding($this->mime);
 		$this->jDoc->setMimeEncoding($this->attProps->mtype ?: $this->mtype);
 	}
-//	header('Content-Length: '.filesize($this->fpath));
-	header('Content-Length: '.$this->attProps->fsize);
+	header('Content-Length: '.$this->attProps->fsize ?: $this->fsize);
 	if (JDEBUG) {
 		$hdmp = print_r(headers_list(), true);
 		JLog::add("download headers: {$hdmp}", JLog::INFO, 'com_usernotes');
 	}
 	if ($this->isecure) {
 		UserNotesFileEncrypt::output($this->key, $this->fpath);
+		flush();
 	} else {
 		readfile($this->fpath);
 	}

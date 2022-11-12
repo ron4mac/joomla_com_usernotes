@@ -7,7 +7,7 @@
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@jrjconline.net</authorEmail>
 	<authorUrl>rjconline.net</authorUrl>
-	<version>1.2.7</version>
+	<version>1.2.8</version>
 	<updater jver="(3\.[89])||(3\.1\d)||(4\.[01])" pver="7.0" />
 	<description>COM_USERNOTES_XML_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
@@ -27,8 +27,8 @@
 	<administration>
 		<menu img="class:usernotes">com_usernotes</menu>
 		<submenu>
-			<menu link="option=com_usernotes" view="usernotes" img="class:usernotes-usr" alt="UserNotes/Users">com_usernotes_users</menu>
-			<menu link="option=com_usernotes" view="groupnotes" img="class:usernotes-grp" alt="UserNotes/Groups">com_usernotes_groups</menu>
+			<menu view="usernotes" img="class:usernotes-usr" alt="UserNotes/Users">com_usernotes_users</menu>
+			<menu view="groupnotes" img="class:usernotes-grp" alt="UserNotes/Groups">com_usernotes_groups</menu>
 		</submenu>
 		<files folder="admin">
 			<filename>access.xml</filename>

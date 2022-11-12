@@ -40,10 +40,10 @@ class UserNotesModelAtvue extends BaseDatabaseModel
 		return $db->loadResult();
 	}
 
-	public function atFileProps ($cid)
+	public function atFileProps ($cid, $fnam)
 	{
 		$db = $this->getDbo();
-		$db->setQuery('SELECT fsize,mtype FROM fileatt WHERE contentID='.$cid);
+		$db->setQuery('SELECT fsize,mtype FROM fileatt WHERE contentID='.$cid.' AND attached='.$db->quote($fnam));
 		return $db->loadObject();
 	}
 
