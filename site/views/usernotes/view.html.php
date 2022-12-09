@@ -10,7 +10,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Component\ComponentHelper;
 
-include_once JPATH_COMPONENT.'/views/view.php';
+//include_once JPATH_COMPONENT.'/views/view.php';
 
 class UsernotesViewUsernotes extends UsernotesViewBase
 {

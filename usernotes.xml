@@ -2,7 +2,7 @@
 <extension type="component" version="3.3" method="upgrade">
 	<name>com_usernotes</name>
 	<author>Ron Crans</author>
-	<creationDate>October 2022</creationDate>
+	<creationDate>December 2022</creationDate>
 	<copyright>(C) 2015-2022 RJCreations. All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@jrjconline.net</authorEmail>

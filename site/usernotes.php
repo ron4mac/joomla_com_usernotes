@@ -9,6 +9,15 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Controller\BaseController;
 
+// register base MVC elements
+JLoader::register('UsernotesViewBase', JPATH_COMPONENT.'/views/view.php');
+
+// register the library for common user storage actions
+JLoader::register('RJUserCom', JPATH_LIBRARIES . '/rjuser/com.php');
+
+// provide a general helper class for the rest of the component
+JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
+
 // and a J3/J4 compatability helper
 JLoader::register('M34C', JPATH_COMPONENT.'/helpers/m34c.php');
 

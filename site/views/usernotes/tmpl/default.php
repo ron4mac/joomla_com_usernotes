@@ -27,7 +27,7 @@ if (/*$this->state->secured*/ $this->item && $this->item->secured && $_SERVER['S
 	//echo '<div style="background-color:red;color:white;">WARNING: You do not have a secure connection!</div>';
 }
 
-if (RJC_DBUG) echo '<div>'.json_encode($this->instanceObj).'</div>';
+if (RJC_DBUG) echo '<div class="RJDBG">'.json_encode($this->instanceObj).'</div>';
 
 if (isset($this->posq)) {
 	$svty = 'notice';

@@ -10,6 +10,9 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 
+// register the library for common user storage actions
+JLoader::register('RJUserCom', JPATH_LIBRARIES . '/rjuser/com.php');
+
 //JHtml::_('behavior.tabstate');
 
 $j_version = preg_replace('#[^0-9\.]#i','',JVERSION);

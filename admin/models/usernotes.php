@@ -34,14 +34,15 @@ class UsernotesModelUsernotes extends JModelList
 		require_once JPATH_COMPONENT.'/helpers/db.php';
 
 		$unotes = [];
-		$folds = UserNotesHelper::getDbPaths($this->relm, 'usernotes', true);
-		foreach ($folds as $fold) {
+//		$folds = UserNotesHelper::getDbPaths($this->relm, 'usernotes', true);
+		$folds = RJUserCom::getDbPaths($this->relm, 'usernotes', true);
+		foreach ($folds as $dir => $unis) foreach ($unis as $uni) {
 			$msgs = [];
-			$ufold = basename(dirname(dirname($fold)));
+			$ufold = basename(dirname(dirname($uni['path'])));
 			$userid = (int)substr($ufold,1);
-			$menuid = (int)substr(strrchr($fold, '_'), 1);
+			$menuid = (int)substr(strrchr($uni['path'], '_'), 1);
 			if (!$menuid) $msgs[] = 'Requires alignment with menu item';
-			$info = UserNotesHelperDb::getInfo($fold);
+			$info = UserNotesHelperDb::getInfo($uni['path']);
 			if (file_exists(JPATH_COMPONENT_ADMINISTRATOR.'/sql/upd_'.$info['dbv'].'.sql')) $msgs[] = 'Database needs to be updated';
 			if ($this->relm == 'u') {
 				$user = JUser::getInstance($userid);

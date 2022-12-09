@@ -8,7 +8,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 
-include_once JPATH_COMPONENT.'/views/view.php';
+//include_once JPATH_COMPONENT.'/views/view.php';
 
 class UsernotesViewEdit extends UsernotesViewBase
 {

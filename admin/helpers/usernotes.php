@@ -18,40 +18,11 @@ abstract class UserNotesHelper
 	protected static $udp = null;
 	protected static $idp = null;			// instance data path
 
-	public static function getInstanceObject ()	// SO
+	public static function getInstanceObject ($mid=null)	// SO
 	{
 		if (!empty(self::$instanceObj)) return self::$instanceObj;
-		$app = Factory::getApplication();
-		$menuid = $app->input->getInt('Itemid', 0);
-		if (!$menuid) throw new Exception('COM_USERNOTES_MISSING_MENUID', 400);
-		$params = $app->getParams();
-	//	file_put_contents('APPARMS.TXT',print_r($params,true),FILE_APPEND);
-		$user = (int)JVERSION > 3 ? $app->getIdentity() : Factory::getUser();
-		$uid = $user->get('id');
-		$ugrps = $user->get('groups');
-		$allperms = UnotesInstanceObject::CAN_CREA + UnotesInstanceObject::CAN_EDIT + UnotesInstanceObject::CAN_DELE;
-		$path = '';
-		$perms = 0;
-		switch ($params->get('notes_type')) {
-			case 0:	//user
-				if ($uid) $perms = $allperms;
-				$path = '@'.$uid;
-				break;
-			case 1:	//group
-				$auth = $params->get('group_auth');
-				$path = '_'.$auth;
-				if ($uid && in_array($auth, $ugrps)) $perms = $allperms;
-				break;
-			case 2:	//site
-				$auth = $params->get('site_auth');
-				$path = '_0';
-				if ($uid && in_array($auth, $ugrps)) $perms = $allperms;
-				break;
-		}
-		$obj = new UnotesInstanceObject($params->get('notes_type'), $menuid, $uid, $path, $perms);
-		file_put_contents('APPARMS.TXT',print_r($obj,true),FILE_APPEND);
-		self::$instanceObj = $obj;
-		return $obj;
+		self::$instanceObj = RJUserCom::getInstObject('notes_type', $mid);
+		return self::$instanceObj;
 	}
 
 	public static function getInstanceID ()	// SO
@@ -101,48 +72,9 @@ abstract class UserNotesHelper
 	public static function userDataPath ()	// SO
 	{
 		if (self::$udp) return self::$udp;
-
-		$sdp = self::getStorageBase();
-		$ndir = self::$instanceObj->path;
-		$cmp = JApplicationHelper::getComponentName().'_'.self::$instanceObj->menuid;
-
-		self::$udp = $sdp.'/'.$ndir.'/'.$cmp;
+		if (!self::$instanceObj) self::getInstanceObject();
+		self::$udp = RJUserCom::getStoragePath(self::$instanceObj);
 		return self::$udp;
-	}
-
-	public static function getDbPaths ($which, $dbname, $full=false, $cmp='')	// AO
-	{
-		$paths = [];
-		if (!$cmp) $cmp = JApplicationHelper::getComponentName();
-		switch ($which) {
-			case 'u':
-				$char1 = '@';
-				break;
-			case 'g':
-				$char1 = '_';
-				break;
-			default:
-				$char1 = '';
-				break;
-		}
-		$dpath = JPATH_SITE.'/'.self::getStorageBase().'/';
-		if (is_dir($dpath) && ($dh = opendir($dpath))) {
-			while (($file = readdir($dh)) !== false) {
-				if ($file[0]==$char1) {
-//					foreach (glob($dpath.$file.'/'.$cmp.'_[0-9]*') as $mid) {
-					foreach (glob($dpath.$file.'/'.$cmp.'*') as $mid) {
-						$ptf = $mid.'/'.$dbname.'.sql3';
-						if (file_exists($ptf))
-							$paths[] = $full ? $ptf : $file;
-						$ptf = $mid.'/'.$dbname.'.db3';
-						if (file_exists($ptf))
-							$paths[] = $full ? $ptf : $file;
-					}
-				}
-			}
-			closedir($dh);
-		}
-		return $paths;
 	}
 
 	public static function getGroupTitle ($gid)	// AO
@@ -342,41 +274,6 @@ abstract class UserNotesHelper
 	public static function fs_db ($value)	// SO
 	{
 		return htmlspecialchars(stripslashes($value));
-	}
-
-}
-
-
-class UnotesInstanceObject	// SO
-{
-	protected $perms;
-	public $type, $menuid, $uid, $path;
-	public const CAN_CREA = 1;
-	public const CAN_EDIT = 2;
-	public const CAN_DELE = 4;
-
-	public function __construct ($type, $menuid, $uid, $path, $perms)
-	{
-		$this->type = $type;
-		$this->menuid = $menuid;
-		$this->uid = $uid;
-		$this->path = $path;
-		$this->perms = $perms;
-	}
-
-	public function canCreate ()
-	{
-		return ($this->perms & self::CAN_CREA);
-	}
-
-	public function canEdit ()
-	{
-		return ($this->perms & self::CAN_EDIT);
-	}
-
-	public function canDelete ()
-	{
-		return ($this->perms & self::CAN_DELE);
 	}
 
 }

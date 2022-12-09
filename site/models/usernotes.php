@@ -8,9 +8,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 
-JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
-
-class UserNotesModelUserNotes extends JModelList
+class UserNotesModelUserNotes extends Joomla\CMS\MVC\Model\ListModel
 {
 	const DBFILE = '/usernotes.db3';
 	protected $instanceObj;

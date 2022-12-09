@@ -92,3 +92,11 @@
 #container .idarn {
 	color:orange;
 }
+
+/* RJC DEBUGGING */
+.RJDBG {
+	background-color: blue;
+	color: gold;
+	margin: .5rem 0;
+	padding: .1rem .5rem;
+}

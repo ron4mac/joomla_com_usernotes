@@ -42,7 +42,7 @@ abstract class UserNotesHelperDb
 		return ['size'=>$size,'notes'=>$notes,'atts'=>$atts,'hasold'=>false,'dbv'=>$dbv];
 	}
 
-
+/*
 	public static function convertDb ($udbPath)
 	{
 		if (!file_exists($udbPath)) return;
@@ -140,5 +140,5 @@ abstract class UserNotesHelperDb
 			return $e->getMessage();
 		}
 	}
-
+*/
 }

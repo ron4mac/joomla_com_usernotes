@@ -136,7 +136,8 @@
 			let dlf = _Id('dnldf');
 			dlf.src = aurl + '&down=1';
 		} else {
-			window.location = aurl;
+		//	window.location = aurl;
+			window.open(aurl, '_blank');
 		}
 	};
 

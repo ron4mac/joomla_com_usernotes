@@ -9,7 +9,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 
-include_once JPATH_COMPONENT.'/views/view.php';
+//include_once JPATH_COMPONENT.'/views/view.php';
 
 class UsernotesViewSearch extends UsernotesViewBase
 {

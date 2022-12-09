@@ -16,8 +16,6 @@ define('ITM_CAN_DELE', 2);
 define('ITM_CAN_CREA', 4);
 define('IS_SMALL_DEVICE', 0);
 
-JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
-
 class UsernotesViewBase extends HtmlView
 {
 //	protected $userID;

@@ -8,12 +8,10 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\MVC\Model\ItemModel;
 
-JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
 JLoader::register('UserNotesFileEncrypt', JPATH_COMPONENT.'/classes/file_encrypt.php');
 
-class UserNotesModelUserNote extends ItemModel
+class UserNotesModelUserNote extends Joomla\CMS\MVC\Model\ItemModel
 {
 	const DBFILE = '/usernotes.db3';
 	protected $_context = 'com_usernotes.usernote';

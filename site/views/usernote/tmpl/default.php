@@ -42,7 +42,7 @@ if (!$prning) echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}
 
 $ratings = $this->params->get('ratings', 0);
 
-if (RJC_DBUG) echo '<div>'.json_encode($this->instanceObj).'</div>';
+if (RJC_DBUG) echo '<div class="RJDBG">'.json_encode($this->instanceObj).'</div>';
 
 $bottoms = '';
 

@@ -10,8 +10,6 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\FormModel;
 
-JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
-
 class UserNotesModelEdit extends FormModel
 {
 	const DBFILE = '/usernotes.db3';

@@ -28,7 +28,7 @@ $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 	UNote.V = '.json_encode($jsvars).';
 ');
 
-if (RJC_DBUG) echo '<div>'.json_encode($this->instanceObj).'</div>';
+if (RJC_DBUG) echo '<div class="RJDBG">'.json_encode($this->instanceObj).'</div>';
 
 $task = $this->type == 'f' ? 'edit.saveFolder' : 'edit.saveNote';
 $lgnd = $this->type == 'f' ? '_F' : '';
