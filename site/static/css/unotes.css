@@ -34,6 +34,7 @@
 }
 #itemsList .docum {
 	background-image: url('../imgs/note.png');
+	background-position-x: -2px;
 }
 #itemsList .docum.isecure {
 	background-image: url('../imgs/key.png'), url('../imgs/note.png');
@@ -44,6 +45,7 @@
 }
 #itemsList .foldm.isecure {
 	background-image: url('../imgs/locked-folder.png');
+	background-position-y: -2px;
 }
 
 

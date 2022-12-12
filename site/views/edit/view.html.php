@@ -8,8 +8,6 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 
-//include_once JPATH_COMPONENT.'/views/view.php';
-
 class UsernotesViewEdit extends UsernotesViewBase
 {
 	protected $type;
@@ -56,7 +54,7 @@ class UsernotesViewEdit extends UsernotesViewBase
 					$item->ephrase = $ephrase;
 				} else {
 					$this->item = $item;
-					return parent::display('ephrase');
+					return parent::display('nocando');
 				}
 				$item->serial_content = UserNotesHelper::doCrypt($item->ephrase, $item->serial_content, true, (int)$item->secured);
 			}

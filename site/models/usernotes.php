@@ -25,6 +25,7 @@ class UserNotesModelUserNotes extends Joomla\CMS\MVC\Model\ListModel
 		$db = JDatabaseDriver::getInstance($option);
 		$db->connect();
 		$db->getConnection()->sqliteCreateFunction('b64d', 'base64_decode', 1);
+		$db->getConnection()->sqliteCreateFunction('sfunc', [$this,'sfunc'], 1);
 
 		if ($doInit) {
 			require_once JPATH_COMPONENT.'/helpers/db.php';
@@ -77,7 +78,7 @@ class UserNotesModelUserNotes extends Joomla\CMS\MVC\Model\ListModel
 		$userID = $this->instanceObj->uid;
 
 		$db = $this->getDbo();
-		$db->getConnection()->sqliteCreateFunction('sfunc', [$this,'sfunc'], 1);
+//		$db->getConnection()->sqliteCreateFunction('sfunc', [$this,'sfunc'], 1);
 
 		$query = $db->getQuery(true);
 		$query->select('I.itemID,I.title,I.isParent,I.shared,I.secured,I.vtotal,I.vcount')->from('notes AS I');
@@ -93,7 +94,7 @@ class UserNotesModelUserNotes extends Joomla\CMS\MVC\Model\ListModel
 
 		// also check secured note titles (since they are encoded)
 		$query->clear()->select('I.itemID,I.title,I.isParent,I.shared,I.secured,I.vtotal,I.vcount')->from('notes AS I');
-		$query->where(['I.secured IS 1','(I.ownerID == \''.$userID.'\' OR I.shared)']);
+		$query->where(['I.secured IS 2','(I.ownerID == \''.$userID.'\' OR I.shared)']);
 		$query->andWhere('sfunc(b64d(I.title))');
 		$db->setQuery($query);
 		$a2 = $db->loadObjectList();

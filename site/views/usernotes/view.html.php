@@ -10,8 +10,6 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Component\ComponentHelper;
 
-//include_once JPATH_COMPONENT.'/views/view.php';
-
 class UsernotesViewUsernotes extends UsernotesViewBase
 {
 	protected $state;
@@ -31,7 +29,7 @@ class UsernotesViewUsernotes extends UsernotesViewBase
 		$this->state = $this->get('State');
 		$this->items = $this->get('Items');
 		$this->item = $this->getModel()->getItem();
-		if (!$this->item) $this->item = (object) ['parentID'=>0, 'secured'=>false, 'checked_out'=>false];
+		if (!$this->item) $this->item = (object) ['itemID'=>0, 'parentID'=>0, 'secured'=>false, 'checked_out'=>false];
 
 		$this->parentID = $this->state->get('parent.id');
 

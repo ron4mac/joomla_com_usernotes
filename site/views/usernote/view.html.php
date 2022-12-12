@@ -8,8 +8,6 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 
-//include_once JPATH_COMPONENT.'/views/view.php';
-
 class UsernotesViewUsernote extends UsernotesViewBase
 {
 	protected $state;

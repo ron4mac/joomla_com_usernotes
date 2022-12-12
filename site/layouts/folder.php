@@ -36,7 +36,9 @@ function un_formGet ($view, $vitm, $ed=false)
 	$form = $m->getForm($vitm, $ed);
 	$frhtm = HTMLHelper::_('form.token');
 	foreach ($form->getFieldset() as $field) {
-		if ($ed && $field->fieldname == 'maksec') continue;
+		// dont show make_secure when is edit or new folder in a secure folder
+		if ($field->fieldname == 'maksec' && ($ed || $vitm->secured)) continue;
+		// only use this field if the parent folder is secured
 		if (!$vitm->secured && $field->fieldname == 'pissec') continue;
 		$frhtm .= $form->renderField($field->fieldname);
 	}
