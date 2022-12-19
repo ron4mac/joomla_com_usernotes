@@ -127,7 +127,7 @@ abstract class JHtmlUsernotes
 <div class="search">
 	<form name="sqry" action="{$fact}" method="POST" onsubmit="return UNote.performSearch(this,{$pid})">
 		<input type="hidden" name="task" value="search" />
-		<input type="search" name="sterm" size="40" results="10" autosave="user_notes" placeholder="Search..." value="{$val}" />
+		<input type="search" name="sterm" size="40" results="0" autosave="true" placeholder="Search..." value="{$val}" />
 	</form>
 </div>
 EOD;
