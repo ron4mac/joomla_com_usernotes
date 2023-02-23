@@ -186,6 +186,7 @@ class UserNotesModelUserNotes extends Joomla\CMS\MVC\Model\ListModel
 		$query = $db->getQuery(true);
 		$query->select('*')->from('notes')->where('parentID='.$pid);
 		if ($this->getState('hide-secure')) $query->where('secured IS NOT 1');
+		$query->order('title COLLATE NOCASE');
 		return $query;
 	}
 

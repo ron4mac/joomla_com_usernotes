@@ -43,6 +43,18 @@ class UsernotesControllerEdit extends BaseController
 		if (!(($formData->getInt('itemID', 0) && $this->instanceObj->canEdit()) || $this->instanceObj->canCreate())) jexit(Text::_('JERROR_ALERTNOAUTHOR'));
 
 		$pid = $model->storeFolder($formData, $this->instanceObj->uid);
+
+		if ($errs = $model->getErrors()) {
+			$erm = [];
+			foreach ($errs as $err) {
+				if (is_object($err)) {
+					$erm[] = $err->getMessage();
+				} else {
+					$erm[] = $err;
+				}
+			}
+			 echo implode('<br>', $erm);
+		}
 	}
 
 

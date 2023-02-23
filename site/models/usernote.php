@@ -154,6 +154,7 @@ class UserNotesModelUserNote extends Joomla\CMS\MVC\Model\ItemModel
 		try
 		{
 			$db = $this->getDbo();
+			$db->transactionStart();
 			if ($iid) {
 				$q = $db->getQuery(true);
 				$q->update('content')->set('serial_content='.$db->quote($ncont))->where('contentID='.$data->getInt('contentID'));
@@ -175,9 +176,11 @@ class UserNotesModelUserNote extends Joomla\CMS\MVC\Model\ItemModel
 				$db->setQuery($q);
 				$db->execute();
 			}
+			$db->transactionCommit();
 		}
 		catch (Exception $e)
 		{
+			$db->transactionRollback();
 			$this->setError($e);
 		}
 	}

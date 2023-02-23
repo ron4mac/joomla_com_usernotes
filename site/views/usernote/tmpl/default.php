@@ -46,7 +46,7 @@ if (RJC_DBUG) echo '<div class="RJDBG">'.json_encode($this->instanceObj).'</div>
 
 $bottoms = '';
 
-if ($ratings) {
+if (!$prning && $ratings) {
 	$bottoms .= '
 //	let rating = document.getElementById("unrating");
 	//let r = new SimpleStarRating(rating);

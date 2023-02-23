@@ -23,7 +23,7 @@ class UserNotesController extends JControllerLegacy
 		foreach ($cids as $cid) {
 			list($uid,$iid) = explode('|', $cid);
 			$mid = $iid ? ('_'.$iid) : '';
-			$msgs = RJUserCom::updateDb(JPATH_ROOT.'/'.$sdp.'/'.$tc.$uid.'/'.JApplicationHelper::getComponentName().$mid.'/usernotes/db3');
+			$msgs = RJUserCom::updateDb(JPATH_ROOT.'/'.$sdp.'/'.$tc.$uid.'/'.JApplicationHelper::getComponentName().$mid.'/usernotes.db3');
 		//	$dbpath = JPATH_ROOT.'/'.$sdp.'/'.$tc.$uid.'/'.JApplicationHelper::getComponentName().$mid;
 		}
 		$this->setRedirect('index.php?option=com_usernotes&view='.$view, Text::_('COM_USERNOTES_DBUP_DONE').($msgs ? '<br>'.implode('<br>',$msgs) : ''));

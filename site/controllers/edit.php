@@ -6,7 +6,7 @@
 */
 defined('_JEXEC') or die;
 
-//use Joomla\CMS\Factory;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
@@ -95,7 +95,23 @@ class UsernotesControllerEdit extends FormController
 		if (!(($formData->getInt('itemID', 0) && $this->instanceObj->canEdit()) || $this->instanceObj->canCreate())) throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
 
 		$model = $this->getModel('usernote');
-		$model->storeNote($formData, $this->instanceObj->uid);
+		try {
+			$model->storeNote($formData, $this->instanceObj->uid);
+			if ($errs = $model->getErrors()) {
+				$erm = [];
+				foreach ($errs as $err) {
+					if (is_object($err)) {
+						$erm[] = $err->getMessage();
+					} else {
+						$erm[] = $err;
+					}
+				}
+				Factory::getApplication()->enqueueMessage(implode('<br>', $erm), 'error');
+			}
+		}
+		catch (Exception $e) {
+			Factory::getApplication()->enqueueMessage($e->getMessage(), 'error');
+		}
 
 		// checkin the item
 		$this->getModel()->checkIn($formData->getInt('itemID'));
