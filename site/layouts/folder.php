@@ -1,7 +1,7 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 defined('JPATH_BASE') or die;
@@ -12,10 +12,12 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
 
+extract($displayData);	//view,vitm
+
 if ((int)JVERSION<4) {
 	HTMLHelper::_('behavior.formvalidator');
 } else {
-	$wa = $displayData['view']->document->getWebAssetManager();
+	$wa = $view->document->getWebAssetManager();
 	$wa->useScript('keepalive')->useScript('form.validate');
 }
 
@@ -45,9 +47,9 @@ function un_formGet ($view, $vitm, $ed=false)
 	return $frhtm;
 }
 
-$instlink = Route::_('index.php?option=com_usernotes&Itemid='.$displayData['view']->menuid, false);
+$instlink = Route::_('index.php?option=com_usernotes&Itemid='.$view->menuid, false);
 
-if (!empty($displayData['vitm']->itemID)) echo HTMLHelper::_(
+if (!empty($vitm->itemID)) echo HTMLHelper::_(
 	'bootstrap.renderModal',
 	'foldered-modal', // selector
 	array( // options
@@ -56,7 +58,7 @@ if (!empty($displayData['vitm']->itemID)) echo HTMLHelper::_(
 					<button type="button" class="btn btn-primary" onclick="UNote.saveFolder(this)">Save Folder</button>',
 		'modalWidth' => 20
 	),
-	'<form id="un_edtfold" method="POST" class="form-validate" onsubmit="return false">' . un_formGet($displayData['view'], $displayData['vitm'], true) . '</form>'
+	'<form id="un_edtfold" method="POST" class="form-validate" onsubmit="return false">' . un_formGet($view, $vitm, true) . '</form>'
 );
 echo HTMLHelper::_(
 	'bootstrap.renderModal',
@@ -67,5 +69,5 @@ echo HTMLHelper::_(
 					<button type="button" class="btn btn-primary" onclick="UNote.newFolder(event, this)">Create Folder</button>',
 		'modalWidth' => 20
 	),
-	'<form id="un_newfold" method="POST" class="form-validate" onsubmit="return false">' . un_formGet($displayData['view'], $displayData['vitm']) . '</form>'
+	'<form id="un_newfold" method="POST" class="form-validate" onsubmit="return false">' . un_formGet($view, $vitm) . '</form>'
 );

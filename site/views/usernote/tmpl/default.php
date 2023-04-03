@@ -1,7 +1,7 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 defined('_JEXEC') or die;
@@ -42,7 +42,7 @@ if (!$prning) echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}
 
 $ratings = $this->params->get('ratings', 0);
 
-if (RJC_DBUG) echo '<div class="RJDBG">'.json_encode($this->instanceObj).'</div>';
+if (RJC_DBUG && !$this->qview) echo '<div class="RJDBG">'.json_encode($this->instanceObj).'</div>';
 
 $bottoms = '';
 
@@ -59,7 +59,7 @@ if (!$prning && $ratings) {
 		let popr = document.getElementById("popRate");	console.log(popr);
 		popr.querySelector(".rating").addEventListener("rate", UNote.rateEvt);';
 	} else {
-		$bottoms .= 'r.disable();';
+	//	$bottoms .= 'r.disable();';
 	}
 }
 
@@ -113,6 +113,7 @@ if ($prning) $bottoms .= '
 		<h3><?php if ($this->item->secured) echo'<span class="icon-unlock" style="font-size:.8em;opacity:0.5"></span>'; ?><?=$this->item->title?></h3>
 		<div id="note"><?=$this->item->serial_content?></div>
 	</div>
+<?php if (!$this->qview): ?>
 <?php if (!$prning): ?>
 	<div id="attachments">
 <?php if ($this->attached): ?>
@@ -158,7 +159,7 @@ if ($prning) $bottoms .= '
 		<span class="rating" data-default-rating="0"></span>
 	</div>
 	<?php endif; ?>
-<?php endif; ?>
+<?php endif; //prning?>
 </div>
 <div style="display:none">
 <form name="actForm" action="<?=$this->aUrl('')?>" method="POST">
@@ -171,3 +172,4 @@ if ($prning) $bottoms .= '
 <iframe id="dnldf" style="display:none;"></iframe>
 <?php endif; ?>
 <?php if ($bottoms) echo '<script>'.$bottoms.'</script>'; ?>
+<?php endif; //qview?>

@@ -1,7 +1,7 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 defined('_JEXEC') or die;
@@ -26,6 +26,7 @@ class UsernotesViewSearch extends UsernotesViewBase
 
 		// Get view related request variables.
 		$this->sterm = $app->input->getString('sterm');
+	//	$this->sterm = base64_decode(str_replace(['-','_'], ['+','/'], $app->input->get->getString('s',''))) || $this->sterm;
 
 		// Get model data.
 		$m = $this->getModel();

@@ -12,6 +12,13 @@
 	overflow-wrap: break-word;
 }
 
+#note td, #note th {
+	border: 1px solid #BBB;
+	padding: 3px;
+}
+#note th {
+	background-color: #F4F4F4;
+}
 
 /* ============================  ranger star rating
 */

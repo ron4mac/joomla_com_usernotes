@@ -12,6 +12,7 @@ class UsernotesViewUsernote extends UsernotesViewBase
 {
 	protected $state;
 	protected $params;
+	protected $qview;
 	protected $smallDevice = false;
 
 	// use alternate css
@@ -41,6 +42,8 @@ class UsernotesViewUsernote extends UsernotesViewBase
 			$cookv = UserNotesHelper::doCrypt($this->item->itemID.'-@:'.$this->item->contentID, $ephrase);
 			setcookie($cookn, $cookv, 0, '', '', true);
 		}
+
+		$this->qview = $app->input->post->get('qview',0,'integer');
 
 		// Check for errors.
 		// @TODO: Maybe this could go into JComponentHelper::raiseErrors($this->get('Errors'))

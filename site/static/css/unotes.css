@@ -48,6 +48,15 @@
 	background-position-y: -2px;
 }
 
+.qview {
+	background-image: url('../imgs/glasses.svg');
+	background-color: transparent;
+	width: 30px;
+	background-size: cover;
+	margin-left: 8px;
+	background-position-y: -3px;
+	border: none;
+}
 
 /** small static stars in item list **/
 .strate {

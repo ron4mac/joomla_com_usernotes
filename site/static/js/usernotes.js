@@ -1,6 +1,6 @@
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 'use strict';
@@ -233,6 +233,21 @@
 		UNote.mclosetime(to);
 	};
 
+
+	UNote.qView = (elm) => {
+		let nlnk = elm.previousElementSibling;
+		console.log(nlnk);
+		console.log(nlnk.href);
+		let dlg = _Id('qview-modal');
+		dlg.querySelector('.modal-title').innerHTML = nlnk.firstElementChild.innerHTML;
+		_Id('qviewdata').innerHTML = 'Loading...';
+		dlg.open ? dlg.open() : jQuery(dlg).modal('show');
+		let parms = new URLSearchParams('qview=1');
+		fetch(nlnk.href+'&format=raw', {method:'POST',body:parms})
+		.then(resp => { if (!resp.ok) throw new Error(`HTTP ${resp.status}`); return resp.text() })
+		.then(data => _Id('qviewdata').innerHTML = data)
+		.catch(err => alert('Failure: '+err));
+	};
 
 	// close showed layer
 	const mclose = () => {

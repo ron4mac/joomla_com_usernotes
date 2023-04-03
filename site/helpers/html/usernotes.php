@@ -1,7 +1,7 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 defined('_JEXEC') or die;
@@ -123,6 +123,7 @@ abstract class JHtmlUsernotes
 //		$mnuId = self::mnuId();
 		$mnuId = self::$instanceObj->menuid;
 		$fact = self::aiUrl('');
+//		$sturl = str_replace(['+','/','='], ['-','_',''], base64_encode($string));
 		return <<<EOD
 <div class="search">
 	<form name="sqry" action="{$fact}" method="POST" onsubmit="return UNote.performSearch(this,{$pid})">
