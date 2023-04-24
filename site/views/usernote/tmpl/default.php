@@ -8,9 +8,13 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Layout\LayoutHelper;
+
+$userCanRate = UserNotesHelper::userCanRate();
 
 $this->jDoc->addScript('components/com_usernotes/static/js/upload5d.js', ['version' => 'auto']);
-$this->jDoc->addScript('components/com_usernotes/static/js/rating.js', ['version' => 'auto']);
+//$this->jDoc->addScript('components/com_usernotes/static/js/rating.js', ['version' => 'auto']);
+if ($userCanRate) $this->jDoc->addScript('components/com_usernotes/static/js/rater1.js', ['version' => 'auto']);
 $jslang = [
 	'ru_sure' => Text::_('COM_USERNOTES_RU_SURE'),
 	'fsz2big' => Text::_('COM_USERNOTES_FSZ2BIG'),
@@ -99,8 +103,10 @@ if ($prning) $bottoms .= '
 	window.print();
 }());
 ';
+// include 'load1.php';
 ?>
 <div id="container">
+	<?php if (UserNotesHelper::userCanRate()) echo LayoutHelper::render('rater1'); ?>
 	<div id="body">
 		<?php if($ratings): ?>
 		<div class="rated"><span id="numrats">(<?=$this->item->vcount?>)</span></div>

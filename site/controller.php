@@ -85,7 +85,7 @@ class UserNotesController extends BaseController
 
 	public function addRating ()
 	{
-		$rate = $this->input->post->getInt('rate', 0);
+		$rate = $this->input->post->getFloat('rate', 0);
 		// don't let unauthorized users cause a ratings reset
 		if ($rate == 0 && UserNotesHelper::userAuth() < 2) die(json_encode(['err'=>'NOT AUTHORIZED']));
 		// add the rating to the item
