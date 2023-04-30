@@ -1,7 +1,7 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 */
 defined('_JEXEC') or die;
@@ -57,8 +57,11 @@ class UserNotesModelUserNotes extends Joomla\CMS\MVC\Model\ListModel
 		return false;
 	}
 
-	public function search ($sterm)
+	public function search ($sterm, $pid)
 	{
+		if ($sterm == '**starred') return $this->starred($pid);
+		if ($sterm == '**recent') return $this->recent($pid);
+
 		if (strpos($sterm, ' OR ') > 0) {
 			$this->smod = '|';
 			$ss = explode(' OR ', $sterm);
@@ -101,6 +104,33 @@ class UserNotesModelUserNotes extends Joomla\CMS\MVC\Model\ListModel
 		return array_merge($a1, $a2);
 	}
 
+	private function starred ($pid)
+	{
+		$userID = $this->instanceObj->uid;
+		$db = $this->getDbo();
+		$query = $db->getQuery(true);
+		$query->select('I.itemID,I.title,I.isParent,I.shared,I.secured,I.vtotal,I.vcount')->from('notes AS I');
+		$query->where(['I.secured IS NOT 1','(I.ownerID == \''.$userID.'\' OR I.shared)']);
+		$query->andWhere('I.vcount > 0');
+		$db->setQuery($query);
+		$lst = $db->loadObjectList();
+		return $lst;
+	}
+
+	private function recent ($pid)
+	{
+		$userID = $this->instanceObj->uid;
+		$db = $this->getDbo();
+		$query = $db->getQuery(true);
+		$query->select('I.itemID,I.title,I.isParent,I.shared,I.secured,I.vtotal,I.vcount')->from('notes AS I');
+		$query->where('I.isParent IS NOT 1');
+		$query->andWhere('I.cdate IS NOT NULL');
+		$query->andWhere(['I.secured IS NOT 1','(I.ownerID == \''.$userID.'\' OR I.shared)']);
+		$query->order('I.cdate DESC');
+		$db->setQuery($query, 0, 20);
+		$lst = $db->loadObjectList();
+		return $lst;
+	}
 
 	public function addItemPaths (&$items)
 	{

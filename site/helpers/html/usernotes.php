@@ -126,9 +126,11 @@ abstract class JHtmlUsernotes
 //		$sturl = str_replace(['+','/','='], ['-','_',''], base64_encode($string));
 		return <<<EOD
 <div class="search">
-	<form name="sqry" action="{$fact}" method="POST" onsubmit="return UNote.performSearch(this,{$pid})">
-		<input type="hidden" name="task" value="search" />
-		<input type="search" name="sterm" size="40" results="0" autosave="true" placeholder="Search..." value="{$val}" />
+	<form name="sqry" action="{$fact}" method="POST" onsubmit="return UNote.performSearch(this)">
+		<input type="hidden" name="task" value="search">
+		<input type="hidden" name="pid" value="{$pid}">
+		<input type="search" name="sterm" size="40" results="0" autosave="true" placeholder="Search..." value="{$val}">
+		<input type="submit" style="display: none">
 	</form>
 </div>
 EOD;

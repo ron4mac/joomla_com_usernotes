@@ -26,11 +26,12 @@ class UsernotesViewSearch extends UsernotesViewBase
 
 		// Get view related request variables.
 		$this->sterm = $app->input->getString('sterm');
+		$this->pid = $app->input->getInt('pid', 0);
 	//	$this->sterm = base64_decode(str_replace(['-','_'], ['+','/'], $app->input->get->getString('s',''))) || $this->sterm;
 
 		// Get model data.
 		$m = $this->getModel();
-		$items = $m->search($this->sterm);
+		$items = $m->search($this->sterm, $this->pid);
 		$m->addItemPaths($items);
 
 		// Check for errors.

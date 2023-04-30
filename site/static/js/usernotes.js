@@ -77,8 +77,9 @@
 			alert(UNote.L.no_sterm);
 			return false;
 		}
-		aform.submit();
-		return false;
+		//aform.submit();
+		//console.log(sterm);
+		return true;
 	};
 
 

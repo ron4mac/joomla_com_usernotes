@@ -6,10 +6,17 @@
 */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\HTML\Helpers\Bootstrap;
 
 if (RJC_DBUG) echo '<div class="RJDBG">'.json_encode($this->instanceObj).'</div>';
+
+$jslang = [
+		'no_sterm' => Text::_('COM_USERNOTES_NO_STERM'),
+		'ru_sure' => Text::_('COM_USERNOTES_RU_SURE')
+	];
+$this->jDoc->addScriptDeclaration('UNote.L = '.json_encode($jslang));
 
 // accommodate targeted breadcrumb module
 echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
