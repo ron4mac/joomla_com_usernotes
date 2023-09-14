@@ -2,6 +2,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 'use strict';
 
@@ -131,7 +132,7 @@
 
 	UNote.getAttach = (evt, elm, down) => {
 		estop(evt,true);
-		let afile = elm.parentNode.dataset.afile;
+		let afile = elm.parentElement.dataset.afile;
 		let aurl = UNote.V.aBaseURL+'&view=atvue&cat='+UNote.V.itemID+'|'+UNote.V.contentID+'|'+afile;
 		if (down) {
 			let dlf = _Id('dnldf');
@@ -236,19 +237,35 @@
 
 
 	UNote.qView = (elm) => {
-		let nlnk = elm.previousElementSibling;
+		let nlnk = elm.parentElement.dataset.href;
 		console.log(nlnk);
-		console.log(nlnk.href);
 		let dlg = _Id('qview-modal');
-		dlg.querySelector('.modal-title').innerHTML = nlnk.firstElementChild.innerHTML;
+		let dttl = dlg.querySelector('.modal-title');
+		dttl.innerHTML = '<a href="' + nlnk + '">' + elm.innerHTML + '</a>';
 		_Id('qviewdata').innerHTML = 'Loading...';
 		dlg.open ? dlg.open() : jQuery(dlg).modal('show');
 		let parms = new URLSearchParams('qview=1');
-		fetch(nlnk.href+'&format=raw', {method:'POST',body:parms})
+		fetch(nlnk+'&format=raw', {method:'POST',body:parms})
 		.then(resp => { if (!resp.ok) throw new Error(`HTTP ${resp.status}`); return resp.text() })
-		.then(data => _Id('qviewdata').innerHTML = data)
+		.then(data => {
+				let dsp = 0;
+				if (data.substr(0,3)=='$~$') {
+					dsp = 3;
+					dttl.innerHTML += ' <i class="fa fa-xs fa-paperclip"> </i>';
+				}
+				_Id('qviewdata').innerHTML = data.substr(dsp);
+			}
+		)
 		.catch(err => alert('Failure: '+err));
 	};
+
+
+	UNote.link2 = (elm) => {
+		let nlnk = elm.dataset.href;
+		console.log(nlnk);
+		window.location.href = nlnk;
+	};
+
 
 	// close showed layer
 	const mclose = () => {

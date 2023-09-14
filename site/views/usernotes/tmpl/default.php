@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -10,6 +11,9 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\HTML\Helpers\Bootstrap;
+
+Bootstrap::modal('#qview-modal');
 
 $jslang = [
 		'no_sterm' => Text::_('COM_USERNOTES_NO_STERM'),
@@ -24,7 +28,6 @@ UNote.V = '.json_encode($jsvars).';
 
 if (/*$this->state->secured*/ $this->item && $this->item->secured && $_SERVER['SERVER_PORT'] != 443) {
 	$this->nqMessage('<span style="color:red">'.Text::_('COM_USERNOTES_NOTICE_INSECURE').'</span>', 'warning');
-	//echo '<div style="background-color:red;color:white;">WARNING: You do not have a secure connection!</div>';
 }
 
 if (RJC_DBUG) echo '<div class="RJDBG">'.json_encode($this->instanceObj).'</div>';
@@ -56,27 +59,30 @@ $ratings = $this->mparams->get('ratings', false);
 // accommodate targeted breadcrumb module
 echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 // display the search field
-echo JHtmlUsernotes::searchField($this->parentID);
+echo HtmlUsernotes::searchField($this->parentID);
 ?>
+<style>
+	.rated, #ratep { float: right; }
+</style>
 <div id="container">
 	<div id="body">
 	<div id="itemsList">
 	<?php foreach($this->items as $item): ?>
 		<div class="item">
-			<?=JHtmlUsernotes::itemLink($item, $ratings);?>
+			<?=HtmlUsernotes::itemQview($item, $ratings);?>
 		</div>
 	<?php endforeach; ?>
 	</div>
 	</div>
 	<div class="footer">
 		<?php if ($this->access & ITM_CAN_CREA) : ?>
-		<?=JHtmlUsernotes::newActIcon($this->parentID, Text::_('COM_USERNOTES_EDIT_FORM_CREATE'))?><?=JHtmlUsernotes::fNewActIcon($this->parentID.'&type=f',Text::_('COM_USERNOTES_EDIT_FORM_CREATE_F'))?>
+		<?=HtmlUsernotes::newActIcon($this->parentID, Text::_('COM_USERNOTES_EDIT_FORM_CREATE'))?><?=HtmlUsernotes::fNewActIcon($this->parentID.'&type=f',Text::_('COM_USERNOTES_EDIT_FORM_CREATE_F'))?>
 		<?php else : ?>
 		&nbsp;
 		<?php endif;?>
 		<?php if ($this->parentID) {
-			if ($this->access & ITM_CAN_DELE) echo JHtmlUsernotes::fDelActIcon($this->parentID,Text::_('COM_USERNOTES_EDIT_FORM_DELETE_F'));
-			if ($this->access & ITM_CAN_EDIT) echo JHtmlUsernotes::fEdtActIcon($this->parentID,Text::_('COM_USERNOTES_EDIT_FORM_EDIT_F'));
+			if ($this->access & ITM_CAN_DELE) echo HtmlUsernotes::fDelActIcon($this->parentID,Text::_('COM_USERNOTES_EDIT_FORM_DELETE_F'));
+			if ($this->access & ITM_CAN_EDIT) echo HtmlUsernotes::fEdtActIcon($this->parentID,Text::_('COM_USERNOTES_EDIT_FORM_EDIT_F'));
 			}
 		?>
 	</div>

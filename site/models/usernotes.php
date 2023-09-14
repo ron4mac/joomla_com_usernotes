@@ -3,6 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -26,6 +27,7 @@ class UserNotesModelUserNotes extends Joomla\CMS\MVC\Model\ListModel
 		$db->connect();
 		$db->getConnection()->sqliteCreateFunction('b64d', 'base64_decode', 1);
 		$db->getConnection()->sqliteCreateFunction('sfunc', [$this,'sfunc'], 1);
+		$db->getConnection()->sqliteCreateFunction('vavg', [$this,'vavg'], 2);
 
 		if ($doInit) {
 			require_once JPATH_COMPONENT.'/helpers/db.php';
@@ -35,6 +37,7 @@ class UserNotesModelUserNotes extends Joomla\CMS\MVC\Model\ListModel
 		$config['dbo'] = $db;
 		parent::__construct($config);
 	}
+
 
 	// an sqlite extended function to search a field for search terms
 	protected $smod = '', $sstrs = []; 
@@ -56,6 +59,11 @@ class UserNotesModelUserNotes extends Joomla\CMS\MVC\Model\ListModel
 		}
 		return false;
 	}
+	// an sqlite extended function to get the average vote (rating)
+	public function vavg ($tot, $cnt) {
+		return $tot ? ($tot/$cnt) : 0;
+	}
+
 
 	public function search ($sterm, $pid)
 	{
@@ -84,7 +92,7 @@ class UserNotesModelUserNotes extends Joomla\CMS\MVC\Model\ListModel
 //		$db->getConnection()->sqliteCreateFunction('sfunc', [$this,'sfunc'], 1);
 
 		$query = $db->getQuery(true);
-		$query->select('I.itemID,I.title,I.isParent,I.shared,I.secured,I.vtotal,I.vcount')->from('notes AS I');
+		$query->select('I.itemID,I.title,I.isParent,I.parentID,I.shared,I.secured,I.vtotal,I.vcount')->from('notes AS I');
 		if ((int)JVERSION < 4) {
 			$query->innerJoin('content AS C ON C.contentID=I.contentID');
 		} else {
@@ -93,59 +101,78 @@ class UserNotesModelUserNotes extends Joomla\CMS\MVC\Model\ListModel
 		$query->where(['I.secured IS NOT 1','(I.ownerID == \''.$userID.'\' OR I.shared)']);
 		$query->andWhere(['sfunc(C.serial_content)','sfunc(I.title)']);
 		$db->setQuery($query);
+		$this->logQ($db);
 		$a1 = $db->loadObjectList();
 
 		// also check secured note titles (since they are encoded)
-		$query->clear()->select('I.itemID,I.title,I.isParent,I.shared,I.secured,I.vtotal,I.vcount')->from('notes AS I');
-		$query->where(['I.secured IS 2','(I.ownerID == \''.$userID.'\' OR I.shared)']);
-		$query->andWhere('sfunc(b64d(I.title))');
+		$query->clear()->select('I.itemID,I.title,I.isParent,I.parentID,I.shared,I.secured,I.vtotal,I.vcount')
+			->from('notes AS I')
+			->where(['I.secured IS 2','(I.ownerID == \''.$userID.'\' OR I.shared)'])
+			->andWhere('sfunc(b64d(I.title))');
 		$db->setQuery($query);
+		$this->logQ($db);
 		$a2 = $db->loadObjectList();
 		return array_merge($a1, $a2);
 	}
+
 
 	private function starred ($pid)
 	{
 		$userID = $this->instanceObj->uid;
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
-		$query->select('I.itemID,I.title,I.isParent,I.shared,I.secured,I.vtotal,I.vcount')->from('notes AS I');
-		$query->where(['I.secured IS NOT 1','(I.ownerID == \''.$userID.'\' OR I.shared)']);
-		$query->andWhere('I.vcount > 0');
+		$query->select('I.itemID,I.title,I.isParent,I.parentID,I.shared,I.secured,I.vtotal,I.vcount')
+			->from('notes AS I')
+			->where('I.vcount > 0')
+			->andWhere(['I.secured IS 0','I.ownerID == '.$userID,'I.shared'], 'OR')
+			->order('vavg(I.vtotal,I.vcount) DESC');
 		$db->setQuery($query);
+		$this->logQ($db);
 		$lst = $db->loadObjectList();
 		return $lst;
 	}
+
 
 	private function recent ($pid)
 	{
 		$userID = $this->instanceObj->uid;
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
-		$query->select('I.itemID,I.title,I.isParent,I.shared,I.secured,I.vtotal,I.vcount')->from('notes AS I');
-		$query->where('I.isParent IS NOT 1');
-		$query->andWhere('I.cdate IS NOT NULL');
-		$query->andWhere(['I.secured IS NOT 1','(I.ownerID == \''.$userID.'\' OR I.shared)']);
-		$query->order('I.cdate DESC');
+		$query->select('I.itemID,I.title,I.isParent,I.parentID,I.shared,I.secured,I.vtotal,I.vcount')
+			->from('notes AS I')
+			->where('I.isParent IS NOT 1')
+			->andWhere('I.cdate IS NOT NULL')
+			->andWhere(['I.secured IS 0','I.ownerID == '.$userID,'I.shared'], 'OR')
+			->order('I.cdate DESC');
 		$db->setQuery($query, 0, 20);
+		$this->logQ($db);
 		$lst = $db->loadObjectList();
 		return $lst;
 	}
 
+
 	public function addItemPaths (&$items)
 	{
+		static $C = [];	// cache parent items
+
 		$db = $this->getDbo();
 		foreach ($items as &$item) {
-			$to = $item->itemID;
-			$path = [];
-			while ($to) {
-				$db->setQuery('SELECT title,parentID,secured FROM notes WHERE itemID='.$to);
-				$r = $db->loadAssoc();
-				if ($r['secured']) {
-					$r['title'] = base64_decode($r['title']);
+			$pid = $item->parentID;
+			$path = [$item->secured ? base64_decode($item->title) : $item->title];
+			while ($pid) {
+				if (isset($C[$pid])) {
+					$r = $C[$pid];
+				} else {
+					$db->setQuery('SELECT title,parentID,secured FROM notes WHERE itemID='.$pid);
+					$this->logQ($db);
+					$r = $db->loadAssoc();
+					if ($r['secured']) {
+						$r['title'] = base64_decode($r['title']);
+					}
+					$C[$pid] = $r;
 				}
 				array_unshift($path, $r['title']);
-				$to = $r['parentID'];
+				$pid = $r['parentID'];
 			}
 			$item->lPath = implode(' :: ', $path);
 		}
@@ -158,6 +185,7 @@ class UserNotesModelUserNotes extends Joomla\CMS\MVC\Model\ListModel
 		if (!$iid) return false;
 		$db = $this->getDbo();
 		$db->setQuery('SELECT * FROM notes WHERE itemID == '.$iid);
+		$this->logQ($db);
 		$data = $db->loadObject();
 		return $data;
 	}
@@ -167,6 +195,7 @@ class UserNotesModelUserNotes extends Joomla\CMS\MVC\Model\ListModel
 	{
 		$db = $this->getDbo();
 		$db->setQuery('UPDATE notes SET parentID = '.$pid.' WHERE itemID == '.$iid);
+		$this->logQ($db);
 		$db->execute();
 		return '';
 	}
@@ -188,6 +217,7 @@ class UserNotesModelUserNotes extends Joomla\CMS\MVC\Model\ListModel
 	{
 		$db = $this->getDbo();
 		$db->setQuery('SELECT * FROM notes WHERE isParent == 1 AND (ownerID == '.$userID.' OR shared) ORDER BY parentID,title');
+		$this->logQ($db);
 		$rows = $db->loadObjectList();
 		$hier = [0 => '&lt;'.'My Notes'.'&gt;'];
 		$this->buildBranch(0, '-&nbsp;', $rows, $hier);
@@ -249,6 +279,13 @@ class UserNotesModelUserNotes extends Joomla\CMS\MVC\Model\ListModel
 		// set whether secured item should be shown
 		$userID = $this->instanceObj->uid;
 		$this->setState('hide-secure', !(bool)$userID);
+	}
+
+
+	private function logQ ($db)
+	{
+		$q = (string)$db->getQuery();
+		file_put_contents('QLOG.txt', $q."\n", FILE_APPEND);
 	}
 
 }

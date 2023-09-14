@@ -3,6 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -21,7 +22,7 @@ $this->jDoc->addScriptDeclaration('UNote.L = '.json_encode($jslang));
 // accommodate targeted breadcrumb module
 echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 // display the search field
-echo HTMLHelper::_('usernotes.searchField', !empty($this->parentID) ? $this->parentID : 0, $this->sterm);
+HtmlUsernotes::searchField(!empty($this->parentID) ? $this->parentID : 0, $this->sterm);
 
 Bootstrap::modal('#qview-modal');
 ?>
@@ -33,33 +34,10 @@ Bootstrap::modal('#qview-modal');
 	<div id="itemsList">
 	<?php
 	foreach($this->items as $item) {
-		$xtra = $item->secured ? '' : ' <button class="qview"></button>';
-		echo '<div class="item">'. HTMLHelper::_('usernotes.itemLink', $item).$xtra.'</div>';
+		echo '<div class="item">'. HtmlUsernotes::itemQview($item, true).'</div>';
 	}
 	?>
 	</div>
 	</div>
 	<div class="footer">&nbsp;</div>
 </div>
-<div id="qview-modal" tabindex="-1" class="joomla-modal modal fade" style="display: none;" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">title-holder</h5>
-				<button type="button" class="btn-close novalidate" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body" style="max-height: initial;">
-				<div id="qviewdata"></div>
-			</div>
-		</div>
-	</div>
-</div>
-<script>
-	let element = document.getElementById('itemsList');
-	element.addEventListener('click', (e) => {
-		if (e.target.classList.contains('qview')) {
-			UNote.qView(e.target);
-		}
-	});
-</script>
-<?php

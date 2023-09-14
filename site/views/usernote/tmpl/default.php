@@ -3,6 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -34,6 +35,7 @@ var fup_payload = {task:"edit.attach",iID:'.$this->item->itemID.',cID:'.$this->i
 var uploadMaxFilesize = '.$this->maxUploadBytes.';
 	UNote.L = '.json_encode($jslang).';
 	UNote.V = '.json_encode($jsvars).';
+	const _Id = (elm) => document.getElementById(elm);
 ');
 
 $itemID = $this->item->itemID;
@@ -52,7 +54,7 @@ $bottoms = '';
 
 if (!$prning && $ratings) {
 	$bottoms .= '
-//	let rating = document.getElementById("unrating");
+//	let rating = _Id("unrating");
 	//let r = new SimpleStarRating(rating);
 //	let r = UNote.hoistRating(rating);
 //	UNote.robj = r;
@@ -60,7 +62,7 @@ if (!$prning && $ratings) {
 	if (UserNotesHelper::userCanRate()) {
 		$bottoms .= '
 	//	rating.addEventListener("rate", UNote.rateEvt);
-		let popr = document.getElementById("popRate");	console.log(popr);
+		let popr = _Id("popRate");	console.log(popr);
 		popr.querySelector(".rating").addEventListener("rate", UNote.rateEvt);';
 	} else {
 	//	$bottoms .= 'r.disable();';
@@ -104,6 +106,8 @@ if ($prning) $bottoms .= '
 }());
 ';
 // include 'load1.php';
+// kludge for quick view to indicate attachments
+if ($this->qview && $this->attached) echo '$~$';
 ?>
 <div id="container">
 	<?php if (UserNotesHelper::userCanRate()) echo LayoutHelper::render('rater1'); ?>
@@ -111,9 +115,9 @@ if ($prning) $bottoms .= '
 		<?php if($ratings): ?>
 		<div class="rated"><span id="numrats">(<?=$this->item->vcount?>)</span></div>
 		<?php if (UserNotesHelper::userCanRate()): ?>
-		<div id="ratep" class="rated active" onclick="UNote.popRate()"><?=JHtmlUsernotes::itemStars($this->item)?></div>
+		<div id="ratep" class="rated active" onclick="UNote.popRate()"><?=HtmlUsernotes::itemStars($this->item)?></div>
 		<?php else: ?>
-		<div class="rated"><?=JHtmlUsernotes::itemStars($this->item)?></div>
+		<div class="rated"><?=HtmlUsernotes::itemStars($this->item)?></div>
 		<?php endif; ?>
 		<?php endif; ?>
 		<h3><?php if ($this->item->secured) echo'<span class="icon-unlock" style="font-size:.8em;opacity:0.5"></span>'; ?><?=$this->item->title?></h3>
@@ -123,20 +127,20 @@ if ($prning) $bottoms .= '
 <?php if (!$prning): ?>
 	<div id="attachments">
 <?php if ($this->attached): ?>
-		<?=JHtmlUsernotes::att_list($this->attached,$this->item->contentID, ($this->access & ITM_CAN_EDIT+ITM_CAN_DELE))?>
+		<?=HtmlUsernotes::att_list($this->attached,$this->item->contentID, ($this->access & ITM_CAN_EDIT+ITM_CAN_DELE))?>
 <?php endif; ?>
 	</div>
 	<div class="footer">
 		<?php
-			echo JHtmlUsernotes::prnActIcon($itemID,Text::_('COM_USERNOTES_PRNNOTE'));
+			echo HtmlUsernotes::prnActIcon($itemID,Text::_('COM_USERNOTES_PRNNOTE'));
 		if ($this->access & ITM_CAN_EDIT) {
-			echo JHtmlUsernotes::edtActIcon($itemID,Text::_('COM_USERNOTES_EDTNOTE'));
-			echo JHtmlUsernotes::attActIcon($itemID,Text::_('COM_USERNOTES_ADDATCH'));
-			echo JHtmlUsernotes::movActIcon($itemID,Text::_('COM_USERNOTES_MOVNOTE'));
-			echo JHtmlUsernotes::toolActIcon($itemID,Text::_('COM_USERNOTES_SPCTOOL'));
+			echo HtmlUsernotes::edtActIcon($itemID,Text::_('COM_USERNOTES_EDTNOTE'));
+			echo HtmlUsernotes::attActIcon($itemID,Text::_('COM_USERNOTES_ADDATCH'));
+			echo HtmlUsernotes::movActIcon($itemID,Text::_('COM_USERNOTES_MOVNOTE'));
+			echo HtmlUsernotes::toolActIcon($itemID,Text::_('COM_USERNOTES_SPCTOOL'));
 		}
 		if ($this->access & ITM_CAN_DELE) {
-			echo JHtmlUsernotes::delActIcon($itemID,Text::_('COM_USERNOTES_DELNOTE'));
+			echo HtmlUsernotes::delActIcon($itemID,Text::_('COM_USERNOTES_DELNOTE'));
 		}
 		?>
 		&nbsp;<?=$this->footMsg?>
@@ -144,8 +148,8 @@ if ($prning) $bottoms .= '
 	<?php if ($this->access & ITM_CAN_EDIT) : ?>
 	<div id="filupld" class="uplddlog" style="display:none;">
 		<span style="color:#36C;"><?=Text::_('COM_USERNOTES_MAXUPLD');?> <?=UserNotesHelper::formatBytes($this->maxUploadBytes)?></span>
-		<input type="file" id="upload_field" name="attm[]" multiple="multiple" />
-		<div id="dropArea"><?=Text::_('COM_USERNOTES_DROPFILS');?></div>
+		<input type="file" id="upload_field" name="attm[]" multiple="multiple" style="display:none" />
+		<div id="dropArea" onclick="_Id('upload_field').click()"><?=Text::_('COM_USERNOTES_DROPFILS');?></div>
 		<div id="result"></div>
 		<div class="prgwrp"><div id="totprogress"></div></div>
 		<div id="fprogress"></div>

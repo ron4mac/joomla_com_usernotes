@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -10,7 +11,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 
-JLoader::register('JHtmlUsernotes', JPATH_COMPONENT . '/helpers/html/usernotes.php');
+JLoader::register('HtmlUsernotes', JPATH_COMPONENT . '/helpers/html/usernotes.php');
 
 class UserNotesController extends BaseController
 {
@@ -26,7 +27,7 @@ class UserNotesController extends BaseController
 		// fail if public access attempt to a 'user' instance
 		if ($this->instanceObj->type == 0 && !$this->instanceObj->uid) throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
 
-		JHtmlUsernotes::setInstance($this->instanceObj);
+		HtmlUsernotes::setInstance($this->instanceObj);
 	}
 
 

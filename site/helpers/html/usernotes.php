@@ -3,6 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -11,7 +12,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 
-abstract class JHtmlUsernotes
+abstract class HtmlUsernotes
 {
 	protected static $instanceObj = null;
 
@@ -45,6 +46,43 @@ abstract class JHtmlUsernotes
 			//	htmlspecialchars($ttl),
 				$attrs
 			) . $strate;
+	}
+	public static function itemBLink ($item, $ratings=false)
+	{
+		$strate = '';
+		$iclass = 'docum';
+		if ($item->isParent) {
+			$iclass = 'foldm';
+			$param = 'pid=';
+		} else {
+			$param = 'view=usernote&nid=';
+			if ($ratings && $item->vtotal) {
+				$strate = self::itemStars($item);
+			}
+		}
+		$ttl = $item->secured ? base64_decode($item->title) : $item->title;
+		$attrs = ['class'=>'act'];
+		if (isset($item->lPath)) $attrs['title'] = $item->lPath;
+		return '<div class="itml '.$iclass.($item->secured?' isecure':'').'"><button class="link2" data-href="'.self::aiUrl($param.$item->itemID).'">'.$ttl.'</button></div>'.$strate;
+		return HTMLHelper::link(
+				self::aiUrl($param.$item->itemID),
+				'<div class="itml '.($item->isParent?'foldm':'docum').($item->secured?' isecure':'').'">'.htmlspecialchars($ttl).'</div>',
+			//	htmlspecialchars($ttl),
+				$attrs
+			) . $strate;
+	}
+	public static function itemQview ($item, $ratings=false)
+	{
+		if ($item->isParent || $item->secured) return self::itemBLink($item, $ratings);
+
+		$strate = '';
+		if ($ratings && $item->vtotal) {
+			$strate = self::itemStars($item);
+		}
+
+		$ttl = $item->secured ? base64_decode($item->title) : $item->title;
+	//	return '<div class="itml docum'.($item->secured?' isecure':'').'"><button class="qview" data-href="'.self::aiUrl('view=usernote&nid='.$item->itemID).'">'.$ttl.'</button></div>'.$strate;
+		return '<div class="itml docum'.($item->secured?' isecure':'').'" data-href="'.self::aiUrl('view=usernote&nid='.$item->itemID).'"><button class="qview">'.$ttl.'</button></div>'.$strate;
 	}
 	public static function prnActIcon ($id, $titl)
 	{

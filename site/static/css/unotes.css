@@ -1,3 +1,10 @@
+/**
+* @package		com_usernotes
+* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
+* @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
+*/
+
 /* container */
 #container #body {
 	margin-top: .6em;
@@ -35,6 +42,7 @@
 #itemsList .docum {
 	background-image: url('../imgs/note.png');
 	background-position-x: -2px;
+	cursor: pointer;
 }
 #itemsList .docum.isecure {
 	background-image: url('../imgs/key.png'), url('../imgs/note.png');
@@ -48,14 +56,18 @@
 	background-position-y: -2px;
 }
 
-.qview {
-	background-image: url('../imgs/glasses.svg');
+.qview, .link2 {
+/*	background-image: url('../imgs/glasses.svg');*/
 	background-color: transparent;
-	width: 30px;
+/*	width: 30px;
 	background-size: cover;
 	margin-left: 8px;
-	background-position-y: -3px;
+	background-position-y: -3px;*/
 	border: none;
+}
+
+#qview-modal .modal-title .fa {
+	color: coral;
 }
 
 /** small static stars in item list **/

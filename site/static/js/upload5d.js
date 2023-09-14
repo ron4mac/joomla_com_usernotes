@@ -1,7 +1,8 @@
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 'use strict';
 
@@ -42,7 +43,7 @@ UNote.Upld5d = (function(){
 		e.stopPropagation();
 		e.preventDefault();
 		e.target.className = (e.type == "dragover" ? "hover" : "");
-	}
+	};
 
 	// file selection
 	const FileSelectHandler = (e) => {
@@ -59,7 +60,7 @@ UNote.Upld5d = (function(){
 			upQueue.push(f);
 			NextInQueue(false,'fsel');
 		}
-	}
+	};
 
 	const NextInQueue = (decr,tag) => {
 		if (decr) {
@@ -73,14 +74,14 @@ UNote.Upld5d = (function(){
 			var ufo = new UploadFileObj(upQueue.shift());
 			inPrg++;
 		}
-	}
+	};
 
 	const UpdateTotalProgress = (adsz) => {
 		if (!totProgressDiv) return;
 		totalDone += adsz;
 		let pc = 100 * totalDone / total2do;
 		totProgressDiv.style.width = pc + "%";
-	}
+	};
 
 	// progress bar object
 	function ProgressBar (fileObj, sclass) {
@@ -202,29 +203,35 @@ UNote.Upld5d = (function(){
 
 	return {
 		Init: () => {
-			if (isInitted) return;
-			var fileselect = _Id("upload_field"),
-				filedrag = _Id("dropArea"),
-				submitbutton = _Id("submitbutton");
+			let fSel = _Id("upload_field");
+			if (isInitted) {
+				// clear stuff from previous
+				fSel.value = '';
+				totProgressDiv.style.width = 0;
+				_Id("fprogress").innerHTML = '';
+				return;
+			}
+	//		let fDrag = _Id("dropArea"),
+	//			submitbutton = _Id("submitbutton");
 	
 			// file select
-			if (fileselect) {
-				fileselect.addEventListener("change", FileSelectHandler, false);
-				filFldNam = fileselect.name;
+			if (fSel) {
+				fSel.addEventListener("change", FileSelectHandler, false);
+				filFldNam = fSel.name;
 			}
 	
 			// is XHR2 available?
 			var xhr = new XMLHttpRequest();
 			if (xhr.upload) {
-	
+				let fDrag = _Id("dropArea");
 				// file drop
-				filedrag.addEventListener("dragover", FileDragHover, false);
-				filedrag.addEventListener("dragleave", FileDragHover, false);
-				filedrag.addEventListener("drop", FileSelectHandler, false);
-				filedrag.style.display = "block";
+				fDrag.addEventListener("dragover", FileDragHover, false);
+				fDrag.addEventListener("dragleave", FileDragHover, false);
+				fDrag.addEventListener("drop", FileSelectHandler, false);
+				fDrag.style.display = "block";
 	
 				// remove submit button
-				if (submitbutton) submitbutton.style.display = "none";
+	//			if (submitbutton) submitbutton.style.display = "none";
 	
 				// progress display area
 				totProgressDiv = _Id("totprogress");

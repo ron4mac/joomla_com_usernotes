@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -10,7 +11,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\MVC\Controller\BaseController;
 
-JLoader::register('JHtmlUsernotes', JPATH_COMPONENT . '/helpers/html/usernotes.php');
+JLoader::register('HtmlUsernotes', JPATH_COMPONENT . '/helpers/html/usernotes.php');
 
 class UsernotesControllerEdit extends BaseController
 {
@@ -64,9 +65,9 @@ class UsernotesControllerEdit extends BaseController
 		$m = $this->getModel('usernotes');
 		$hier = $m->get_item_hier($this->instanceObj->uid);
 		echo '<span>Move item to:</span><br />';
-		echo JHtmlUsernotes::form_dropdown('moveTo', $hier, $pid, 'id="moveTo"');
-		echo '<br /><hr />'.JHtmlUsernotes::form_button('moveto', 'Move', 'style="float:right" onclick="UNote.doMove(true)"');
-		echo JHtmlUsernotes::form_button('cancel', 'Cancel', 'style="float:right" onclick="UNote.doMove(false)"');
+		echo HtmlUsernotes::form_dropdown('moveTo', $hier, $pid, 'id="moveTo"');
+		echo '<br /><hr />'.HtmlUsernotes::form_button('moveto', 'Move', 'style="float:right" onclick="UNote.doMove(true)"');
+		echo HtmlUsernotes::form_button('cancel', 'Cancel', 'style="float:right" onclick="UNote.doMove(false)"');
 	}
 
 
@@ -168,7 +169,7 @@ class UsernotesControllerEdit extends BaseController
 	{
 		$atchs = $mdl->attachments($cid);
 		if ($atchs) {
-			return JHtmlUsernotes::att_list($atchs, $cid, $edt);
+			return HtmlUsernotes::att_list($atchs, $cid, $edt);
 		}
 		return '';
 	}
