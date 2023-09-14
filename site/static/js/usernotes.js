@@ -261,8 +261,7 @@
 
 
 	UNote.link2 = (elm) => {
-		let nlnk = elm.parentElement.dataset.href;
-		console.log(nlnk);
+		let nlnk = elm.parentElement.dataset.href===undefined ? elm.dataset.href : elm.parentElement.dataset.href;
 		window.location.href = nlnk;
 	};
 
