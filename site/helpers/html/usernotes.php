@@ -63,7 +63,9 @@ abstract class HtmlUsernotes
 		$ttl = $item->secured ? base64_decode($item->title) : $item->title;
 		$attrs = ['class'=>'act'];
 		if (isset($item->lPath)) $attrs['title'] = $item->lPath;
-		return '<div class="itml '.$iclass.($item->secured?' isecure':'').'"><button class="link2" data-href="'.self::aiUrl($param.$item->itemID).'">'.$ttl.'</button></div>'.$strate;
+	//	return '<div class="itml '.$iclass.($item->secured?' isecure':'').'"><button class="link2" data-href="'.self::aiUrl($param.$item->itemID).'">'.$ttl.'</button></div>'.$strate;
+		return '<div class="itml '.$iclass.($item->secured?' isecure':'').'" data-href="'.self::aiUrl($param.$item->itemID).'"><button class="link2">'.$ttl.'</button></div>'.$strate;
+
 		return HTMLHelper::link(
 				self::aiUrl($param.$item->itemID),
 				'<div class="itml '.($item->isParent?'foldm':'docum').($item->secured?' isecure':'').'">'.htmlspecialchars($ttl).'</div>',

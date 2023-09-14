@@ -26,13 +26,14 @@ defined('JPATH_BASE') or die;
 	UNote.popRate = () => alert('Please open the full note view before trying to rate.');
 	let element = document.getElementById('itemsList');
 	element.addEventListener('click', (e) => {
-		if (e.target.classList.contains('qview')) {
+		let tcl = e.target.classList;
+		if (tcl.contains('qview')) {
 			UNote.qView(e.target);
 		}
-		if (e.target.classList.contains('docum')) {
+		if (tcl.contains('docum') && !tcl.contains('isecure')) {
 			UNote.link2(e.target);
 		}
-		if (e.target.classList.contains('link2')) {
+		if (tcl.contains('link2')) {
 			UNote.link2(e.target);
 		}
 	});

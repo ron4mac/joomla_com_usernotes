@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.3.4
 */
 defined('_JEXEC') or die;
 
@@ -13,12 +14,7 @@ $jslang = [
 	'ru_sure' => Text::_('COM_USERNOTES_RU_SURE')
 ];
 $jsvars = [
-//	'aBaseURL' => $this->aUrl('format=raw').'&task=',
 	'aBaseURL' => $this->aUrl('format=raw'),
-//	'itemID' => $this->item->itemID,
-//	'notesID' => urlencode($this->notesID),
-//	'parentID' => $this->item->parentID,
-//	'contentID' => ($this->item->contentID?:0)
 ];
 
 $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
@@ -41,12 +37,11 @@ echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 	</div>
 	<div class="footer">
 		<?php
-		//	echo HTMLHelper::_('usernotes.prnActIcon', $itemID, Text::_('COM_USERNOTES_PRNNOTE'));
 		if ($this->access & ITM_CAN_EDIT) {
-			echo HTMLHelper::_('usernotes.movActIcon', $itemID, Text::_('COM_USERNOTES_MOVNOTE'));
+			echo HtmlUsernotes::movActIcon($itemID,Text::_('COM_USERNOTES_MOVNOTE'));
 		}
 		if ($this->access & ITM_CAN_DELE) {
-			echo HTMLHelper::_('usernotes.delActIcon', $itemID, Text::_('COM_USERNOTES_DELNOTE'));
+			echo HtmlUsernotes::delActIcon($itemID,Text::_('COM_USERNOTES_DELNOTE'));
 		}
 		?>
 		&nbsp;<?=$this->footMsg?>
