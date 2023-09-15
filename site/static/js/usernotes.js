@@ -245,15 +245,16 @@
 		_Id('qviewdata').innerHTML = 'Loading...';
 		dlg.open ? dlg.open() : jQuery(dlg).modal('show');
 		let parms = new URLSearchParams('qview=1');
+		let hAtt = null;
 		fetch(nlnk+'&format=raw', {method:'POST',body:parms})
-		.then(resp => { if (!resp.ok) throw new Error(`HTTP ${resp.status}`); return resp.text() })
+		.then(resp => {
+			if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+			hAtt = resp.headers.get('Has-Att');
+			return resp.text() }
+		)
 		.then(data => {
-				let dsp = 0;
-				if (data.substr(0,3)=='$~$') {
-					dsp = 3;
-					dttl.innerHTML += ' <i class="fa fa-xs fa-paperclip"> </i>';
-				}
-				_Id('qviewdata').innerHTML = data.substr(dsp);
+				if (hAtt) dttl.innerHTML += ' <i class="fa fa-xs fa-paperclip"> </i>';
+				_Id('qviewdata').innerHTML = data;
 			}
 		)
 		.catch(err => alert('Failure: '+err));

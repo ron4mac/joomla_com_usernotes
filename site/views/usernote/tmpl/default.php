@@ -107,7 +107,10 @@ if ($prning) $bottoms .= '
 ';
 // include 'load1.php';
 // kludge for quick view to indicate attachments
-if ($this->qview && $this->attached) echo '$~$';
+if ($this->qview && $this->attached) {
+	// set a header to let the fetch know that there are attachments
+	$this->app->setHeader('Has-Att', 1, true);
+}
 ?>
 <div id="container">
 	<?php if (UserNotesHelper::userCanRate()) echo LayoutHelper::render('rater1'); ?>
