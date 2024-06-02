@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.4
+* @since		1.4.0
 */
 defined('_JEXEC') or die;
 
@@ -15,6 +15,7 @@ use Joomla\CMS\MVC\View\HtmlView;
 define('ITM_CAN_EDIT', 1);
 define('ITM_CAN_DELE', 2);
 define('ITM_CAN_CREA', 4);
+define('ITM_CAN_COMMENT', 8);
 define('IS_SMALL_DEVICE', 0);
 
 class UsernotesViewBase extends HtmlView

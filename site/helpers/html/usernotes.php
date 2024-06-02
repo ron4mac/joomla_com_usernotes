@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.4
+* @since		1.4.0
 */
 defined('_JEXEC') or die;
 
@@ -92,6 +92,17 @@ abstract class HtmlUsernotes
 				self::aiUrl('task=printNote&nid='.$id),
 				self::ico('pr','large-icon'),
 				['title'=>$titl, 'class'=>'act act-left', 'onclick'=>'UNote.printNote(event,this);return false;']
+			);
+	}
+	public static function cmntActIcon ($id, $titl, $has=0, $upd=false)
+	{
+		list($icnv,$xclass,$task) = $has ? ['cmm',' hasem','cmntDisp'] : ['cm','','cmntNote'];
+		$icon = self::ico($icnv,'large-icon'.$xclass);
+		if ($upd) return $icon;
+		return HTMLHelper::link(
+				self::aiUrl('task='.$task.'&nid='.$id),
+				$icon,
+				['title'=>$titl, 'class'=>'act act-left', 'onclick'=>'UNote.cmntNote(event,this);return false;']
 			);
 	}
 	public static function newActIcon ($id, $titl)
@@ -347,6 +358,8 @@ EOD;
 				'mv'=>['icon-move','fa fa-arrows-alt'],
 				'to'=>['icon-wrench','fa fa-wrench'],
 				'pr'=>['icon-print','fa fa-print'],
+				'cm'=>['icon-comment','far fa-comment'],
+				'cmm'=>['icon-comments-2','fas fa-comments'],
 				'dl'=>['icon-download','fa fa-download']
 			];
 		}

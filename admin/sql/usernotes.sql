@@ -1,4 +1,4 @@
-PRAGMA user_version=3;
+PRAGMA user_version=4;
 BEGIN TRANSACTION;
 CREATE TABLE notes(
 	itemID INTEGER PRIMARY KEY NOT NULL,
@@ -14,7 +14,8 @@ CREATE TABLE notes(
 	checked_out INTEGER DEFAULT 0,
 	checked_out_time DATETIME DEFAULT NULL,
 	vcount INTEGER DEFAULT 0,
-	vtotal INTEGER DEFAULT 0
+	vtotal INTEGER DEFAULT 0,
+	cmntcnt INTEGER DEFAULT 0
 	);
 CREATE TABLE content(
 	contentID INTEGER PRIMARY KEY NOT NULL,
@@ -29,4 +30,12 @@ CREATE TABLE fileatt (
 CREATE VIEW attsizsum AS SELECT SUM(fsize) AS totatt FROM fileatt;
 CREATE TABLE uratings (iid INTEGER,uid INTEGER,rdate INTEGER);
 CREATE TABLE gratings (iid INTEGER,ip INTEGER,rdate INTEGER);
+CREATE TABLE comments (
+	cmntID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	noteID INTEGER,
+	uID INTEGER DEFAULT 0,
+	ctime INTEGER DEFAULT CURRENT_TIMESTAMP,
+	comment TEXT
+	);
+CREATE INDEX cmnt_noteid_idx ON comments (noteID);
 COMMIT

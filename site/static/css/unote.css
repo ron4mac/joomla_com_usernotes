@@ -237,6 +237,24 @@ div.pum {
 }
 
 
+/* ============================ comment modals. etc
+*/
+#comments-modal .cmnt {
+	border-left: 2px solid #BBB;
+	padding: 0 .5rem .5rem .5rem;
+	margin-bottom: .5em;
+}
+#comments-modal .cmnthdr {
+	font-size: small;
+	opacity: .6;
+}
+#comment-modal textarea {
+	width: 100%;
+}
+.fa-comments.hasem {
+	color: cyan;
+}
+
 /* ============================ file upload dialog with drag and drop
 */
 

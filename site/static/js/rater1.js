@@ -17,9 +17,9 @@ UNote.cancelRate = (elm) => {
 	elm.style.display = 'none';
 };
 
-UNote.rateEvt = (e) => {	console.log(e);
+UNote.rateEvt = (e, clr=false) => {	console.log(e, clr);
 	let val = e.target ? e.target.ariaValueNow : e.ariaValueNow;
-	if (val == 0) {
+	if (clr && val == 0) {
 		if (!confirm("Clear rating for this item?")) return;
 	}
 	UNote.addRating(val, function (newr) {
@@ -324,7 +324,7 @@ class RatingSlider {
 
 	onPointerUp (event) {	console.log(event);
 		this.isMoving = false;
-		UNote.rateEvt(this.sliderNode);
+		UNote.rateEvt(this.sliderNode, event.altKey);
 	}
 }
 

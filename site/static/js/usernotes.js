@@ -1,18 +1,20 @@
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.4
+* @since		1.4.0
 */
 'use strict';
 
 (function(UNote) {
 
-	let ddlog = null;
-	let _celm = null;
+	let ddlog = null,
+		_celm = null,
+		curCelm = null,
+		curNid = 0;
 
 	/** @noinline */
-	const _Id = (elm) => document.getElementById(elm);
+	const _Id = elm => document.getElementById(elm);
 
 
 	const estop = (e, sp=false) => {
@@ -26,6 +28,18 @@
 	const closMdl = (eid) => {
 		let elm = _Id(eid);
 		elm.close ? elm.close() : jQuery('#'+eid).modal('hide');
+	};
+
+
+	// open or close modals based on J4 or J3 bootstrap
+	const _oM = (elm) => {
+		if (typeof elm === 'string') elm = _Id(elm);
+		elm.open ? elm.open() : jQuery(elm).modal('show');
+	};
+	const _cM = (elm) => {
+		if (!elm) { Joomla.Modal.getCurrent().close(); return; }
+		if (typeof elm === 'string') elm = _Id(elm);
+		elm.close ? elm.close() : jQuery(elm).modal('hide');
 	};
 
 
@@ -217,6 +231,46 @@
 	UNote.printNote = (evt, elm) => {
 		estop(evt, true);
 		window.open(elm.href);
+	};
+
+	UNote.submitComment = (elm) => {
+		elm.disabled = true;
+		let fData = new FormData(newcmnt);
+		fData.append('nid', curNid);
+		postAction(null, fData, (data) => {
+			closMdl('comment-modal');
+			elm.disabled = false;
+			//curCelm.classList.add('hasem');
+			curCelm.innerHTML = data.htm;
+		}, true);
+	};
+
+	UNote.fetchComments = (elm) => {
+		elm.disabled = true;
+		let fData = new FormData();
+		fData.append('task', 'getComments');
+		fData.append('nid', curNid);
+		postAction(null, fData, (data) => {
+			let cmnts = document.querySelector('#comments-modal .comments');
+			cmnts.innerHTML = data.htm;
+			let shDlg = _Id('comments-modal');
+			_oM(shDlg);
+			elm.disabled = false;
+		}, true);
+	};
+
+	UNote.cmntNote = (evt, elm) => {
+		estop(evt, true);
+		curNid = UNote.V.itemID;
+		curCelm = elm;
+		console.log(curCelm.children[0],evt);
+		if (elm.children[0].classList.contains('hasem')) {
+			UNote.fetchComments(curCelm);
+		} else {
+			_Id('cmnt-text').value = '';
+			let ncDlg = _Id('comment-modal');
+			_oM(ncDlg);
+		}
 	};
 
 

@@ -10,6 +10,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Controller\BaseController;
 
 // register base MVC elements
+JLoader::register('UserNotesModelUserNotes', JPATH_COMPONENT.'/models/usernotes.php');
 JLoader::register('UsernotesViewBase', JPATH_COMPONENT.'/views/view.php');
 
 // register the library for common user storage actions
