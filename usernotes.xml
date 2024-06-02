@@ -13,6 +13,7 @@
 	<scriptfile>script.php</scriptfile>
 	<files folder="site">
 		<filename>controller.php</filename>
+		<filename>controller.raw.php</filename>
 		<filename>usernotes.php</filename>
 		<filename>index.html</filename>
 		<folder>controllers</folder>
