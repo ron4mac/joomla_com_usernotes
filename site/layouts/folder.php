@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.4.0
 */
 defined('JPATH_BASE') or die;
 
@@ -56,7 +57,7 @@ if (!empty($vitm->itemID)) echo HTMLHelper::_(
 		'title'  => Text::_('COM_USERNOTES_EDIT_FORM_EDIT_F'),
 		'footer' => '<button type="button" class="btn btn-secondary" '.M34C::bs('dismiss').'="modal">Close</button>
 					<button type="button" class="btn btn-primary" onclick="UNote.saveFolder(this)">Save Folder</button>',
-		'modalWidth' => 20
+	//	'modalWidth' => 20
 	),
 	'<form id="un_edtfold" method="POST" class="form-validate" onsubmit="return false">' . un_formGet($view, $vitm, true) . '</form>'
 );
@@ -67,7 +68,7 @@ echo HTMLHelper::_(
 		'title'  => Text::_('COM_USERNOTES_EDIT_FORM_CREATE_F'),
 		'footer' => '<button type="button" class="btn btn-secondary" '.M34C::bs('dismiss').'="modal">Close</button>
 					<button type="button" class="btn btn-primary" onclick="UNote.newFolder(event, this)">Create Folder</button>',
-		'modalWidth' => 20
+	//	'modalWidth' => 20
 	),
 	'<form id="un_newfold" method="POST" class="form-validate" onsubmit="return false">' . un_formGet($view, $vitm) . '</form>'
 );

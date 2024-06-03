@@ -29,6 +29,7 @@ class UserNotesController extends BaseController
 
 	public function addComment ()
 	{
+		$this->tokenCheck();
 	//	// don't let unauthorized users cause a ratings reset
 	//	if ($rate == 0 && UserNotesHelper::userAuth() < 2) die(json_encode(['err'=>'NOT AUTHORIZED']));
 		// add the comment to the note
@@ -53,6 +54,17 @@ class UserNotesController extends BaseController
 			$html .= '</div>';
 		}
 		echo json_encode(['htm'=>$html]);
+	}
+
+/**** private functions ************************/
+
+	private function tokenCheck ()
+	{
+		if (!Session::checkToken()) {
+			//$this->app->setHeader('status', 401, true);
+			header('HTTP/1.1 401 Unauthorized');
+			jexit(Text::_('JINVALID_TOKEN'));
+		}
 	}
 
 }

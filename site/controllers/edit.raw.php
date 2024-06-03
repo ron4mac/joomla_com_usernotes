@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.4
+* @since		1.4.0
 */
 defined('_JEXEC') or die;
 
@@ -31,8 +31,7 @@ class UsernotesControllerEdit extends BaseController
 
 	public function saveFolder ()
 	{
-		// Check for request forgeries.
-		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
+		$this->tokenCheck();
 
 		$model = $this->getModel('usernote');
 
