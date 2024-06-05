@@ -55,7 +55,11 @@
 	background-image: url('../imgs/locked-folder.png');
 	background-position-y: -2px;
 }
-
+#itemsList .cmnticn {
+	font-size: smaller;
+	padding-top: .2rem;
+	color: blue;
+}
 .qview, .link2 {
 /*	background-image: url('../imgs/glasses.svg');*/
 	background-color: transparent;

@@ -3,12 +3,13 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.1
 */
 defined('_JEXEC') or die;
 
-//use Joomla\CMS\Router\Route;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Session\Session;
 use Joomla\CMS\MVC\Controller\BaseController;
 
 JLoader::register('HtmlUsernotes', JPATH_COMPONENT . '/helpers/html/usernotes.php');
@@ -36,7 +37,7 @@ class UserNotesController extends BaseController
 		$nid = $this->input->post->getInt('nid', 0);
 		$cmnt = $this->input->post->getString('cmntext', '');
 		$m = $this->getModel('social');
-		$newcnt = $m->addComment($nid, $cmnt);
+		$newcnt = $m->addComment($nid, $cmnt, Factory::getUser()->id);
 		echo json_encode(['htm'=>HtmlUsernotes::cmntActIcon($nid,Text::_('COM_USERNOTES_CMNTNOTE'),1,true)]);
 	}
 
@@ -50,13 +51,22 @@ class UserNotesController extends BaseController
 		$cmnts = $m->getComments($nid);
 		$html = '';
 		foreach ($cmnts as $cmnt) {
-			$html .= '<div class="cmnt"><span class="cmnthdr">'.date(Text::_('DATE_FORMAT_LC5'),$cmnt['ctime']).'</span><br>'.$cmnt['comment'];
+			$html .= '<div class="cmnt"><span class="cmnthdr">'.date(Text::_('DATE_FORMAT_LC5'),$cmnt['ctime']).' &nbsp; '.$this->getUserName($cmnt['uID']).'</span><br>'.$cmnt['comment'];
 			$html .= '</div>';
 		}
 		echo json_encode(['htm'=>$html]);
 	}
 
 /**** private functions ************************/
+
+	private function getUserName ($id)
+	{
+		static $unams = [0=>'-anonymous-'];
+		if (empty($unams[$id])) {
+			$unams[$id] = Factory::getUser($id)->username;
+		}
+		return $unams[$id];
+	}
 
 	private function tokenCheck ()
 	{

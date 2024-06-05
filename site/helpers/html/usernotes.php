@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.1
 */
 defined('_JEXEC') or die;
 
@@ -78,8 +78,11 @@ abstract class HtmlUsernotes
 		if ($item->isParent || $item->secured) return self::itemBLink($item, $ratings);
 
 		$strate = '';
+		if ($item->cmntcnt) {
+			$strate .= '<i class="far fa-comments cmnticn"> </i>';
+		}
 		if ($ratings && $item->vtotal) {
-			$strate = self::itemStars($item);
+			$strate .= self::itemStars($item);
 		}
 
 		$ttl = $item->secured ? base64_decode($item->title) : $item->title;
