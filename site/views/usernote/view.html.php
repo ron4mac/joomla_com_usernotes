@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.4
+* @since		1.4.2
 */
 defined('_JEXEC') or die;
 
@@ -12,6 +12,7 @@ use Joomla\CMS\Factory;
 class UsernotesViewUsernote extends UsernotesViewBase
 {
 	protected $app;
+	protected $userid;
 	protected $state;
 	protected $params;
 	protected $qview;
@@ -23,6 +24,7 @@ class UsernotesViewUsernote extends UsernotesViewBase
 	public function display ($tpl = null)
 	{
 		$this->app = Factory::getApplication();
+		$this->userid = Factory::getUser()->id;
 
 		// Get model data.
 		$this->state = $this->get('State');

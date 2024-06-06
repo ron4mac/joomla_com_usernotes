@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.2
 */
 defined('_JEXEC') or die;
 
@@ -81,11 +81,11 @@ class UserNotesModelSocial extends UserNotesModelUserNotes
 	}
 
 	// add a new comment
-	public function addComment ($iid, $cmnt, $uid=0)
+	public function addComment ($iid, $cmnt, $uid=0, $who='')
 	{
 		$db = $this->getDbo();
 		$db->transactionStart();
-		$db->setQuery('INSERT INTO comments (noteID,uID,ctime,comment) VALUES('.$iid.','.$uid.','.time().','.$db->quote($cmnt).')')->execute();
+		$db->setQuery('INSERT INTO comments (noteID,uID,who,ctime,comment) VALUES('.$iid.','.$uid.','.$db->quote($who).','.time().','.$db->quote($cmnt).')')->execute();
 		$db->setQuery('SELECT cmntcnt FROM notes WHERE itemID='.$iid);
 		$cnt = $db->loadResult();
 		$db->setQuery('UPDATE notes SET cmntcnt='.(++$cnt).' WHERE itemID='.$iid)->execute();

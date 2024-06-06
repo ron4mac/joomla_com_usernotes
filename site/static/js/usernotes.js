@@ -2,7 +2,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.4.2
 */
 'use strict';
 
@@ -341,6 +341,17 @@
 		}
 	};
 
+	// watch for entry in comment form; enable submit button when properly populated
+	UNote.watchcmnt = () => {
+		let cmntSbb = _Id('cmntSbb');
+		if (document.forms.newcmnt.name.value.trim() && document.forms.newcmnt.cmntext.value.trim()) {
+			cmntSbb.disabled = false;
+		} else {
+			cmntSbb.disabled = true;
+		}
+	};
+
+
 
 	// handle action item clicks
 	const evtHandler = (e) => {
@@ -358,8 +369,11 @@
 	document.addEventListener('DOMContentLoaded', () => {
 		_celm = _Id('container');
 		_celm && _celm.addEventListener('click', evtHandler);
+		// provide focus for some modal dialogs
 		let dlg = _Id('foldercr-modal');
 		dlg && dlg.addEventListener('shown.bs.modal', () => _Id('jform_title').focus() );
+		dlg = _Id('comment-modal');
+		dlg && dlg.addEventListener('shown.bs.modal', () => _Id('cmnt-text').focus() );
 	});
 
 })(window.UNote = window.UNote || {});
