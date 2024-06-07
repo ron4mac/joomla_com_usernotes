@@ -137,7 +137,7 @@ if ($this->qview && $this->attached) {
 	<div class="footer">
 		<?php
 			echo HtmlUsernotes::prnActIcon($itemID,Text::_('COM_USERNOTES_PRNNOTE'));
-			if ($guestcom || $this->item->cmntcnt || $this->access & ITM_CAN_COMMENT) echo HtmlUsernotes::cmntActIcon($itemID,Text::_('COM_USERNOTES_CMNTNOTE'),$this->item->cmntcnt);
+			if ($guestcom || $this->item->cmntcnt || $this->access & ITM_CAN_COMMENT) echo HtmlUsernotes::cmntActIcon($itemID,Text::_('COM_USERNOTES_CMNTNOTE'.($this->item->cmntcnt?'S':'')),$this->item->cmntcnt);
 		if ($this->access & ITM_CAN_EDIT) {
 			echo HtmlUsernotes::edtActIcon($itemID,Text::_('COM_USERNOTES_EDTNOTE'));
 			echo HtmlUsernotes::attActIcon($itemID,Text::_('COM_USERNOTES_ADDATCH'));
