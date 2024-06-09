@@ -7,8 +7,8 @@
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@jrjconline.net</authorEmail>
 	<authorUrl>rjconline.net</authorUrl>
-	<version>1.4.2</version>
-	<updater jver="(3\.[89])||(3\.1\d)||(4\.[01])" pver="7.0" />
+	<version>1.4.3</version>
+	<updater jver="(3\.[89])||(3\.1\d)||(4\.[0-6])" pver="7.0" />
 	<description>COM_USERNOTES_XML_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
 	<files folder="site">
@@ -48,6 +48,6 @@
 	</administration>
 	<changelogurl>https://rjcrans.net/jupdates/com_usernotes/changelog.xml</changelogurl>
 	<updateservers>
-		<server type="extension" priority="1" name="UserNotes Updates">http://rjcrans.net/jupdates/com_usernotes/updates.php</server>
+		<server type="extension" priority="1" name="UserNotes Updates">https://rjcrans.net/jupdates/com_usernotes/updates.php</server>
 	</updateservers>
 </extension>

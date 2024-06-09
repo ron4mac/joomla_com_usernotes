@@ -35,17 +35,17 @@
 				label="COM_USERNOTES_CONFIG_GRP_AUTH_LABEL"
 				description="COM_USERNOTES_CONFIG_GRP_AUTH_DESC"
 				required="true"
-				default="0"
+				default='1'
 				showon="notes_type:1"
 			/>
 
 			<field name="site_auth"
 				type="usergrouplist"
-				multipllle="true"
+				multiple="true"
 				label="COM_USERNOTES_CONFIG_SITE_AUTH_LABEL"
 				description="COM_USERNOTES_CONFIG_SITE_AUTH_DESC"
 				required="true"
-				default="0"
+				default='[1]'
 				showon="notes_type:2"
 			/>
 

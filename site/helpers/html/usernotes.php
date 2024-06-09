@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.1
+* @since		1.4.3
 */
 defined('_JEXEC') or die;
 
@@ -347,7 +347,7 @@ EOD;
 		static $icos;
 	
 		if (!isset($v)) {
-			$v = (int)JVERSION - 3;
+			$v = (int)JVERSION > 3 ? 1 : 0;
 			$icos = [
 				'nf'=>['icon-folder-plus-2','fa fa-folder-plus'],
 				'ef'=>['icon-edit','fa fa-pencil-alt'],
