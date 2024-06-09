@@ -175,7 +175,7 @@ abstract class UserNotesHelper
 				break;
 			case 1:
 			case 2:
-				return array_intersect(self::$ownerID, $ugrps) ? 2 : 1;
+				return array_intersect((array)self::$ownerID, $ugrps) ? 2 : 1;
 				break;
 		}
 	}
