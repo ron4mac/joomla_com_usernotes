@@ -1,8 +1,8 @@
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.4
+* @since		1.4.4
 */
 'use strict';
 
@@ -110,7 +110,7 @@ UNote.Upld5d = (function(){
 		// create progress bar
 		let pbw = CreateElement('div', '', {class:'pbwrp'});
 		$.pb = pbw.appendChild(CreateElement('div', '', {class:sclass}));
-		let pbv = fileObj.fn + '<i class="fa fa-window-close abortX" aria-hidden="true" onclick="this.parentNode.parentNode._ufo.doAbort(true);"></i>';
+		let pbv = fileObj.fn + '<div class="abortX" aria-hidden="true" onclick="this.parentNode.parentNode._ufo.doAbort(true);">'+UNote.I.abrt+'</div>';
 		$.pbi = pbw.appendChild(CreateElement('div', pbv, {class:'pbfinf'}));
 		progressDiv.appendChild(pbw);
 		$.pbw = pbw;
@@ -128,6 +128,7 @@ UNote.Upld5d = (function(){
 		$.fsize = file.size;
 
 		$.doAbort = function() {
+
 			if ($.xhr) { $.xhr.abort(); }
 			else $.progress.rmov();
 		};

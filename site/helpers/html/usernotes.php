@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.4.4
 */
 defined('_JEXEC') or die;
 
@@ -79,7 +79,7 @@ abstract class HtmlUsernotes
 
 		$strate = '';
 		if ($item->cmntcnt) {
-			$strate .= '<i class="far fa-comments cmnticn"> </i>';
+			$strate .= self::ico('cmmm','cmnticn');
 		}
 		if ($ratings && $item->vtotal) {
 			$strate .= self::itemStars($item);
@@ -260,6 +260,13 @@ EOD;
 	}
 
 
+	// a simple function to get one of our system icons
+	public static function getIcon ($icon, $xclass='')
+	{
+		return self::ico($icon, $xclass);
+	}
+
+
 /***** private functions *****/
 
 	private static function _parse_form_attributes ($attributes, $default)
@@ -363,7 +370,13 @@ EOD;
 				'pr'=>['icon-print','fa fa-print'],
 				'cm'=>['icon-comment','far fa-comment'],
 				'cmm'=>['icon-comments-2','fas fa-comments'],
-				'dl'=>['icon-download','fa fa-download']
+				'cmmm'=>['icon-comments-2','far fa-comments'],
+				'dl'=>['icon-download','fa fa-download'],
+				'xdel'=>['icon-remove','far fa-times-circle'],
+				'abrt'=>['icon-times','fa fa-window-close'],
+				'clip'=>['icon-attach','fa fa-xs fa-paperclip'],
+				'lock'=>['icon-lock','fas fa-lock'],
+				'ulck'=>['icon-unlock','fas fa-unlock']
 			];
 		}
 

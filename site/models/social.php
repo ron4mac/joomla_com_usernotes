@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.2
+* @since		1.4.4
 */
 defined('_JEXEC') or die;
 
@@ -89,6 +89,21 @@ class UserNotesModelSocial extends UserNotesModelUserNotes
 		$db->setQuery('SELECT cmntcnt FROM notes WHERE itemID='.$iid);
 		$cnt = $db->loadResult();
 		$db->setQuery('UPDATE notes SET cmntcnt='.(++$cnt).' WHERE itemID='.$iid)->execute();
+		$db->transactionCommit();
+		return $cnt;
+	}
+
+	// delete a comment
+	public function delComment ($cid)
+	{
+		$db = $this->getDbo();
+		$db->transactionStart();
+		$db->setQuery('SELECT noteID FROM comments WHERE cmntID='.$cid);
+		$nid = $db->loadResult();
+		$db->setQuery('SELECT cmntcnt FROM notes WHERE itemID='.$nid);
+		$cnt = $db->loadResult();
+		$db->setQuery('UPDATE notes SET cmntcnt='.(--$cnt).' WHERE itemID='.$nid)->execute();
+		$db->setQuery('DELETE FROM comments WHERE cmntID='.$cid)->execute();
 		$db->transactionCommit();
 		return $cnt;
 	}

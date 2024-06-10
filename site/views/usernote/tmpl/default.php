@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.2
+* @since		1.4.4
 */
 defined('_JEXEC') or die;
 
@@ -29,12 +29,16 @@ $jsvars = [
 	'parentID' => $this->item->parentID,
 	'contentID' => ($this->item->contentID?:0)
 ];
+$jsicns = [
+	'abrt' => HtmlUsernotes::getIcon('abrt')
+];
 $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
 var upldDestURL = "'.$this->aUrl('format=raw').'";
 var fup_payload = {task:"edit.attach",iID:'.$this->item->itemID.',cID:'.$this->item->contentID.',[Joomla.getOptions("csrf.token","")]:"1"};
 var uploadMaxFilesize = '.$this->maxUploadBytes.';
 	UNote.L = '.json_encode($jslang).';
 	UNote.V = '.json_encode($jsvars).';
+	UNote.I = '.json_encode($jsicns).';
 	const _Id = (elm) => document.getElementById(elm);
 ');
 
@@ -124,7 +128,7 @@ if ($this->qview && $this->attached) {
 		<div class="rated"><?=HtmlUsernotes::itemStars($this->item)?></div>
 		<?php endif; ?>
 		<?php endif; ?>
-		<h3><?php if ($this->item->secured) echo'<span class="icon-unlock" style="font-size:.8em;opacity:0.5"></span>'; ?><?=$this->item->title?></h3>
+		<h3><?php if ($this->item->secured) echo HtmlUsernotes::getIcon('ulck','seclock'); ?> <?=$this->item->title?></h3>
 		<div id="note"><?=$this->item->serial_content?></div>
 	</div>
 <?php if (!$this->qview): ?>

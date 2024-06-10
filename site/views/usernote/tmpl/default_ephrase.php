@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.4
+* @since		1.4.4
 */
 defined('_JEXEC') or die;
 
@@ -27,7 +27,7 @@ echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 ?>
 <div id="container">
 	<div id="body">
-		<h3><span class="icon-lock" style="font-size:.8em;opacity:0.5"></span><?=$this->item->title?></h3>
+		<h3><?php echo HtmlUsernotes::getIcon('lock','seclock'); ?> <?=$this->item->title?></h3>
 		<div class="ephrase">
 			<form action="" method="post" class="form-validate">
 				<?php echo $this->form->renderFieldset('ephrase')?>

@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.4.4
 */
 defined('_JEXEC') or die;
 
@@ -60,6 +61,7 @@ class com_usernotesInstallerScript extends InstallerScript
 
 	public function postflight ($type, $parent)
 	{
+		if ($type == 'uninstall') return;
 		$params['version'] = $this->release;
 		$this->mySetParams($params, true);
 		if ($type == 'install') {

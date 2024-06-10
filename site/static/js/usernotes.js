@@ -2,7 +2,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.2
+* @since		1.4.4
 */
 'use strict';
 
@@ -92,8 +92,6 @@
 			alert(UNote.L.no_sterm);
 			return false;
 		}
-		//aform.submit();
-		//console.log(sterm);
 		return true;
 	};
 
@@ -245,6 +243,21 @@
 		}, true);
 	};
 
+	UNote.deleteComment = (evt, cid) => {
+		estop(evt);
+		let fData = new FormData();
+		fData.append('task', 'delComment');
+		fData.append('cmntid', cid);
+		fData.append(Joomla.getOptions('csrf.token'), 1);
+		postAction(null, fData, (data) => {
+			let celm = evt.target.parentElement.parentElement;
+			celm.parentElement.removeChild(celm);
+			if (data.htm) {
+				curCelm.innerHTML = data.htm;
+			}
+		}, true);
+	};
+
 	UNote.fetchComments = (elm) => {
 		elm.disabled = true;
 		let fData = new FormData();
@@ -263,7 +276,6 @@
 		estop(evt, true);
 		curNid = UNote.V.itemID;
 		curCelm = elm;
-		console.log(curCelm.children[0],evt);
 		if (elm.children[0].classList.contains('hasem')) {
 			UNote.fetchComments(curCelm);
 		} else {
@@ -292,7 +304,6 @@
 
 	UNote.qView = (elm) => {
 		let nlnk = elm.parentElement.dataset.href;
-		console.log(nlnk);
 		let dlg = _Id('qview-modal');
 		let dttl = dlg.querySelector('.modal-title');
 		dttl.innerHTML = '<a href="' + nlnk + '">' + elm.innerHTML + '</a>';
@@ -307,7 +318,7 @@
 			return resp.text() }
 		)
 		.then(data => {
-				if (hAtt) dttl.innerHTML += ' <i class="fa fa-xs fa-paperclip"> </i>';
+				if (hAtt) dttl.innerHTML += ' '+UNote.I.clip;
 				_Id('qviewdata').innerHTML = data;
 			}
 		)
@@ -355,7 +366,6 @@
 
 	// handle action item clicks
 	const evtHandler = (e) => {
-		//console.log(e);
 		let se = e.target;
 		if (se.classList.contains('sure')) {
 			e.stopPropagation();

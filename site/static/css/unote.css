@@ -20,6 +20,10 @@
 	background-color: #F4F4F4;
 }
 
+.seclock {
+	color: darkgoldenrod;
+}
+
 /* ============================  ranger star rating
 */
 .rated {
@@ -240,6 +244,7 @@ div.pum {
 /* ============================ comment modals. etc
 */
 #comments-modal .cmnt {
+	position: relative;
 	border-left: 2px solid #BBB;
 	padding: 0 .5rem .5rem .5rem;
 	margin-bottom: .5em;
@@ -250,6 +255,13 @@ div.pum {
 }
 #comment-modal textarea {
 	width: 100%;
+}
+#comments-modal .delcmnt {
+	position: absolute;
+	top: .4rem;
+	right: .4rem;
+	color: indianred;
+	font-size: smaller;
 }
 .fa-comments.hasem {
 	color: cyan;
@@ -340,6 +352,7 @@ div.uplddlog input { width: 100% }
 	position: absolute;
 	top: 3px;
 	right: 3px;
+	color: indianred;
 	cursor: pointer;
 }
 

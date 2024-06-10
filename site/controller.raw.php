@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.2
+* @since		1.4.4
 */
 defined('_JEXEC') or die;
 
@@ -42,6 +42,16 @@ class UserNotesController extends BaseController
 		echo json_encode(['htm'=>HtmlUsernotes::cmntActIcon($nid,Text::_('COM_USERNOTES_CMNTNOTE'),1,true)]);
 	}
 
+	public function delComment ()
+	{
+		$this->tokenCheck();
+		$cid = $this->input->post->getInt('cmntid', 0);
+		$m = $this->getModel('social');
+		$cmntcnt = $m->delComment($cid);
+		$resp = $cmntcnt ? [] : ['htm'=>HtmlUsernotes::getIcon('cm')];
+		echo json_encode($resp);
+	}
+
 	public function getComments ()
 	{
 	//	// don't let unauthorized users cause a ratings reset
@@ -54,6 +64,9 @@ class UserNotesController extends BaseController
 		foreach ($cmnts as $cmnt) {
 			$who = ($cmnt['uID'] || empty($cmnt['who'])) ? $this->getUserName($cmnt['uID']) : $cmnt['who'];
 			$html .= '<div class="cmnt"><span class="cmnthdr">'.date(Text::_('DATE_FORMAT_LC5'),$cmnt['ctime']).' &nbsp; '.$who.'</span><br>'.$cmnt['comment'];
+			if (UserNotesHelper::userAuth() > 1) {
+				$html .= '<a href="#" class="delcmnt" onclick="UNote.deleteComment(event,'.$cmnt['cmntID'].')">'.HtmlUsernotes::getIcon('xdel').'</a>';
+			}
 			$html .= '</div>';
 		}
 		echo json_encode(['htm'=>$html]);
