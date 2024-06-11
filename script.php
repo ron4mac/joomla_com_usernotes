@@ -9,12 +9,14 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Installer\InstallerScript;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
 
 class com_usernotesInstallerScript extends InstallerScript
 {
 	protected $minimumJoomla = '3.8';
 	protected $com_name = 'com_usernotes';
+	protected $release = '';
 
 	public function install ($parent)
 	{
@@ -29,6 +31,7 @@ class com_usernotesInstallerScript extends InstallerScript
 
 	public function update ($parent)
 	{
+		Factory::getApplication()->enqueueMessage('<a href="index.php?option=com_usernotes&view=groupnotes">'.Text::_('COM_USERNOTES_UPDATE_MESSAGE').'</a>', 'warning');
 	}
 
 
