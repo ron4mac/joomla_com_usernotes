@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.4
+* @since		1.4.5
 */
 defined('_JEXEC') or die;
 
@@ -79,7 +79,7 @@ abstract class HtmlUsernotes
 
 		$strate = '';
 		if ($item->cmntcnt) {
-			$strate .= self::ico('cmmm','cmnticn');
+			$strate .= self::getIcon('cmmm','cmnticn');
 		}
 		if ($ratings && $item->vtotal) {
 			$strate .= self::itemStars($item);
@@ -93,14 +93,14 @@ abstract class HtmlUsernotes
 	{
 		return HTMLHelper::link(
 				self::aiUrl('task=printNote&nid='.$id),
-				self::ico('pr','large-icon'),
+				self::getIcon('pr','large-icon'),
 				['title'=>$titl, 'class'=>'act act-left', 'onclick'=>'UNote.printNote(event,this);return false;']
 			);
 	}
 	public static function cmntActIcon ($id, $titl, $has=0, $upd=false)
 	{
 		list($icnv,$xclass,$task) = $has ? ['cmm',' hasem','cmntDisp'] : ['cm','','cmntNote'];
-		$icon = self::ico($icnv,'large-icon'.$xclass);
+		$icon = self::getIcon($icnv,'large-icon'.$xclass);
 		if ($upd) return $icon;
 		return HTMLHelper::link(
 				self::aiUrl('task='.$task.'&nid='.$id),
@@ -112,7 +112,7 @@ abstract class HtmlUsernotes
 	{
 		return HTMLHelper::link(
 				self::aiUrl('task=edit.addNote&pid='.$id),
-				self::ico('nn'),
+				self::getIcon('nn'),
 				['title'=>$titl, 'class'=>'act act-left']
 			);
 	}
@@ -120,24 +120,24 @@ abstract class HtmlUsernotes
 	{
 		return HTMLHelper::link(
 				self::aiUrl('task=edit.editNote&nid='.$id),
-				self::ico('en'),
+				self::getIcon('en'),
 				['title'=>$titl, 'class'=>'act act-left']
 			);
 	}
 	public static function movActIcon ($id, $titl)
 	{
-		return '<a href="javascript:void(0);" title="'.$titl.'" class="act act-left" onclick="UNote.moveTo(event)">'.self::ico('mv').'</a>';
+		return '<a href="javascript:void(0);" title="'.$titl.'" class="act act-left" onclick="UNote.moveTo(event)">'.self::getIcon('mv').'</a>';
 	}
 	public static function attActIcon ($id, $titl)
 	{
-		return '<a href="javascript:void(0);" title="'.$titl.'" class="act act-left" onclick="UNote.addAttach(event)">'.self::ico('aa').'</a>';
+		return '<a href="javascript:void(0);" title="'.$titl.'" class="act act-left" onclick="UNote.addAttach(event)">'.self::getIcon('aa').'</a>';
 	}
 	public static function delActIcon ($id, $titl)
 	{
 		return HTMLHelper::link(
 				'javascript:UNote.deleteItem(event);',
 			//	self::aiUrl('task=edit.deleteItem&iid='.$id),
-				self::ico('dn','idang'),
+				self::getIcon('dn','idang'),
 				['title'=>$titl, 'class'=>'act act-right sure', 'data-suremsg'=>strtolower($titl)]
 			);
 	}
@@ -145,7 +145,7 @@ abstract class HtmlUsernotes
 	{
 		return HTMLHelper::link(
 				'javascript:;',
-				self::ico('nf'),
+				self::getIcon('nf'),
 				['title'=>$titl, 'class'=>'act act-left', M34C::bs('toggle')=>'modal', M34C::bs('target')=>'#foldercr-modal']
 			);
 	}
@@ -153,7 +153,7 @@ abstract class HtmlUsernotes
 	{
 		return HTMLHelper::link(
 				'javascript:;',
-				self::ico('ef'),
+				self::getIcon('ef'),
 				['title'=>$titl, 'class'=>'act act-right', M34C::bs('toggle')=>'modal', M34C::bs('target')=>'#foldered-modal']
 			);
 	}
@@ -162,13 +162,13 @@ abstract class HtmlUsernotes
 		return HTMLHelper::link(
 			//	self::aiUrl('task=edit.deleteItem&iid='.$id),
 				'javascript:UNote.deleteItem(event);',
-				self::ico('df','idang'),
+				self::getIcon('df','idang'),
 				['title'=>$titl, 'class'=>'act act-right sure', 'data-suremsg'=>strtolower($titl)]
 			);
 	}
 	public static function toolActIcon ($id, $titl)
 	{
-		return '<a href="javascript:void(0);" title="'.$titl.'" class="act act-left" onclick="UNote.toolMenu(event);">'.self::ico('to').'</a>';
+		return '<a href="javascript:void(0);" title="'.$titl.'" class="act act-left" onclick="UNote.toolMenu(event);">'.self::getIcon('to').'</a>';
 	}
 
 
@@ -248,11 +248,11 @@ EOD;
 		foreach ($atchs as $atchr) {
 			$atch = $atchr[0];
 			$html .= '<div data-afile="'.rawurlencode($atch).'" class="atchlink">';
-			$html .= '<a href="javascript:void(0);" class="noeffect" onclick="UNote.getAttach(event,this,true)" title="'.Text::_('COM_USERNOTES_DOWNFIL').'">'.self::ico('dl').'</a>';
+			$html .= '<a href="javascript:void(0);" class="noeffect" onclick="UNote.getAttach(event,this,true)" title="'.Text::_('COM_USERNOTES_DOWNFIL').'">'.self::getIcon('dl').'</a>';
 			$html .= ' <a href="javascript:void(0);" class="noeffect" onclick="UNote.getAttach(event,this,false)" title="'.Text::_('COM_USERNOTES_VIEWFIL').'">'.$atch.'</a>';
 			if ($edt) {
-				$html .= ' <a href="javascript:void(0);" title="'.Text::_('COM_USERNOTES_DEL_ATT').'" class="att-left" onclick="UNote.aj_delAttach(event,'.$cid.',\''.$atch.'\')">'.self::ico('ax','idang').'</a>';
-				$html .= ' <a href="javascript:void(0);" title="'.Text::_('COM_USERNOTES_REN_ATT').'" class="att-left" onclick="UNote.aj_renAttach(event,'.$cid.',\''.$atch.'\')">'.self::ico('ae','idarn').'</a>';
+				$html .= ' <a href="javascript:void(0);" title="'.Text::_('COM_USERNOTES_DEL_ATT').'" class="att-left" onclick="UNote.aj_delAttach(event,'.$cid.',\''.$atch.'\')">'.self::getIcon('ax','idang').'</a>';
+				$html .= ' <a href="javascript:void(0);" title="'.Text::_('COM_USERNOTES_REN_ATT').'" class="att-left" onclick="UNote.aj_renAttach(event,'.$cid.',\''.$atch.'\')">'.self::getIcon('ae','idarn').'</a>';
 			}
 			$html .= '</div>';
 		}
@@ -261,9 +261,40 @@ EOD;
 
 
 	// a simple function to get one of our system icons
-	public static function getIcon ($icon, $xclass='')
+	public static function getIcon ($ico, $clss='')
 	{
-		return self::ico($icon, $xclass);
+		static $v;
+		static $icos;
+	
+		if (!isset($v)) {
+			$v = (int)JVERSION > 3 ? 1 : 0;
+			$icos = [
+				'nf'=>['icon-folder-plus-2','fa fa-folder-plus'],
+				'ef'=>['icon-edit','fa fa-pencil-alt'],
+				'df'=>['icon-folder-remove','fa fa-folder-minus'],
+				'nn'=>['icon-file-plus','far fa-plus-square'],
+				'en'=>['icon-edit','fa fa-edit'],
+				'dn'=>['icon-file-minus','fa fa-minus'],
+				'aa'=>['icon-attachment','fa fa-paperclip'],
+				'ae'=>['icon-pencil-2','fa fa-pencil-alt'],
+				'ax'=>['icon-remove','fa fa-times-circle'],
+				'mv'=>['icon-move','fa fa-arrows-alt'],
+				'to'=>['icon-wrench','fa fa-wrench'],
+				'pr'=>['icon-print','fa fa-print'],
+				'cm'=>['icon-comment','far fa-comment'],
+				'cmm'=>['icon-comments-2','fas fa-comments'],
+				'cmmm'=>['icon-comments-2','far fa-comments'],
+				'dl'=>['icon-download','fa fa-download'],
+				'xdel'=>['icon-remove','far fa-times-circle'],
+				'abrt'=>['icon-times','fa fa-window-close'],
+				'clip'=>['icon-attach','fa fa-xs fa-paperclip'],
+				'lock'=>['icon-lock','fas fa-lock'],
+				'ulck'=>['icon-unlock','fas fa-unlock']
+			];
+		}
+
+		$icls = $icos[$ico][$v] . ($clss?(' '.$clss):'');
+		return '<i class="'.$icls.'"> </i>';
 	}
 
 
@@ -345,44 +376,6 @@ EOD;
 		}
 
 		return $str;
-	}
-
-
-	private static function ico ($ico, $clss='')
-	{
-		static $v;
-		static $icos;
-	
-		if (!isset($v)) {
-			$v = (int)JVERSION > 3 ? 1 : 0;
-			$icos = [
-				'nf'=>['icon-folder-plus-2','fa fa-folder-plus'],
-				'ef'=>['icon-edit','fa fa-pencil-alt'],
-				'df'=>['icon-folder-remove','fa fa-folder-minus'],
-				'nn'=>['icon-file-plus','far fa-plus-square'],
-				'en'=>['icon-edit','fa fa-edit'],
-				'dn'=>['icon-file-minus','fa fa-minus'],
-				'aa'=>['icon-attachment','fa fa-paperclip'],
-				'ae'=>['icon-pencil-2','fa fa-pencil-alt'],
-				'ax'=>['icon-remove','fa fa-times-circle'],
-				'mv'=>['icon-move','fa fa-arrows-alt'],
-				'to'=>['icon-wrench','fa fa-wrench'],
-				'pr'=>['icon-print','fa fa-print'],
-				'cm'=>['icon-comment','far fa-comment'],
-				'cmm'=>['icon-comments-2','fas fa-comments'],
-				'cmmm'=>['icon-comments-2','far fa-comments'],
-				'dl'=>['icon-download','fa fa-download'],
-				'xdel'=>['icon-remove','far fa-times-circle'],
-				'abrt'=>['icon-times','fa fa-window-close'],
-				'clip'=>['icon-attach','fa fa-xs fa-paperclip'],
-				'lock'=>['icon-lock','fas fa-lock'],
-				'ulck'=>['icon-unlock','fas fa-unlock']
-			];
-		}
-
-		$icls = $icos[$ico][$v] . ($clss?(' '.$clss):'');
-		return '<i class="'.$icls.'"> </i>';
-		return '<i class="'.$ico.'" style="font-size:'.(IS_SMALL_DEVICE ? 28 : 16).'px"> </i>';
 	}
 
 

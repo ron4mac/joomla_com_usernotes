@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.4
+* @since		1.4.5
 */
 defined('_JEXEC') or die;
 
@@ -31,8 +31,6 @@ class UserNotesController extends BaseController
 	public function addComment ()
 	{
 		$this->tokenCheck();
-	//	// don't let unauthorized users cause a ratings reset
-	//	if ($rate == 0 && UserNotesHelper::userAuth() < 2) die(json_encode(['err'=>'NOT AUTHORIZED']));
 		// add the comment to the note
 		$nid = $this->input->post->getInt('nid', 0);
 		$cmnt = trim($this->input->post->getString('cmntext', ''));
@@ -54,9 +52,6 @@ class UserNotesController extends BaseController
 
 	public function getComments ()
 	{
-	//	// don't let unauthorized users cause a ratings reset
-	//	if ($rate == 0 && UserNotesHelper::userAuth() < 2) die(json_encode(['err'=>'NOT AUTHORIZED']));
-		// add the comment to the note
 		$nid = $this->input->post->getInt('nid', 0);
 		$m = $this->getModel('social');
 		$cmnts = $m->getComments($nid);

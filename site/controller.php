@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.4
+* @since		1.4.5
 */
 defined('_JEXEC') or die;
 
@@ -81,20 +81,5 @@ class UserNotesController extends BaseController
 		$view->display();
 	}
 
-
-/** ajax calls **/
-
-	public function addRating ()
-	{
-		$rate = $this->input->post->getFloat('rate', 0);
-		// don't let unauthorized users cause a ratings reset
-		if ($rate == 0 && UserNotesHelper::userAuth() < 2) die(json_encode(['err'=>'NOT AUTHORIZED']));
-		// add the rating to the item
-		$iid = $this->input->post->getInt('iID', 0);
-		$m = $this->getModel('usernote');
-		echo json_encode($m->addRating($iid, $rate));
-	}
-
-/** end ajax calls **/
 
 }
