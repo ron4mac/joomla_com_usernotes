@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.3
+* @since		1.5.0
 */
 defined('_JEXEC') or die;
 
@@ -19,10 +19,10 @@ abstract class UserNotesHelper
 	protected static $udp = null;
 	protected static $idp = null;			// instance data path
 
-	public static function getInstanceObject ($mid=null)	// SO
+	public static function xxgetInstanceObject ($mid=null)	// SO
 	{
 		if (!empty(self::$instanceObj)) return self::$instanceObj;
-		self::$instanceObj = RJUserCom::getInstObject('notes_type', $mid);
+		self::$instanceObj = \RJUserCom::getInstObject('notes_type', $mid);
 		return self::$instanceObj;
 	}
 
@@ -44,7 +44,7 @@ abstract class UserNotesHelper
 		return self::$instanceID;
 	}
 
-	public static function getStorageBase ()	// BOTH
+	public static function xxgetStorageBase ()	// BOTH
 	{
 		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath', []);
 		$sdp = isset($result[0]) ? trim($result[0]) : 'userstor';
@@ -70,11 +70,11 @@ abstract class UserNotesHelper
 		return ['storQuota'=>$storQuota, 'maxUpload'=>min($maxUpload, $sysMaxUp)];
 	}
 
-	public static function userDataPath ()	// SO
+	public static function xxuserDataPath ()	// SO
 	{
 		if (self::$udp) return self::$udp;
 		if (!self::$instanceObj) self::getInstanceObject();
-		self::$udp = RJUserCom::getStoragePath(self::$instanceObj);
+		self::$udp = \RJUserCom::getStoragePath(self::$instanceObj);
 		return self::$udp;
 	}
 
@@ -85,9 +85,10 @@ abstract class UserNotesHelper
 		return $db->loadResult();
 	}
 
-	public static function hashCookieName ($v1=0, $v2=0)	// SO
+	public static function hashCookieName ($instObj, $v1=0, $v2=0)	// SO
 	{
-		$uid = self::$instanceObj->uid;
+		//$uid = self::$instanceObj->uid;
+		$uid = $instObj->uid;
 		return md5(implode(':', [$uid, $v1, $v2]));
 	}
 
@@ -190,7 +191,7 @@ abstract class UserNotesHelper
 				self::$instanceType = $nids[0];
 				self::$ownerID = $nids[1];
 			} else {
-				$params = $app->getParams();
+				$params = $app->getParams();	echo'<xmp>';var_dump($params,debug_backtrace(2,5));echo'</xmp>';
 				self::$instanceType = $params->get('notes_type');
 				switch (self::$instanceType) {
 					case 0:
