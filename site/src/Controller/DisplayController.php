@@ -35,7 +35,7 @@ class DisplayController extends BaseController
 		$this->instanceObj = \RJUserCom::getInstObject();
 
 		// fail if public access attempt to a 'user' instance
-		if ($this->instanceObj->type == 0 && !$this->instanceObj->uid) throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+		if ($this->instanceObj->type == 0 && !$this->instanceObj->uid) throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
 
 		\HtmlUsernotes::setInstance($this->instanceObj);
 	}

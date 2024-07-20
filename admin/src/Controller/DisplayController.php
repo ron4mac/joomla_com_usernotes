@@ -19,6 +19,7 @@ use Joomla\CMS\MVC\Controller\BaseController;
 
 class DisplayController extends BaseController
 {
+	protected $default_view = 'usernotes';
 
 	public function convertDb ()
 	{

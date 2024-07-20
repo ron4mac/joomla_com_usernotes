@@ -19,7 +19,11 @@ class HtmlView extends \Joomla\CMS\MVC\View\HtmlView
 
 	public function display ($tpl = null)
 	{
-		$this->auth = (bool)\RJUserCom::getInstObject()->canCreate();
+		$sitemenu = Factory::getApplication()->getMenu();
+		$mnu = $sitemenu->getItem($this->menuid);
+		if ($mnu->component !== 'com_usernotes') throw new \Exception('NOT ALLOWED: improper menu item', 400);
+//var_dump($this->menuid, \RJUserCom::getInstObject(), \RJUserCom::getInstObject()->canCreate());
+		$this->auth = (bool)($this->menuid && \RJUserCom::getInstObject()->canCreate());
 
 		$limits = \UserNotesHelper::getLimits();
 		$this->quota = Number::bytes($limits['storQuota'], 'auto', 0);

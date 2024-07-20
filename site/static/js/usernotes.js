@@ -189,7 +189,7 @@
 
 
 	UNote.addRating = (val, cbk) => {
-		postAction('addRating', { rate: val, iID: UNote.V.itemID }, cbk, true);
+		postAction('Raw.addRating', { rate: val, iID: UNote.V.itemID }, cbk, true);
 	};
 
 
@@ -246,7 +246,7 @@
 	UNote.deleteComment = (evt, cid) => {
 		estop(evt);
 		let fData = new FormData();
-		fData.append('task', 'delComment');
+		fData.append('task', 'Raw.delComment');
 		fData.append('cmntid', cid);
 		fData.append(Joomla.getOptions('csrf.token'), 1);
 		postAction(null, fData, (data) => {
@@ -261,7 +261,7 @@
 	UNote.fetchComments = (elm) => {
 		elm.disabled = true;
 		let fData = new FormData();
-		fData.append('task', 'getComments');
+		fData.append('task', 'Raw.getComments');
 		fData.append('nid', curNid);
 		postAction(null, fData, (data) => {
 			let cmnts = document.querySelector('#comments-modal .comments');
