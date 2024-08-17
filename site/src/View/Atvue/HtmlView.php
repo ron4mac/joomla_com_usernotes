@@ -10,9 +10,10 @@ namespace RJCreations\Component\Usernotes\Site\View\Atvue;
 defined('_JEXEC') or die('Restricted access');
  
 use Joomla\CMS\Factory;
+use RJCreations\Library\RJUserCom;
+use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
-\JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
-\JLoader::register('UserNotesFileEncrypt', JPATH_COMPONENT.'/classes/file_encrypt.php');
+//\JLoader::register('UserNotesFileEncrypt', JPATH_COMPONENT.'/classes/file_encrypt.php');
 
 class HtmlView extends \Joomla\CMS\MVC\View\HtmlView
 {
@@ -35,13 +36,13 @@ class HtmlView extends \Joomla\CMS\MVC\View\HtmlView
 		$m = $this->getModel();
 		$this->isecure = $m->itemIsSecure($cat[0]);
 		if ($this->isecure) {
-			$cookn = \UserNotesHelper::hashCookieName(\RJUserCom::getInstObject(), $cat[0], $cat[1]);
+			$cookn = UsernotesHelper::hashCookieName(RJUserCom::getInstObject(), $cat[0], $cat[1]);
 			$cookv = $app->input->cookie->getBase64($cookn);
-			$this->key = \UserNotesHelper::doCrypt($cat[0].'-@:'.$cat[1], $cookv, true);
+			$this->key = UsernotesHelper::doCrypt($cat[0].'-@:'.$cat[1], $cookv, true);
 		}
 
 		// Get path to file
-		$udp = \RJUserCom::getStoragePath();
+		$udp = RJUserCom::getStoragePath();
 		$this->fpath = JPATH_BASE.'/'.$udp.'/attach/'.$cat[1].'/'.$cat[2];
 		$this->fsize = filesize($this->fpath);
 		$finfo = finfo_open(FILEINFO_MIME_TYPE);

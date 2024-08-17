@@ -12,10 +12,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Application\ApplicationHelper;
 use Joomla\CMS\MVC\Controller\BaseController;
-
-\JLoader::register('RJUserCom', JPATH_LIBRARIES . '/rjuser/com.php');
-\JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
-\JLoader::register('UserNotesHelperDb', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/db.php');
+use RJCreations\Library\RJUserCom;
 
 class DisplayController extends BaseController
 {
@@ -23,14 +20,14 @@ class DisplayController extends BaseController
 
 	public function convertDb ()
 	{
-		$sdp = \RJUserCom::getStorageBase();
+		$sdp = RJUserCom::getStorageBase();
 		$cids = $this->input->get('cid',array(),'array');
 		$view = $this->input->get('view');
 		$tc = $view == 'usernotes' ? '@' : '_';
 		foreach ($cids as $cid) {
 			list($uid,$iid) = explode('|', $cid);
 			$mid = $iid ? ('_'.$iid) : '';
-			$msgs = \RJUserCom::updateDb(JPATH_ROOT.'/'.$sdp.'/'.$tc.$uid.'/'.ApplicationHelper::getComponentName().$mid.'/usernotes.db3');
+			$msgs = RJUserCom::updateDb(JPATH_ROOT.'/'.$sdp.'/'.$tc.$uid.'/'.ApplicationHelper::getComponentName().$mid.'/usernotes.db3');
 		//	$dbpath = JPATH_ROOT.'/'.$sdp.'/'.$tc.$uid.'/'.JApplicationHelper::getComponentName().$mid;
 		}
 		$this->setRedirect('index.php?option=com_usernotes&view='.$view, Text::_('COM_USERNOTES_DBUP_DONE').($msgs ? '<br>'.implode('<br>',$msgs) : ''));

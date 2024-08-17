@@ -2,7 +2,7 @@
 <extension type="component" method="upgrade">
 	<name>com_usernotes</name>
 	<author>Ron Crans</author>
-	<creationDate>July 2024</creationDate>
+	<creationDate>Agust 2024</creationDate>
 	<copyright>(C) 2015-2024 RJCreations. All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@jrjconline.net</authorEmail>
@@ -32,7 +32,6 @@
 			<filename>access.xml</filename>
 			<filename>config.xml</filename>
 			<folder>forms</folder>
-			<folder>helpers</folder>
 			<folder>language</folder>
 			<folder>services</folder>
 			<folder>sql</folder>

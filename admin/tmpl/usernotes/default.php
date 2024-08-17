@@ -1,14 +1,16 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.5.0
 */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
 // Include the component HTML helpers.
 HTMLHelper::addIncludePath(JPATH_COMPONENT.'/helpers/html');
@@ -17,7 +19,7 @@ HTMLHelper::_('behavior.multiselect');
 
 $listOrder	= $this->state('list.ordering');
 $listDirn	= $this->state('list.direction');
-$canDo		= UserNotesHelper::getActions();
+$canDo		= UsernotesHelper::getActions();
 
 $component = \JComponentHelper::getComponent('com_usernotes');
 $extension = \JTable::getInstance('extension');

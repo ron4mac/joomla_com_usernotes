@@ -13,8 +13,10 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Component\ComponentHelper;
+use RJCreations\Component\Usernotes\Site\View\ViewBase;
+use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
-class HtmlView extends \UsernotesViewBase
+class HtmlView extends ViewBase
 {
 	protected $state;
 	protected $items;
@@ -64,7 +66,7 @@ class HtmlView extends \UsernotesViewBase
 				$posq = $storSize / $storQuota;
 				if ($posq > 0.8) {
 					$svty = 'notice';
-					$msg = Text::sprintf('COM_USERNOTES_NOTICE_QUOTA', UserNotesHelper::formatBytes($storSize, 1, ''), $posq * 100);
+					$msg = Text::sprintf('COM_USERNOTES_NOTICE_QUOTA', UsernotesHelper::formatBytes($storSize, 1, ''), $posq * 100);
 					if ($posq > 0.9) {
 						$svty = 'warning';
 						$msg = '<span style="color:red">'.$msg.'</span>';

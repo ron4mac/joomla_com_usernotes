@@ -12,8 +12,9 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
+use RJCreations\Component\Usernotes\Site\View\ViewBase;
 
-class HtmlView extends UsernotesViewBase
+class HtmlView extends ViewBase
 {
 	protected $state;
 	protected $items;

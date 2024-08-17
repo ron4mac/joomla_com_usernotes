@@ -13,23 +13,19 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\DatabaseDriver;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use RJCreations\Library\RJUserCom;
 
 \JLoader::register('UserNotesFileEncrypt', JPATH_COMPONENT.'/classes/file_encrypt.php');
 
 class AtvueModel extends BaseDatabaseModel
 {
-	const DBFILE = '/usernotes.db3';
 	protected $_context = 'com_usernotes.usernote';
-	protected $_storPath = null;
 	protected $_item = null;	// use for cache
 
 
 	public function __construct ($config = [], $factory = null)
 	{
-		$this->_storPath = \RJUserCom::getStoragePath();
-		$udbPath = $this->_storPath.self::DBFILE;
-		$db = DatabaseDriver::getInstance(['driver'=>'sqlite', 'database'=>$udbPath]);
-
+		$db = RJUserCom::getDb();
 		$config['dbo'] = $db;
 		parent::__construct($config, $factory);
 	}

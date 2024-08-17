@@ -10,8 +10,10 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Layout\LayoutHelper;
+use RJCreations\Component\Usernotes\Site\Helper\HtmlUsernotes;
+use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
-$userCanRate = UserNotesHelper::userCanRate();
+$userCanRate = UsernotesHelper::userCanRate();
 
 $this->jDoc->addScript('components/com_usernotes/static/js/upload5d.js', ['version' => 'auto']);
 //$this->jDoc->addScript('components/com_usernotes/static/js/rating.js', ['version' => 'auto']);
@@ -64,7 +66,7 @@ if (!$prning && $ratings) {
 //	let r = UNote.hoistRating(rating);
 //	UNote.robj = r;
 	';
-	if (UserNotesHelper::userCanRate()) {
+	if ($userCanRate) {
 		$bottoms .= '
 	//	rating.addEventListener("rate", UNote.rateEvt);
 		let popr = _Id("popRate");	console.log(popr);
@@ -110,7 +112,7 @@ if ($prning) $bottoms .= '
 	window.print();
 }());
 ';
-// include 'load1.php';
+
 // kludge for quick view to indicate attachments
 if ($this->qview && $this->attached) {
 	// set a header to let the fetch know that there are attachments
@@ -118,11 +120,11 @@ if ($this->qview && $this->attached) {
 }
 ?>
 <div id="container">
-	<?php if (UserNotesHelper::userCanRate()) echo LayoutHelper::render('rater1'); ?>
+	<?php if ($userCanRate) echo LayoutHelper::render('rater1'); ?>
 	<div id="body">
 		<?php if($ratings): ?>
 		<div class="rated"><span id="numrats">(<?=$this->item->vcount?>)</span></div>
-		<?php if (UserNotesHelper::userCanRate()): ?>
+		<?php if ($userCanRate): ?>
 		<div id="ratep" class="rated active" onclick="UNote.popRate()"><?=HtmlUsernotes::itemStars($this->item)?></div>
 		<?php else: ?>
 		<div class="rated"><?=HtmlUsernotes::itemStars($this->item)?></div>
@@ -156,7 +158,7 @@ if ($this->qview && $this->attached) {
 	</div>
 	<?php if ($this->access & ITM_CAN_EDIT) : ?>
 	<div id="filupld" class="uplddlog" style="display:none;">
-		<span style="color:#36C;"><?=Text::_('COM_USERNOTES_MAXUPLD');?> <?=UserNotesHelper::formatBytes($this->maxUploadBytes)?></span>
+		<span style="color:#36C;"><?=Text::_('COM_USERNOTES_MAXUPLD');?> <?=UsernotesHelper::formatBytes($this->maxUploadBytes)?></span>
 		<input type="file" id="upload_field" name="attm[]" multiple="multiple" style="display:none" />
 		<div id="dropArea" onclick="_Id('upload_field').click()"><?=Text::_('COM_USERNOTES_DROPFILS');?></div>
 		<div id="result"></div>

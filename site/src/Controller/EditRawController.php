@@ -14,10 +14,9 @@ use Joomla\CMS\Input\Input;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\MVC\Controller\BaseController;
-
-\JLoader::register('RJUserCom', JPATH_LIBRARIES . '/rjuser/com.php');
-\JLoader::register('HtmlUsernotes', JPATH_COMPONENT . '/helpers/html/usernotes.php');
-\JLoader::register('UserNotesHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/usernotes.php');
+use RJCreations\Library\RJUserCom;
+use RJCreations\Component\Usernotes\Site\Helper\HtmlUsernotes;
+use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
 class EditRawController extends BaseController
 {
@@ -29,7 +28,7 @@ class EditRawController extends BaseController
 		parent::__construct($config, $factory, $app, $input);
 		if (JDEBUG) { Log::addLogger(['text_file'=>'com_usernotes.log.php'], Log::ALL, ['com_usernotes']); }
 		$this->app = $app;
-		$this->instanceObj = \RJUserCom::getInstObject();
+		$this->instanceObj = RJUserCom::getInstObject();
 	}
 
 
@@ -70,9 +69,9 @@ class EditRawController extends BaseController
 		$m = $this->getModel('usernotes');
 		$hier = $m->get_item_hier($this->instanceObj->uid);
 		echo '<span>Move item to:</span><br />';
-		echo \HtmlUsernotes::form_dropdown('moveTo', $hier, $pid, 'id="moveTo"');
-		echo '<br /><hr />'.\HtmlUsernotes::form_button('moveto', 'Move', 'style="float:right" onclick="UNote.doMove(true)"');
-		echo \HtmlUsernotes::form_button('cancel', 'Cancel', 'style="float:right" onclick="UNote.doMove(false)"');
+		echo HtmlUsernotes::form_dropdown('moveTo', $hier, $pid, 'id="moveTo"');
+		echo '<br /><hr />'.HtmlUsernotes::form_button('moveto', 'Move', 'style="float:right" onclick="UNote.doMove(true)"');
+		echo HtmlUsernotes::form_button('cancel', 'Cancel', 'style="float:right" onclick="UNote.doMove(false)"');
 	}
 
 
@@ -111,9 +110,9 @@ class EditRawController extends BaseController
 		}
 		$key = false;
 		if ($m->itemIsSecure($iid)) {
-			$cookn = \UserNotesHelper::hashCookieName(\RJUserCom::getInstObject(), $iid, $cid);
+			$cookn = UsernotesHelper::hashCookieName(RJUserCom::getInstObject(), $iid, $cid);
 			$cookv = $this->input->cookie->getBase64($cookn);
-			$key = \UserNotesHelper::doCrypt($iid.'-@:'.$cid, $cookv, true);
+			$key = UsernotesHelper::doCrypt($iid.'-@:'.$cid, $cookv, true);
 		}
 		$msg = $m->add_attached($cid, $files, $key);
 		if ($msg) { header($_SERVER['SERVER_PROTOCOL'].' 500 '.$msg); jexit(); }
@@ -174,7 +173,7 @@ class EditRawController extends BaseController
 	{
 		$atchs = $mdl->attachments($cid);
 		if ($atchs) {
-			return \HtmlUsernotes::att_list($atchs, $cid, $edt);
+			return HtmlUsernotes::att_list($atchs, $cid, $edt);
 		}
 		return '';
 	}

@@ -5,12 +5,15 @@
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 * @since		1.5.0
 */
+namespace RJCreations\Component\Usernotes\Site\View;
+
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\MVC\View\HtmlView;
+use RJCreations\Library\RJUserCom;
 
 define('ITM_CAN_EDIT', 1);
 define('ITM_CAN_DELE', 2);
@@ -18,10 +21,10 @@ define('ITM_CAN_CREA', 4);
 define('ITM_CAN_COMMENT', 8);
 define('IS_SMALL_DEVICE', 0);
 
-class UsernotesViewBase extends HtmlView
+class ViewBase extends HtmlView
 {
 //	protected $userID;
-	protected $notesID;
+//	protected $notesID;
 	protected $access = 0;
 	protected $item;
 	protected $footMsg;
@@ -39,7 +42,7 @@ class UsernotesViewBase extends HtmlView
 	public function __construct ($config = [])
 	{
 		parent::__construct($config);
-		$this->instanceObj = \RJUserCom::getInstObject();
+		$this->instanceObj = RJUserCom::getInstObject();
 //		$this->userID = $this->instanceObj->uid;
 		if (empty($this->menuid)) {
 			$this->menuid = $this->instanceObj->menuid;
@@ -101,9 +104,6 @@ class UsernotesViewBase extends HtmlView
 		}
 
 		if (!$ePhrase) {
-			// Get a notes instance identifier for ajax/upload
-			$this->notesID = UserNotesHelper::getInstanceID();
-
 			if (isset($this->item->attached)) {
 				$this->attached = $this->item->attached;
 			}

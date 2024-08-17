@@ -10,6 +10,7 @@ defined('JPATH_BASE') or die;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
+use RJCreations\Component\Usernotes\Site\Helper\M34C;
 
 extract($displayData);	//userid,view
 

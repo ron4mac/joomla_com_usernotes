@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.4
+* @since		1.5.0
 */
 defined('_JEXEC') or die;
 
@@ -12,6 +12,8 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\HTML\Helpers\Bootstrap;
+use RJCreations\Component\Usernotes\Site\Helper\HtmlUsernotes;
+use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
 Bootstrap::modal('#qview-modal');
 
@@ -38,7 +40,7 @@ if (RJC_DBUG) echo '<div class="RJDBG">'.json_encode($this->instanceObj).'</div>
 
 if (isset($this->posq)) {
 	$svty = 'notice';
-	$msg = Text::sprintf('COM_USERNOTES_NOTICE_QUOTA', UserNotesHelper::formatBytes($this->storSize, 1, ''), $this->posq * 100);
+	$msg = Text::sprintf('COM_USERNOTES_NOTICE_QUOTA', UsernotesHelper::formatBytes($this->storSize, 1, ''), $this->posq * 100);
 	if ($this->posq > 0.95) {
 		$svty = 'warning';
 		$msg = '<span style="color:red">'.$msg.'</span>';

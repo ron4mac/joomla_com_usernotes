@@ -11,10 +11,11 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Component\ComponentHelper;
+use RJCreations\Library\RJUserCom;
+use RJCreations\Component\Usernotes\Site\View\ViewBase;
+use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
-//require_once JPATH_BASE . '/components/com_usernotes/src/View/view.php';
-
-class HtmlView extends \UsernotesViewBase
+class HtmlView extends ViewBase
 {
 	protected $app;
 	protected $userid;
@@ -45,10 +46,10 @@ class HtmlView extends \UsernotesViewBase
 		}
 
 		if ($this->item->secured) {
-			$cookn = \UserNotesHelper::hashCookieName(\RJUserCom::getInstObject(), $this->item->itemID, $this->item->contentID);
+			$cookn = UsernotesHelper::hashCookieName(RJUserCom::getInstObject(), $this->item->itemID, $this->item->contentID);
 			$ephrase = $this->app->input->post->get('ephrase','','string');
-			$this->item->serial_content = \UserNotesHelper::doCrypt($ephrase, $this->item->serial_content, true, $this->item->secured);
-			$cookv = \UserNotesHelper::doCrypt($this->item->itemID.'-@:'.$this->item->contentID, $ephrase);
+			$this->item->serial_content = UsernotesHelper::doCrypt($ephrase, $this->item->serial_content, true, $this->item->secured);
+			$cookv = UsernotesHelper::doCrypt($this->item->itemID.'-@:'.$this->item->contentID, $ephrase);
 			setcookie($cookn, $cookv, 0, '', '', true);
 		}
 
@@ -66,12 +67,12 @@ class HtmlView extends \UsernotesViewBase
 		// Get the current menu item
 		$this->params = $this->app->getParams();
 		// Meld the params
-		if (!$this->params->get('maxUpload')) $this->params->set('maxUpload', $cparams->get('maxUpload', \UserNotesHelper::phpMaxUp()));
+		if (!$this->params->get('maxUpload')) $this->params->set('maxUpload', $cparams->get('maxUpload', UsernotesHelper::phpMaxUp()));
 
 		// establish the max file upload size
-		$this->maxUploadBytes = min($this->params->get('maxUpload'), \UserNotesHelper::phpMaxUp());
+		$this->maxUploadBytes = min($this->params->get('maxUpload'), UsernotesHelper::phpMaxUp());
 
-		$limits = \UserNotesHelper::getLimits();
+		$limits = UsernotesHelper::getLimits();
 		$this->maxUploadBytes = $limits['maxUpload'];
 
 		// Escape strings for HTML output

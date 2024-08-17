@@ -13,9 +13,9 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\MVC\Controller\BaseController;
-
-\JLoader::register('RJUserCom', JPATH_LIBRARIES . '/rjuser/com.php');
-\JLoader::register('HtmlUsernotes', JPATH_COMPONENT . '/helpers/html/usernotes.php');
+use RJCreations\Library\RJUserCom;
+use RJCreations\Component\Usernotes\Site\Helper\HtmlUsernotes;
+use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
 class RawController extends BaseController
 {
@@ -24,7 +24,7 @@ class RawController extends BaseController
 	{
 		$rate = $this->input->post->getFloat('rate', 0);
 		// don't let unauthorized users cause a ratings reset
-		if ($rate == 0 && UserNotesHelper::userAuth() < 2) die(json_encode(['err'=>'NOT AUTHORIZED']));
+		if ($rate == 0 && UsernotesHelper::userAuth() < 2) die(json_encode(['err'=>'NOT AUTHORIZED']));
 		// add the rating to the item
 		$iid = $this->input->post->getInt('iID', 0);
 		$m = $this->getModel('usernote');
@@ -40,7 +40,7 @@ class RawController extends BaseController
 		$who = trim($this->input->post->getString('name', ''));
 		$m = $this->getModel('social');
 		$newcnt = $m->addComment($nid, $cmnt, Factory::getUser()->id, $who);
-		echo json_encode(['htm'=>\HtmlUsernotes::cmntActIcon($nid,Text::_('COM_USERNOTES_CMNTNOTE'),1,true)]);
+		echo json_encode(['htm'=>HtmlUsernotes::cmntActIcon($nid,Text::_('COM_USERNOTES_CMNTNOTE'),1,true)]);
 	}
 
 	public function delComment ()
@@ -49,7 +49,7 @@ class RawController extends BaseController
 		$cid = $this->input->post->getInt('cmntid', 0);
 		$m = $this->getModel('social');
 		$cmntcnt = $m->delComment($cid);
-		$resp = $cmntcnt ? [] : ['htm'=>\HtmlUsernotes::getIcon('cm')];
+		$resp = $cmntcnt ? [] : ['htm'=>HtmlUsernotes::getIcon('cm')];
 		echo json_encode($resp);
 	}
 
@@ -62,8 +62,8 @@ class RawController extends BaseController
 		foreach ($cmnts as $cmnt) {
 			$who = ($cmnt['uID'] || empty($cmnt['who'])) ? $this->getUserName($cmnt['uID']) : $cmnt['who'];
 			$html .= '<div class="cmnt"><span class="cmnthdr">'.date(Text::_('DATE_FORMAT_LC5'),$cmnt['ctime']).' &nbsp; '.$who.'</span><br>'.$cmnt['comment'];
-			if (\RJUserCom::getInstObject()->canDelete()) {
-				$html .= '<a href="#" class="delcmnt" onclick="UNote.deleteComment(event,'.$cmnt['cmntID'].')">'.\HtmlUsernotes::getIcon('xdel').'</a>';
+			if (RJUserCom::getInstObject()->canDelete()) {
+				$html .= '<a href="#" class="delcmnt" onclick="UNote.deleteComment(event,'.$cmnt['cmntID'].')">'.HtmlUsernotes::getIcon('xdel').'</a>';
 			}
 			$html .= '</div>';
 		}

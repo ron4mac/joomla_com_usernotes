@@ -14,23 +14,21 @@ use Joomla\CMS\Language\Text;
 use Joomla\Database\DatabaseDriver;
 use Joomla\CMS\MVC\Model\FormModel;
 use Joomla\CMS\Component\ComponentHelper;
+use RJCreations\Library\RJUserCom;
 
 class EditModel extends FormModel
 {
-	const DBFILE = '/usernotes.db3';
 	protected $_context = 'com_usernotes.usernote';
 	protected $_data;
 	protected $instanceObj;
 
 
-	public function __construct ($config = [])
+	public function __construct ($config = [], $factory = null)
 	{
-		$this->instanceObj = \RJUserCom::getInstObject();
-		$udbPath = \RJUserCom::getStoragePath().self::DBFILE;
-		$db = DatabaseDriver::getInstance(['driver'=>'sqlite', 'database'=>$udbPath]);
-
+		$this->instanceObj = RJUserCom::getInstObject();
+		$db = RJUserCom::getDb();
 		$config['dbo'] = $db;
-		parent::__construct($config);
+		parent::__construct($config, $factory);
 	}
 
 

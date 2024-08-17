@@ -12,6 +12,8 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\CMS\Component\ComponentHelper;
+use RJCreations\Library\RJUserCom;
+use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
 class UsernotesModel extends ListModel
 {
@@ -21,10 +23,10 @@ class UsernotesModel extends ListModel
 
 	public function __construct ($config = [], $factory = null)
 	{
-		$this->instanceObj = \RJUserCom::getInstObject();
-		$this->_storPath = \RJUserCom::getStoragePath($this->instanceObj);
+		$this->instanceObj = RJUserCom::getInstObject();
+		$this->_storPath = RJUserCom::getStoragePath($this->instanceObj);
 
-		$db = \RJUserCom::getDb(true);
+		$db = RJUserCom::getDb(true);
 		$dbc = $db->getConnection();
 		$dbc->sqliteCreateFunction('b64d', 'base64_decode', 1);
 		$dbc->sqliteCreateFunction('sfunc', [$this,'sfunc'], 1);
@@ -202,7 +204,7 @@ class UsernotesModel extends ListModel
 		foreach ($rows as $row) {
 			if ($row->parentID == $id) {
 				if ($row->secured) { $row->title = base64_decode($row->title); }
-				$tree[$row->itemID] = $ind.\UserNotesHelper::fs_db($row->title);
+				$tree[$row->itemID] = $ind.UsernotesHelper::fs_db($row->title);
 				$this->buildBranch($row->itemID, $ind.'-&nbsp;', $rows, $tree);
 			}
 		}

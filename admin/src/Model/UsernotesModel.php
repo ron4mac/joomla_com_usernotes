@@ -9,10 +9,11 @@ namespace RJCreations\Component\Usernotes\Administrator\Model;
 
 defined('_JEXEC') or die;
 
-//jimport('joomla.filesystem.folder');
-//jimport('joomla.application.component.modellist');
 use Joomla\CMS\User\User;
 use Joomla\CMS\MVC\Model\ListModel;
+use RJCreations\Library\RJUserCom;
+use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
+use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelperDb;
 
 class UsernotesModel extends ListModel
 {
@@ -36,24 +37,21 @@ class UsernotesModel extends ListModel
 			return $this->cache[$stork];
 		}
 
-		require_once JPATH_COMPONENT.'/helpers/db.php';
-
 		$unotes = [];
-//		$folds = UserNotesHelper::getDbPaths($this->relm, 'usernotes', true);
-		$folds = \RJUserCom::getDbPaths($this->relm, 'usernotes', true);
+		$folds = RJUserCom::getDbPaths($this->relm, 'usernotes', true);
 		foreach ($folds as $dir => $unis) foreach ($unis as $uni) {
 			$msgs = [];
 			$ufold = basename(dirname(dirname($uni['path'])));
 			$userid = (int)substr($ufold,1);
 			$menuid = (int)substr(strrchr($uni['path'], '_'), 1);
 			if (!$menuid) $msgs[] = 'Requires alignment with menu item';
-			$info = \UserNotesHelperDb::getInfo($uni['path']);
+			$info = UsernotesHelperDb::getInfo($uni['path']);
 			if (file_exists(JPATH_COMPONENT_ADMINISTRATOR.'/sql/upd_'.$info['dbv'].'.sql')) $msgs[] = 'Database needs to be updated';
 			if ($this->relm == 'u') {
 				$user = User::getInstance($userid);
 				$unotes[] = ['name'=>$user->name,'uname'=>$user->username,'uid'=>$userid.'|'.$menuid, 'info'=>$info, 'msgs'=>$msgs];
 			} else {
-				$unotes[] = ['uname'=> $userid ? \UserNotesHelper::getGroupTitle($userid) : '[ Site ]','name'=>'group','uid'=>$userid.'|'.$menuid, 'info'=>$info, 'msgs'=>$msgs];
+				$unotes[] = ['uname'=> $userid ? UsernotesHelper::getGroupTitle($userid) : '[ Site ]','name'=>'group','uid'=>$userid.'|'.$menuid, 'info'=>$info, 'msgs'=>$msgs];
 			}
 		}
 		$this->_total = count($unotes);

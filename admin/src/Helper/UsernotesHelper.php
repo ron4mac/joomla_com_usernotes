@@ -5,11 +5,16 @@
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 * @since		1.5.0
 */
+namespace RJCreations\Component\Usernotes\Administrator\Helper;
+
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Filesystem\FilesystemHelper;
+use RJCreations\Library\RJUserCom;
 
-abstract class UserNotesHelper
+abstract class UsernotesHelper
 {
 	const COMP = 'com_usernotes';
 	protected static $instanceID = null;
@@ -22,11 +27,11 @@ abstract class UserNotesHelper
 	public static function xxgetInstanceObject ($mid=null)	// SO
 	{
 		if (!empty(self::$instanceObj)) return self::$instanceObj;
-		self::$instanceObj = \RJUserCom::getInstObject('notes_type', $mid);
+		self::$instanceObj = RJUserCom::getInstObject('notes_type', $mid);
 		return self::$instanceObj;
 	}
 
-	public static function getInstanceID ()	// SO
+	public static function xxgetInstanceID ()	// SO
 	{
 		if (self::$instanceID) return self::$instanceID;
 		$iid = Factory::getApplication()->getUserState('com_usernotes.instance', '');
@@ -56,7 +61,7 @@ abstract class UserNotesHelper
 		$app = Factory::getApplication();
 
 		// Get the component parameters
-		$cparams = JComponentHelper::getParams(self::COMP);		//var_dump($cparams);
+		$cparams = ComponentHelper::getParams(self::COMP);		//var_dump($cparams);
 		// Get the instance parameters
 		$mparams = $app->getParams();		//var_dump($mparams);
 
@@ -65,7 +70,7 @@ abstract class UserNotesHelper
 		$maxUpload = $cparams->get('maxUpload');
 		$maxUpload = $maxUpload?:4194304;
 
-		$sysMaxUp = JFilesystemHelper::fileUploadMaxSize(false);
+		$sysMaxUp = FilesystemHelper::fileUploadMaxSize(false);
 
 		return ['storQuota'=>$storQuota, 'maxUpload'=>min($maxUpload, $sysMaxUp)];
 	}
@@ -74,7 +79,7 @@ abstract class UserNotesHelper
 	{
 		if (self::$udp) return self::$udp;
 		if (!self::$instanceObj) self::getInstanceObject();
-		self::$udp = \RJUserCom::getStoragePath(self::$instanceObj);
+		self::$udp = RJUserCom::getStoragePath(self::$instanceObj);
 		return self::$udp;
 	}
 
@@ -211,9 +216,9 @@ abstract class UserNotesHelper
 	public static function getActions ()	// AO
 	{
 		$user = (int)JVERSION > 3 ? Factory::getApplication()->getIdentity() : Factory::getUser();
-		$result = new JObject;
+		$result = new \JObject;
 
-		$actions = JAccess::getActionsFromFile(JPATH_ADMINISTRATOR . '/components/'.self::COMP.'/access.xml');
+		$actions = \JAccess::getActionsFromFile(JPATH_ADMINISTRATOR . '/components/'.self::COMP.'/access.xml');
 		foreach ($actions as $action) {
 			$result->set($action->name, $user->authorise($action->name, self::COMP));
 		}

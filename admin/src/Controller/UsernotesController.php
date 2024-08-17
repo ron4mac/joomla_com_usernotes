@@ -11,9 +11,6 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\MVC\AdminController;
 
-\JLoader::register('RJUserCom', JPATH_LIBRARIES . '/rjuser/com.php');
-\JLoader::register('UserNotesHelperDb', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/db.php');
-
 class UserNotesController extends AdminController
 {
 

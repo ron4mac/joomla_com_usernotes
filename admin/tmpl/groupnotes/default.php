@@ -9,6 +9,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
 // Include the component HTML helpers.
 HTMLHelper::addIncludePath(JPATH_COMPONENT.'/helpers/html');
@@ -17,7 +18,7 @@ HTMLHelper::_('behavior.multiselect');
 
 $listOrder = $this->state('list.ordering');
 $listDirn = $this->state('list.direction');
-$canDo = UserNotesHelper::getActions();
+$canDo = UsernotesHelper::getActions();
 ?>
 <form action="<?php echo Route::_('index.php?option=com_usernotes&view=groupnotes'); ?>" method="post" name="adminForm" id="adminForm">
 	<div id="j-sidebar-container" class="span2">

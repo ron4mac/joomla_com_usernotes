@@ -10,10 +10,11 @@ namespace RJCreations\Component\Usernotes\Site\View\Edit;
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use RJCreations\Library\RJUserCom;
+use RJCreations\Component\Usernotes\Site\View\ViewBase;
+//use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
-//require_once JPATH_BASE . '/components/com_usernotes/src/View/view.php';
-
-class HtmlView extends \UsernotesViewBase
+class HtmlView extends ViewBase
 {
 	protected $type;
 	protected $pid;
@@ -50,18 +51,18 @@ class HtmlView extends \UsernotesViewBase
 		if ($item && (int)$item->secured) {
 			$item->title = base64_decode($item->title);
 			if ($item->contentID) {
-				$cookn = UserNotesHelper::hashCookieName(\RJUserCom::getInstObject(), $item->itemID, $item->contentID);
+				$cookn = UsernotesHelper::hashCookieName(RJUserCom::getInstObject(), $item->itemID, $item->contentID);
 				$cookv = $app->input->cookie->getBase64($cookn);
 				if ($cookv) {
 					setcookie($cookn, '', time() - 3600);
-					$item->ephrase = UserNotesHelper::doCrypt($item->itemID.'-@:'.$item->contentID, $cookv, true);
+					$item->ephrase = UsernotesHelper::doCrypt($item->itemID.'-@:'.$item->contentID, $cookv, true);
 				} elseif ($ephrase = $app->input->post->get('ephrase','','string')) {
 					$item->ephrase = $ephrase;
 				} else {
 					$this->item = $item;
 					return parent::display('nocando');
 				}
-				$item->serial_content = UserNotesHelper::doCrypt($item->ephrase, $item->serial_content, true, (int)$item->secured);
+				$item->serial_content = UsernotesHelper::doCrypt($item->ephrase, $item->serial_content, true, (int)$item->secured);
 			}
 		}
 

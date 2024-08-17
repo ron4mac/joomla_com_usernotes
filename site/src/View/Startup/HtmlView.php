@@ -11,6 +11,8 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\Helpers\Number;
+use RJCreations\Library\RJUserCom;
+use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
 class HtmlView extends \Joomla\CMS\MVC\View\HtmlView
 {
@@ -22,10 +24,10 @@ class HtmlView extends \Joomla\CMS\MVC\View\HtmlView
 		$sitemenu = Factory::getApplication()->getMenu();
 		$mnu = $sitemenu->getItem($this->menuid);
 		if ($mnu->component !== 'com_usernotes') throw new \Exception('NOT ALLOWED: improper menu item', 400);
-//var_dump($this->menuid, \RJUserCom::getInstObject(), \RJUserCom::getInstObject()->canCreate());
-		$this->auth = (bool)($this->menuid && \RJUserCom::getInstObject()->canCreate());
+//var_dump($this->menuid, RJUserCom::getInstObject(), RJUserCom::getInstObject()->canCreate());
+		$this->auth = (bool)($this->menuid && RJUserCom::getInstObject()->canCreate());
 
-		$limits = \UserNotesHelper::getLimits();
+		$limits = UsernotesHelper::getLimits();
 		$this->quota = Number::bytes($limits['storQuota'], 'auto', 0);
 		$this->maxfs = Number::bytes($limits['maxUpload'], 'auto', 0);
 

@@ -14,25 +14,24 @@ use Joomla\CMS\Language\Text;
 use Joomla\Database\DatabaseDriver;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\Model\ItemModel;
+use RJCreations\Library\RJUserCom;
+use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
 \JLoader::register('UserNotesFileEncrypt', JPATH_COMPONENT.'/classes/file_encrypt.php');
 
 class UsernoteModel extends ItemModel
 {
-	const DBFILE = '/usernotes.db3';
 	protected $_context = 'com_usernotes.usernote';
 	protected $_storPath = null;
 	protected $_item = null;	// use for cache
 
 
-	public function __construct ($config = [])
+	public function __construct ($config = [], $factory = null)
 	{
-		$this->_storPath = \RJUserCom::getStoragePath();
-		$udbPath = $this->_storPath.self::DBFILE;
-		$db = DatabaseDriver::getInstance(['driver'=>'sqlite', 'database'=>$udbPath]);
-
+		$this->_storPath = RJUserCom::getStoragePath();
+		$db = RJUserCom::getDb();
 		$config['dbo'] = $db;
-		parent::__construct($config);
+		parent::__construct($config, $factory);
 	}
 
 
@@ -101,7 +100,7 @@ class UsernoteModel extends ItemModel
 			}
 
 			// see if user (or IP) has already rated this
-			if ($uid = \RJUserCom::getInstObject()->uid) {
+			if ($uid = RJUserCom::getInstObject()->uid) {
 				$db->setQuery('SELECT COUNT() FROM uratings WHERE iid='.$iid.' AND uid='.$uid);
 			} else {
 				$ip = Factory::getApplication()->input->server->get('REMOTE_ADDR');
@@ -154,7 +153,7 @@ class UsernoteModel extends ItemModel
 		if ($ephrase) {
 			$secured = 2;	// use OpenSSL
 			$ntitl = base64_encode($ntitl);
-			$ncont = \UserNotesHelper::doCrypt($ephrase, $ncont);
+			$ncont = UsernotesHelper::doCrypt($ephrase, $ncont);
 		}
 
 		try

@@ -1,9 +1,12 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2022-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.5.0
 */
+namespace RJCreations\Component\Usernotes\Site\Helper;
+
 defined('_JEXEC') or die;
 
 // a helper class to accommodate Joomla 3 and Joomla 4 differences

@@ -3,12 +3,13 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.4
+* @since		1.5.0
 */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use RJCreations\Component\Usernotes\Site\Helper\HtmlUsernotes;
 
 $jslang = [
 	'ru_sure' => Text::_('COM_USERNOTES_RU_SURE')

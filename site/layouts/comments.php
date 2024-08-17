@@ -3,12 +3,13 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.5.0
 */
 defined('JPATH_BASE') or die;
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use RJCreations\Component\Usernotes\Site\Helper\M34C;
 
 extract($displayData);	//cancmnt
 

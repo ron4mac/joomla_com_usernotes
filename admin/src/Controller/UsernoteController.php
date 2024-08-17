@@ -13,9 +13,6 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\FormController;
 
-\JLoader::register('RJUserCom', JPATH_LIBRARIES . '/rjuser/com.php');
-\JLoader::register('UserNotesHelperDb', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/db.php');
-
 class UserNoteController extends FormController
 {
 

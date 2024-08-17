@@ -1,16 +1,16 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.5.0
 */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
-
-require_once JPATH_BASE . '/components/com_usernotes/helpers/usernotes.php';
+use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
 /**
  * View class for a list of user notes.
@@ -34,7 +34,6 @@ class UsernotesView extends JViewLegacy
 		$this->filterForm = $this->get('FilterForm');
 		$this->activeFilters = $this->get('ActiveFilters');
 
-		//UserNotesHelper::addSubmenu($this->relm);
 		if ((int)JVERSION < 4) $this->addSubmenu($this->relm);
 
 		// Check for errors.
@@ -74,7 +73,7 @@ class UsernotesView extends JViewLegacy
 
 	protected function addToolbar ()
 	{
-		$canDo = UserNotesHelper::getActions();
+		$canDo = UsernotesHelper::getActions();
 
 		JToolBarHelper::title(Text::_('COM_USERNOTES_MENU').': '.Text::_('COM_USERNOTES_MANAGER_'.strtoupper($this->relm)), 'stack usernotes');
 
