@@ -16,7 +16,6 @@
 	<files folder="site">
 		<folder>classes</folder>
 		<folder>forms</folder>
-		<folder>helpers</folder>
 		<folder>language</folder>
 		<folder>layouts</folder>
 		<folder>src</folder>
