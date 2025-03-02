@@ -31,6 +31,7 @@
 		<files folder="admin">
 			<filename>access.xml</filename>
 			<filename>config.xml</filename>
+			<folder>helpers</folder>
 			<folder>forms</folder>
 			<folder>language</folder>
 			<folder>services</folder>
