@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.1
 */
 defined('_JEXEC') or die('Restricted access');
 
@@ -21,16 +21,20 @@ if (file_exists($this->fpath)) {
 	} else {
 		$this->jDoc->setMimeEncoding($this->attProps->mtype ?: $this->mtype);
 	}
-	header('Content-Length: '.$this->attProps->fsize ?: $this->fsize);
+	header('Content-Length: '.$this->attProps->ucfs ?: ($this->attProps->fsize ?: $this->fsize));
 	if (JDEBUG) {
 		$hdmp = print_r(headers_list(), true);
 		JLog::add("download headers: {$hdmp}", JLog::INFO, 'com_usernotes');
 	}
 	if ($this->isecure) {
-		\UserNotesFileEncrypt::output($this->key, $this->fpath);
+		\UserNotesFileEncrypt::output($this->key, $this->fpath, (bool)$this->attProps->ucfs);
 		flush();
 	} else {
-		readfile($this->fpath);
+		if ($this->attProps->ucfs) {
+			readgzfile($this->fpath);
+		} else {
+			readfile($this->fpath);
+		}
 	}
 } else {
 	if ($this->down) {

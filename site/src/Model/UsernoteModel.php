@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.1
 */
 namespace RJCreations\Component\Usernotes\Site\Model;
 
@@ -267,17 +267,24 @@ class UsernoteModel extends ItemModel
 				if (is_uploaded_file($tmp_name)) {
 					// create the path
 					@mkdir($path);
-					// get file info before it is changed (encrypted)
-					$fsize = filesize($tmp_name);
+					// get file info before it is changed (gzed/encrypted)
+					$ucfs = filesize($tmp_name);
 					$finfo = finfo_open(FILEINFO_MIME_TYPE);
 					$fmime = finfo_file($finfo, $tmp_name);
 					$fname = $file['name'];
-					// encrypt it into position or just move it there
+					$dest = $path.'/'.$fname;
+					// gzip the file
+					$gz = $this->gzFile($tmp_name, $path.'/'.basename($tmp_name));
+					unlink($tmp_name);
+					if (!$gz) throw new \Exception('Could not GZ');
+					$fsize = filesize($gz);
+					// encrypt it into position or just "move" it there
 					if ($key) {
-						\UserNotesFileEncrypt::save($key, $tmp_name, $path.'/'.$fname);
-						unlink($tmp_name);
+						\UserNotesFileEncrypt::save($key, $gz, $dest);
+						$fsize = filesize($dest);
+						unlink($gz);
 					} else {
-						move_uploaded_file($tmp_name, $path.'/'.$fname);
+						rename($gz, $dest);
 					}
 					$fns[] = [$fname,$fsize,$fmime];
 				}
@@ -299,7 +306,7 @@ class UsernoteModel extends ItemModel
 					if ($r) {
 						$db->setQuery('UPDATE fileatt SET fsize='.$fsize.' WHERE contentID='.$contentID.' AND attached='.$db->quote($fname));
 					} else {
-						$db->setQuery('INSERT INTO fileatt (contentID,fsize,attached,mtype) VALUES ('.$contentID.','.$fsize.','.$db->quote($fname).','.$db->quote($fmime).')');
+						$db->setQuery('INSERT INTO fileatt (contentID,fsize,attached,mtype,ucfs) VALUES ('.$contentID.','.$fsize.','.$db->quote($fname).','.$db->quote($fmime).','.$ucfs.')');
 					}
 					$db->execute();
 				}
@@ -477,6 +484,26 @@ class UsernoteModel extends ItemModel
 			$this->setError($e);
 		}
 		return false;
+	}
+
+
+	private function gzFile ($src, $dest)
+	{
+		$error = false; 
+		if ($fp_out = gzopen($dest, 'wb9')) { 
+			if ($fp_in = fopen($src,'rb')) { 
+				while (!feof($fp_in)) 
+					gzwrite($fp_out, fread($fp_in, 524288)); 
+				fclose($fp_in); 
+			} else {
+				$error = true; 
+			}
+			gzclose($fp_out); 
+		} else {
+			$error = true; 
+		}
+		if ($error) return false; 
+		else return $dest; 
 	}
 
 

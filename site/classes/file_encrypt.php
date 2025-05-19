@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.1
 */
 defined('_JEXEC') or die;
 
@@ -42,13 +42,15 @@ abstract class UserNotesFileEncrypt
 		return $error ? null : $dst;
 	}
 
-	public static function output ($key, $src)
+	public static function output ($key, $src, $isgz=false)
 	{
 		$ivl = openssl_cipher_iv_length(self::METHOD);
 		$iv = openssl_random_pseudo_bytes($ivl);
 
 		$error = false;
-		if ($fpIn = fopen($src, 'rb')) {
+		$fpIn = fopen($src, 'rb');
+		if ($fpIn) {
+			if ($isgz) $ifc = inflate_init(ZLIB_ENCODING_GZIP);
 			// Get the initialzation vector from the beginning of the file
 			$iv = fread($fpIn, $ivl);
 			while (!feof($fpIn)) {
@@ -56,8 +58,11 @@ abstract class UserNotesFileEncrypt
 				$data = openssl_decrypt($cdata, self::METHOD, $key, OPENSSL_RAW_DATA, $iv);
 				// Use the first xx bytes of the ciphertext as the next initialization vector
 				$iv = substr($cdata, 0, $ivl);
-				echo $data;
+				$hh = false;
+				if ($isgz) echo inflate_add($ifc, $data);
+				else echo $data;
 			}
+			if ($isgz) echo inflate_add($ifc, '', ZLIB_FINISH);
 			fclose($fpIn);
 		} else {
 			$error = true;

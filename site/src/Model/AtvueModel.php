@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.1
 */
 namespace RJCreations\Component\Usernotes\Site\Model;
 
@@ -42,7 +42,7 @@ class AtvueModel extends BaseDatabaseModel
 	public function atFileProps ($cid, $fnam)
 	{
 		$db = $this->getDbo();
-		$db->setQuery('SELECT fsize,mtype FROM fileatt WHERE contentID='.$cid.' AND attached='.$db->quote($fnam));
+		$db->setQuery('SELECT * FROM fileatt WHERE contentID='.$cid.' AND attached='.$db->quote($fnam));
 		return $db->loadObject();
 	}
 
