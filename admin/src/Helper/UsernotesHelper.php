@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.1
 */
 namespace RJCreations\Component\Usernotes\Administrator\Helper;
 
@@ -17,44 +17,9 @@ use RJCreations\Library\RJUserCom;
 abstract class UsernotesHelper
 {
 	const COMP = 'com_usernotes';
-	protected static $instanceID = null;
 	protected static $instanceType = null;
 	protected static $instanceObj = null;
 	protected static $ownerID = null;
-	protected static $udp = null;
-	protected static $idp = null;			// instance data path
-
-	public static function xxgetInstanceObject ($mid=null)	// SO
-	{
-		if (!empty(self::$instanceObj)) return self::$instanceObj;
-		self::$instanceObj = RJUserCom::getInstObject('notes_type', $mid);
-		return self::$instanceObj;
-	}
-
-	public static function xxgetInstanceID ()	// SO
-	{
-		if (self::$instanceID) return self::$instanceID;
-		$iid = Factory::getApplication()->getUserState('com_usernotes.instance', '');
-		$f='';
-		if (!$iid) {
-			$iid = Factory::getApplication()->getUserStateFromRequest('com_usernotes.instance', 'instance', '');
-			$iid2 = Factory::getApplication()->getUserStateFromRequest('com_usernotes.unI', 'unI', '');
-			$unI = base64_decode(strtr($iid2, '._-', '+/='));
-			$f=' fr '.$unI;
-		}
-		if ($iid) {
-			self::$instanceID = $iid;
-		}
-		file_put_contents('APPARMS.TXT',print_r(self::$instanceID,true).$f."\n",FILE_APPEND);
-		return self::$instanceID;
-	}
-
-	public static function xxgetStorageBase ()	// BOTH
-	{
-		$result = Factory::getApplication()->triggerEvent('onRjuserDatapath', []);
-		$sdp = isset($result[0]) ? trim($result[0]) : 'userstor';
-		return $sdp;
-	}
 
 	public static function getLimits ()	// SO
 	{
@@ -73,14 +38,6 @@ abstract class UsernotesHelper
 		$sysMaxUp = FilesystemHelper::fileUploadMaxSize(false);
 
 		return ['storQuota'=>$storQuota, 'maxUpload'=>min($maxUpload, $sysMaxUp)];
-	}
-
-	public static function xxuserDataPath ()	// SO
-	{
-		if (self::$udp) return self::$udp;
-		if (!self::$instanceObj) self::getInstanceObject();
-		self::$udp = RJUserCom::getStoragePath(self::$instanceObj);
-		return self::$udp;
 	}
 
 	public static function getGroupTitle ($gid)	// AO
@@ -239,25 +196,6 @@ abstract class UsernotesHelper
 		}
 		return $val;
 	}
-
-	// convert integer value to n(K|M|G) string
-/*	public static function to_KMG ($val=0)	// NOT ACTUALLY USED
-	{
-		$sizm = 'K';
-		if ($val) {
-			if (($val % 0x40000000) == 0) {
-				$sizm = 'G';
-				$val >>= 30;
-			} elseif (($val % 0x100000) == 0) {
-				$sizm = 'M';
-				$val >>= 20;
-			} else {
-			//	$val >>= 10;
-			}
-		}
-		return $val.$sizm;
-	}
-*/
 
 	public static function formatBytes ($bytes, $precision=2, $sep=' ')	// SO
 	{

@@ -1,7 +1,7 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 * @since		1.5.1
 */
@@ -27,7 +27,8 @@ if (file_exists($this->fpath)) {
 		JLog::add("download headers: {$hdmp}", JLog::INFO, 'com_usernotes');
 	}
 	if ($this->isecure) {
-		\UserNotesFileEncrypt::output($this->key, $this->fpath, (bool)$this->attProps->ucfs);
+		$ucfs = $this->attProps->ucfs;
+		\UserNotesFileEncrypt::output($this->key, $this->fpath, !is_null($ucfs));
 		flush();
 	} else {
 		if ($this->attProps->ucfs) {

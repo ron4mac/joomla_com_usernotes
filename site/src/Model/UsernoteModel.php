@@ -1,7 +1,7 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
 * @since		1.5.1
 */
@@ -255,7 +255,7 @@ class UsernoteModel extends ItemModel
 	}
 
 
-	public function add_attached ($contentID=0, $files=NULL, $key=false)
+	public function add_attached ($contentID=0, $files=NULL, $gz=false, $key=false)
 	{
 		if (!$contentID || !$files) return;
 		$path = JPATH_BASE.'/'.$this->_storPath.'/attach/'.$contentID;
@@ -263,28 +263,34 @@ class UsernoteModel extends ItemModel
 		$fns = [];
 		foreach ($files as $file) {
 			if ($file['error'] == UPLOAD_ERR_OK) {
-				$tmp_name = $file['tmp_name'];
-				if (is_uploaded_file($tmp_name)) {
+				$uploadf = $file['tmp_name'];
+				if (is_uploaded_file($uploadf)) {
 					// create the path
 					@mkdir($path);
 					// get file info before it is changed (gzed/encrypted)
-					$ucfs = filesize($tmp_name);
 					$finfo = finfo_open(FILEINFO_MIME_TYPE);
-					$fmime = finfo_file($finfo, $tmp_name);
+					$fmime = finfo_file($finfo, $uploadf);
 					$fname = $file['name'];
 					$dest = $path.'/'.$fname;
-					// gzip the file
-					$gz = $this->gzFile($tmp_name, $path.'/'.basename($tmp_name));
-					unlink($tmp_name);
-					if (!$gz) throw new \Exception('Could not GZ');
-					$fsize = filesize($gz);
+					$tmpf = $path.'/'.basename($uploadf);
+					if ($gz) {	// gzip the file
+						$tmpf = $this->gzFile($uploadf, $tmpf.'.gz');
+						unlink($uploadf);
+						if (!$tmpf) throw new \Exception('Could not GZ');
+						$ucfs = filesize($uploadf);
+					} else {
+						$tmpf = $uploadf;
+						$ucfs = 'NULL';
+					}
+					$fsize = filesize($tmpf);
 					// encrypt it into position or just "move" it there
 					if ($key) {
-						\UserNotesFileEncrypt::save($key, $gz, $dest);
-						$fsize = filesize($dest);
-						unlink($gz);
+						\UserNotesFileEncrypt::save($key, $tmpf, $dest);
+						$fsize = filesize($dest);	// encrypting adds 16 bytes 
+						//unlink($tmpf);
 					} else {
-						rename($gz, $dest);
+						if ($gz) rename($tmpf, $dest);
+						else move_uploaded_file($uploadf, $dest);
 					}
 					$fns[] = [$fname,$fsize,$fmime];
 				}

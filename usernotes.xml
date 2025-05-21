@@ -3,12 +3,12 @@
 <extension type="component" method="upgrade">
 	<name>com_usernotes</name>
 	<author>Ron Crans</author>
-	<creationDate>Agust 2024</creationDate>
-	<copyright>(C) 2015-2024 RJCreations. All rights reserved.</copyright>
+	<creationDate>May 2025</creationDate>
+	<copyright>(C) 2015-2025 RJCreations. All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@jrjconline.net</authorEmail>
 	<authorUrl>rjconline.net</authorUrl>
-	<version>1.5.0</version>
+	<version>1.5.1</version>
 	<updater jver="(4\.[0-9])||(5\.[0-1])" pver="7.0" />
 	<description>COM_USERNOTES_XML_DESCRIPTION</description>
 	<namespace path="src">RJCreations\Component\Usernotes</namespace>

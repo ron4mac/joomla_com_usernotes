@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.1
 */
 namespace RJCreations\Component\Usernotes\Site\Controller;
 
@@ -42,7 +42,7 @@ class EditRawController extends BaseController
 
 		// Get the data from POST
 		$formData = new Input($this->input->post->get('jform', [], 'array'));
-		file_put_contents('APPARMS.TXT',print_r($formData,true),FILE_APPEND);
+		//file_put_contents('APPARMS.TXT',print_r($formData,true),FILE_APPEND);
 
 		// Check permissions
 		if (!(($formData->getInt('itemID', 0) && $this->instanceObj->canEdit()) || $this->instanceObj->canCreate())) jexit(Text::_('JERROR_ALERTNOAUTHOR'));
@@ -114,7 +114,9 @@ class EditRawController extends BaseController
 			$cookv = $this->input->cookie->getBase64($cookn);
 			$key = UsernotesHelper::doCrypt($iid.'-@:'.$cid, $cookv, true);
 		}
-		$msg = $m->add_attached($cid, $files, $key);
+		$params = $this->app->getMenu()->getItem($this->instanceObj->menuid)->getParams();
+		$gz = (bool)$params->get('gzipUpload', false);
+		$msg = $m->add_attached($cid, $files, $gz, $key);
 		if ($msg) { header($_SERVER['SERVER_PROTOCOL'].' 500 '.$msg); jexit(); }
 	}
 
