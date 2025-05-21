@@ -268,28 +268,31 @@ class UsernoteModel extends ItemModel
 					// create the path
 					@mkdir($path);
 					// get file info before it is changed (gzed/encrypted)
+					$fsize = filesize($uploadf);
 					$finfo = finfo_open(FILEINFO_MIME_TYPE);
 					$fmime = finfo_file($finfo, $uploadf);
 					$fname = $file['name'];
 					$dest = $path.'/'.$fname;
-					$tmpf = $path.'/'.basename($uploadf);
+					$ucfs = 'NULL';
 					if ($gz) {	// gzip the file
-						$tmpf = $this->gzFile($uploadf, $tmpf.'.gz');
-						unlink($uploadf);
-						if (!$tmpf) throw new \Exception('Could not GZ');
-						$ucfs = filesize($uploadf);
-					} else {
-						$tmpf = $uploadf;
-						$ucfs = 'NULL';
+						$tmpf = $path.'/'.basename($uploadf);
+						if ($tmpf = $this->gzFile($uploadf, $tmpf.'.gz')) {
+							$cfs = filesize($tmpf);	// compredded file size
+							if ($cfs<$fsize) { // only if compressed is smaller
+								$fsize = $cfs;
+								$ucfs = filesize($uploadf);
+								unlink($uploadf);
+								$uploadf = $tmpf;
+							}
+						} else throw new \Exception('Could not GZ');
 					}
-					$fsize = filesize($tmpf);
 					// encrypt it into position or just "move" it there
 					if ($key) {
-						\UserNotesFileEncrypt::save($key, $tmpf, $dest);
+						\UserNotesFileEncrypt::save($key, $uploadf, $dest);
 						$fsize = filesize($dest);	// encrypting adds 16 bytes 
-						//unlink($tmpf);
+						unlink($uploadf);
 					} else {
-						if ($gz) rename($tmpf, $dest);
+						if ($gz) rename($uploadf, $dest);
 						else move_uploaded_file($uploadf, $dest);
 					}
 					$fns[] = [$fname,$fsize,$fmime];
