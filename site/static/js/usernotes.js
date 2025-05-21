@@ -2,7 +2,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.4
+* @since		1.5.0
 */
 'use strict';
 
@@ -72,7 +72,7 @@
 		estop(evt);
 		let fm = document.forms.un_newfold;
 		if (document.formvalidator.isValid(fm))
-			postAction('edit.saveFolder', new FormData(fm), (rd) => {closMdl('foldercr-modal'); if (rd) {alert(rd);return;} window.location.reload(true)});
+			postAction('EditRaw.saveFolder', new FormData(fm), (rd) => {closMdl('foldercr-modal'); if (rd) {alert(rd);return;} window.location.reload(true)});
 		return false;
 	};
 
@@ -81,7 +81,7 @@
 		estop(evt);
 		let fm = document.forms.un_edtfold;
 		if (document.formvalidator.isValid(fm))
-			postAction('edit.saveFolder', new FormData(fm), (rd) => {closMdl('foldered-modal'); if (rd) {alert(rd);return;} window.location.reload(true)});
+			postAction('EditRaw.saveFolder', new FormData(fm), (rd) => {closMdl('foldered-modal'); if (rd) {alert(rd);return;} window.location.reload(true)});
 		return false;
 	};
 
@@ -98,7 +98,7 @@
 
 	UNote.deleteItem = (evt) => {
 		let aform = document.forms.actForm;
-		aform.task.value = 'edit.deleteItem';
+		aform.task.value = 'Edit.deleteItem';
 		aform.submit();
 		return false;
 	};
@@ -107,7 +107,7 @@
 	UNote.aj_delAttach = (evt, cid, fn) => {
 		estop(evt);
 		if (!confirm(UNote.L.sure_del_att)) return;
-		postAction('edit.detach', { contentID: cid, file: fn }, (data) => {
+		postAction('EditRaw.detach', { contentID: cid, file: fn }, (data) => {
 			if (data.err) { alert(data.err); }
 			else { _Id('attachments').innerHTML = data.htm; }
 		}, true);
@@ -118,7 +118,7 @@
 		estop(evt);
 		let nnam = prompt(UNote.L.rename_att, fn);
 		if (!nnam) return;
-		postAction('edit.renAttach', { contentID: cid, file: fn, tofile: nnam }, (data) => {
+		postAction('EditRaw.renAttach', { contentID: cid, file: fn, tofile: nnam }, (data) => {
 			if (data.err) { alert(data.err); }
 			else { _Id('attachments').innerHTML = data.htm; }
 		}, true);
@@ -135,7 +135,7 @@
 
 	UNote.fup_done = (rslt) => {
 		if (!rslt) _Id('filupld').style.display = 'none';
-		postAction('edit.attlist', { contentID: UNote.V.contentID, inedit: 1 }, (data) => {
+		postAction('EditRaw.attlist', { contentID: UNote.V.contentID, inedit: 1 }, (data) => {
 			if (data) { _Id('attachments').innerHTML = data; }
 			else { alert('no data'); }
 		});
@@ -161,7 +161,7 @@
 		ddlog = document.createElement('div');
 		ddlog.className = 'utildlog';
 		_celm.appendChild(ddlog);
-		postAction('edit.cat_hier', { iID: UNote.V.itemID, pID: UNote.V.parentID }, (data) => {
+		postAction('EditRaw.cat_hier', { iID: UNote.V.itemID, pID: UNote.V.parentID }, (data) => {
 			if (data) { ddlog.innerHTML = data; }
 			else { alert('no data'); }
 		});
@@ -178,7 +178,7 @@
 
 	UNote.doMove = (doit) => {
 		if (doit) {
-			postAction('edit.movitm', { iID: UNote.V.itemID, pID: _Id('moveTo').value }, (data) => {
+			postAction('EditRaw.movitm', { iID: UNote.V.itemID, pID: _Id('moveTo').value }, (data) => {
 					if (data) { alert(data); }
 					else { window.location.reload(); }
 			});
@@ -189,7 +189,7 @@
 
 
 	UNote.addRating = (val, cbk) => {
-		postAction('addRating', { rate: val, iID: UNote.V.itemID }, cbk, true);
+		postAction('Raw.addRating', { rate: val, iID: UNote.V.itemID }, cbk, true);
 	};
 
 
@@ -199,7 +199,7 @@
 			if (!confirm(UNote.sprintf(UNote.L.ru_sure, evt.target.dataset.sure))) return;
 		}
 		estop(evt);
-		postAction('edit.tool', { mnuact: act, iID: UNote.V.itemID, cID: UNote.V.contentID }, (data) => {
+		postAction('EditRaw.tool', { mnuact: act, iID: UNote.V.itemID, cID: UNote.V.contentID }, (data) => {
 			if (data) { alert(data); }
 			else { window.location.reload(); }
 		});
@@ -246,7 +246,7 @@
 	UNote.deleteComment = (evt, cid) => {
 		estop(evt);
 		let fData = new FormData();
-		fData.append('task', 'delComment');
+		fData.append('task', 'Raw.delComment');
 		fData.append('cmntid', cid);
 		fData.append(Joomla.getOptions('csrf.token'), 1);
 		postAction(null, fData, (data) => {
@@ -261,7 +261,7 @@
 	UNote.fetchComments = (elm) => {
 		elm.disabled = true;
 		let fData = new FormData();
-		fData.append('task', 'getComments');
+		fData.append('task', 'Raw.getComments');
 		fData.append('nid', curNid);
 		postAction(null, fData, (data) => {
 			let cmnts = document.querySelector('#comments-modal .comments');

@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.4
+* @since		1.5.0
 */
 defined('_JEXEC') or die;
 
@@ -51,6 +51,11 @@ class com_usernotesInstallerScript extends InstallerScript
 		include JPATH_LIBRARIES . '/rjuser/com.php';
 		if (!class_exists('RJUserCom')) {
 			Log::add('The <a href="https://github.com/ron4mac/joomla_lib_rjuser" target="_blank">RJUser Library</a> is required for this component.', Log::WARNING, 'jerror');
+			return false;
+		}
+		// and is current enough
+		if (!(method_exists('RJUserCom','Igaa'))) {
+			Log::add('The installed version of <a href="https://github.com/ron4mac/joomla_lib_rjuser" target="_blank">RJUser Library</a> must be updated.', Log::WARNING, 'jerror');
 			return false;
 		}
 

@@ -3,13 +3,14 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.2
+* @since		1.5.0
 */
 defined('JPATH_BASE') or die;
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Session\Session;
+use RJCreations\Component\Usernotes\Site\Helper\M34C;
 
 extract($displayData);	//userid,view
 
@@ -33,7 +34,7 @@ $mmdl =  HTMLHelper::_(
 	),
 	'<form id="newcmnt" method="POST" onsubmit="return false">
 	<div class="new-comment"><textarea id="cmnt-text" name="cmntext" onkeyup="UNote.watchcmnt()"></textarea>'.$nextra.'</div>
-	<input type="hidden" name="task" value="addComment" />
+	<input type="hidden" name="task" value="Raw.addComment" />
 	<input type="hidden" name="'.Session::getFormToken().'" value="1" />
 	</form>'
 );
