@@ -1,4 +1,4 @@
-PRAGMA user_version=5;
+PRAGMA user_version=6;
 BEGIN TRANSACTION;
 CREATE TABLE notes(
 	itemID INTEGER PRIMARY KEY NOT NULL,
@@ -24,6 +24,7 @@ CREATE TABLE content(
 CREATE TABLE fileatt (
 	contentID INTEGER NOT NULL,
 	fsize INTEGER,
+	ucfs INTEGER,
 	mtype TEXT,
 	attached TEXT
 	);
