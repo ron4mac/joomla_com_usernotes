@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.1
 */
 defined('_JEXEC') or die;
 
@@ -14,7 +14,7 @@ use Joomla\CMS\Log\Log;
 
 class com_usernotesInstallerScript extends InstallerScript
 {
-	protected $minimumJoomla = '3.8';
+	protected $minimumJoomla = '4.1';
 	protected $com_name = 'com_usernotes';
 	protected $release = '';
 
@@ -48,13 +48,12 @@ class com_usernotesInstallerScript extends InstallerScript
 		}
 
 		// ensure that the RJUser library is installed
-		include JPATH_LIBRARIES . '/rjuser/com.php';
-		if (!class_exists('RJUserCom')) {
+		if (!class_exists('RJCreations\Library\RJUserCom',true)) {
 			Log::add('The <a href="https://github.com/ron4mac/joomla_lib_rjuser" target="_blank">RJUser Library</a> is required for this component.', Log::WARNING, 'jerror');
 			return false;
 		}
 		// and is current enough
-		if (!(method_exists('RJUserCom','Igaa'))) {
+		if (!method_exists('RJCreations\Library\RJUserCom','Igaa')) {
 			Log::add('The installed version of <a href="https://github.com/ron4mac/joomla_lib_rjuser" target="_blank">RJUser Library</a> must be updated.', Log::WARNING, 'jerror');
 			return false;
 		}
