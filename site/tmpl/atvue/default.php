@@ -21,7 +21,7 @@ if (file_exists($this->fpath)) {
 	} else {
 		$this->jDoc->setMimeEncoding($this->attProps->mtype ?: $this->mtype);
 	}
-	header('Content-Length: '.$this->attProps->ucfs ?: ($this->attProps->fsize ?: $this->fsize));
+	header('Content-Length: '.$this->fsize);
 	if (JDEBUG) {
 		$hdmp = print_r(headers_list(), true);
 		JLog::add("download headers: {$hdmp}", JLog::INFO, 'com_usernotes');

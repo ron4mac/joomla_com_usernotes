@@ -44,11 +44,12 @@ class HtmlView extends \Joomla\CMS\MVC\View\HtmlView
 		// Get path to file
 		$udp = RJUserCom::getStoragePath();
 		$this->fpath = JPATH_BASE.'/'.$udp.'/attach/'.$cat[1].'/'.$cat[2];
-		$this->fsize = filesize($this->fpath);
 		$finfo = finfo_open(FILEINFO_MIME_TYPE);
 		$this->mtype = finfo_file($finfo, $this->fpath);
 
 		$this->attProps = $m->atFileProps($cat[1],$cat[2]);
+		// resolve actual file size
+		$this->fsize = $this->attProps->ucfs ?: $this->attProps->fsize - ($this->isecure ? 	\UserNotesFileEncrypt::fsOverhead() : 0);
 
 		return parent::display($tpl);
 	}

@@ -13,6 +13,11 @@ abstract class UserNotesFileEncrypt
 {
 	const METHOD = 'aes-256-ctr';
 
+	public static function fsOverhead ()
+	{
+		return openssl_cipher_iv_length(self::METHOD);
+	}
+
 	public static function save ($key, $src, $dst)
 	{
 		$ivl = openssl_cipher_iv_length(self::METHOD);
