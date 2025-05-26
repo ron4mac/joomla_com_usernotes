@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.2
 */
 namespace RJCreations\Component\Usernotes\Site\Helper;
 
@@ -81,7 +81,7 @@ abstract class HtmlUsernotes
 		if ($item->isParent || $item->secured) return self::itemBLink($item, $ratings);
 
 		$strate = '';
-		if ($item->cmntcnt) {
+		if (!empty($item->cmntcnt)) {
 			$strate .= self::getIcon('cmmm','cmnticn');
 		}
 		if ($ratings && $item->vtotal) {
@@ -189,6 +189,7 @@ abstract class HtmlUsernotes
 		<input type="search" name="sterm" size="40" results="0" autosave="true" placeholder="Search..." value="{$val}">
 		<input type="submit" style="display: none">
 	</form>
+	<i class="fa fa-info-circle" onclick="UNote.helpDisplay('search')"></i>
 </div>
 EOD;
 	}

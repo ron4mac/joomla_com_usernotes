@@ -1,8 +1,8 @@
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2023 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.3.4
+* @since		1.5.2
 */
 
 /* container */
@@ -15,9 +15,18 @@
 	padding: .4em;
 }
 #container a > * {
-  pointer-events: none;
+	pointer-events: none;
 }
 
+/* search bar*/
+div.search form {
+	display: inline-block;
+	margin-right: .5rem;
+}
+div.search .fa {
+	color: darkgray;
+	cursor: pointer;
+}
 
 /* lists of notes/folders */
 #itemsList .item {
@@ -98,6 +107,16 @@
 	color: #3af;
 }
 
+/* help dialog */
+.rj_hdlog {
+	border: 1px dashed #888;
+	top: 20%;
+	width: 25%;
+	z-index: 99;
+}
+.rj_hdlog:focus-visible {
+	outline: none;
+}
 
 /* footer */
 #container .footer {

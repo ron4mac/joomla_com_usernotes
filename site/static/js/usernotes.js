@@ -1,14 +1,15 @@
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.2
 */
 'use strict';
 
 (function(UNote) {
 
 	let ddlog = null,
+		hdlog = null,
 		_celm = null,
 		curCelm = null,
 		curNid = 0;
@@ -360,6 +361,25 @@
 		} else {
 			cmntSbb.disabled = true;
 		}
+	};
+
+	const hdlogclr = (e) => {
+		if (e.target.className=="fa fa-info-circle") return;
+		hdlog.close();
+		document.body.removeChild(hdlog);
+		hdlog = null;
+	};
+
+	UNote.helpDisplay = (wh) => {
+		postAction('Raw.help', { wht: wh }, (htm) => {
+			hdlog = document.createElement('dialog');
+			hdlog.setAttribute('class','rj_hdlog');
+			hdlog.innerHTML = htm;
+			document.body.appendChild(hdlog);
+			window.addEventListener('click', hdlogclr);
+			window.addEventListener('keydown', hdlogclr);
+			hdlog.show();
+		});
 	};
 
 
