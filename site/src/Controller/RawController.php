@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.2
+* @since		1.5.3
 */
 namespace RJCreations\Component\Usernotes\Site\Controller;
 
@@ -68,6 +68,32 @@ class RawController extends BaseController
 			$html .= '</div>';
 		}
 		echo json_encode(['htm'=>$html]);
+	}
+
+	public function getInfo ()
+	{
+		$nid = $this->input->post->getInt('iID', 0);
+		$m = $this->getModel('usernote');
+		$note = $m->getItem($nid);
+		//echo print_r($note,true);
+		$userId = $note->ownerID;
+		$user = Factory::getUser($userId);
+		// Check if the user object was successfully loaded and if the user exists
+		if ($user->id !== 0) {
+			$username = $user->username;
+			echo "This note was created by: {$username}<br>";
+		} else {
+			echo "User with ID {$userId} not found.<br>";
+		}
+		$F = Text::_('DATE_FORMAT_LC2');
+		if ($note->cdate) {
+			$cdate = date($F, $note->cdate);
+			echo "Creation date: {$cdate}<br>";
+		}
+		if ($note->mdate) {
+			$mdate = date($F, $note->mdate);
+			echo "Last modified: {$mdate}<br>";
+		}
 	}
 
 	public function help ()

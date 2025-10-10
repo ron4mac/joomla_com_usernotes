@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.3
 */
 defined('_JEXEC') or die;
 
@@ -149,6 +149,7 @@ if ($this->qview && $this->attached) {
 			echo HtmlUsernotes::attActIcon($itemID,Text::_('COM_USERNOTES_ADDATCH'));
 			echo HtmlUsernotes::movActIcon($itemID,Text::_('COM_USERNOTES_MOVNOTE'));
 			echo HtmlUsernotes::toolActIcon($itemID,Text::_('COM_USERNOTES_SPCTOOL'));
+			echo HtmlUsernotes::toolInfoIcon($itemID,Text::_('COM_USERNOTES_NOTEINFO'));
 		}
 		if ($this->access & ITM_CAN_DELE) {
 			echo HtmlUsernotes::delActIcon($itemID,Text::_('COM_USERNOTES_DELNOTE'));
@@ -179,6 +180,10 @@ if ($this->qview && $this->attached) {
 	<div id="popRate" class="popRate" style="display:none">
 		<span class="rating" data-default-rating="0"></span>
 	</div>
+	<dialog id="popInfo">
+		<div class="popInfo"></div>
+		<button onclick="this.parentNode.close()">Close</button>
+	</dialog>
 	<?php endif; ?>
 <?php endif; //prning?>
 </div>

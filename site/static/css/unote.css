@@ -161,6 +161,30 @@
 	box-shadow: 0 0 5px #AAA;
 }
 
+#popInfo {
+	position: absolute;
+	transform: translate(-50%, -50%); /* Centers the dialog */
+	padding: 1rem;
+	border: 1px solid #999;
+	border-radius: 5px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.18);
+	margin-top: 16em;
+	opacity: 0;
+	transition-duration: .5s;
+	transition-behavior: allow-discrete;
+}
+#popInfo[open] {
+	opacity: 1;
+	@starting-style {
+		opacity: 0;
+	}
+}
+#popInfo button {
+	border: 1px solid #BBB;
+	border-radius: 5px;
+	margin-top: 1rem;
+}
+
 /* ============================ small static stars in item list
 */
 /*.strate {

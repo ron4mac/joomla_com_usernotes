@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.2
+* @since		1.5.3
 */
 namespace RJCreations\Component\Usernotes\Site\Helper;
 
@@ -173,6 +173,10 @@ abstract class HtmlUsernotes
 	{
 		return '<a href="javascript:void(0);" title="'.$titl.'" class="act act-left" onclick="UNote.toolMenu(event);">'.self::getIcon('to').'</a>';
 	}
+	public static function toolInfoIcon ($id, $titl)
+	{
+		return '<a href="javascript:void(0);" title="'.$titl.'" class="act act-left" onclick="UNote.noteInfo(event);">'.self::getIcon('inf').'</a>';
+	}
 
 
 	public static function searchField ($pid, $val='')
@@ -285,6 +289,7 @@ EOD;
 				'mv'=>['icon-move','fa fa-arrows-alt'],
 				'to'=>['icon-wrench','fa fa-wrench'],
 				'pr'=>['icon-print','fa fa-print'],
+				'inf'=>['icon-info-2','fa fa-info-circle'],
 				'cm'=>['icon-comment','far fa-comment'],
 				'cmm'=>['icon-comments-2','fas fa-comments'],
 				'cmmm'=>['icon-comments-2','far fa-comments'],

@@ -2,7 +2,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.2
+* @since		1.5.3
 */
 'use strict';
 
@@ -202,6 +202,19 @@
 		estop(evt);
 		postAction('EditRaw.tool', { mnuact: act, iID: UNote.V.itemID, cID: UNote.V.contentID }, (data) => {
 			if (data) { alert(data); }
+			else { window.location.reload(); }
+		});
+	};
+
+
+	UNote.noteInfo = (evt, act) => {
+		mclose();
+		estop(evt);
+		postAction('Raw.getInfo', { mnuact: act, iID: UNote.V.itemID }, (data) => {
+			if (data) {
+				document.querySelector('#popInfo .popInfo').innerHTML = data;
+				document.querySelector('#popInfo').showModal();
+			}
 			else { window.location.reload(); }
 		});
 	};

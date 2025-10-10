@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.3
 */
 namespace RJCreations\Component\Usernotes\Site\Model;
 
@@ -67,6 +67,7 @@ class UsernotesModel extends ListModel
 	{
 		if ($sterm == '**starred') return $this->starred($pid);
 		if ($sterm == '**recent') return $this->recent($pid);
+		$special = ['**starred'=>'I.vcount > 0','**recent'=>''];
 
 		if (strpos($sterm, ' OR ') > 0) {
 			$this->smod = '|';
@@ -281,7 +282,7 @@ class UsernotesModel extends ListModel
 
 
 	private function logQ ($db)
-	{
+	{	return;
 		$q = (string)$db->getQuery();
 		file_put_contents('QLOG.txt', $q."\n", FILE_APPEND);
 	}
