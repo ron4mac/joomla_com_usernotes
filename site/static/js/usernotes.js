@@ -213,9 +213,9 @@
 		postAction('Raw.getInfo', { mnuact: act, iID: UNote.V.itemID }, (data) => {
 			if (data) {
 				document.querySelector('#popInfo .popInfo').innerHTML = data;
-				document.querySelector('#popInfo').showModal();
+				document.querySelector('#popInfo').show();
 			}
-			else { window.location.reload(); }
+			else alert('Could not get information data');
 		});
 	};
 

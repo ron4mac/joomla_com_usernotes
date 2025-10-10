@@ -73,27 +73,24 @@ class RawController extends BaseController
 	public function getInfo ()
 	{
 		$nid = $this->input->post->getInt('iID', 0);
+		$username = $cdate = $mdate = '&lt;'.strtolower(Text::_('JLIB_UNKNOWN')).'&gt;';
 		$m = $this->getModel('usernote');
 		$note = $m->getItem($nid);
 		//echo print_r($note,true);
 		$userId = $note->ownerID;
 		$user = Factory::getUser($userId);
-		// Check if the user object was successfully loaded and if the user exists
-		if ($user->id !== 0) {
+		if ($user->id) {
 			$username = $user->username;
-			echo "This note was created by: {$username}<br>";
-		} else {
-			echo "User with ID {$userId} not found.<br>";
 		}
 		$F = Text::_('DATE_FORMAT_LC2');
-		if ($note->cdate) {
+		$F = 'j M Y, g:ia';
+		if (!empty($note->cdate)) {
 			$cdate = date($F, $note->cdate);
-			echo "Creation date: {$cdate}<br>";
 		}
-		if ($note->mdate) {
+		if (!empty($note->mdate)) {
 			$mdate = date($F, $note->mdate);
-			echo "Last modified: {$mdate}<br>";
 		}
+		echo Text::sprintf('COM_USERNOTES_NOTEINFO', $username, $cdate, $mdate);
 	}
 
 	public function help ()

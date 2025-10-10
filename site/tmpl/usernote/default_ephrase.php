@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.3
 */
 defined('_JEXEC') or die;
 
@@ -16,6 +16,7 @@ $jslang = [
 ];
 $jsvars = [
 	'aBaseURL' => $this->aUrl('format=raw'),
+	'itemID' => $this->item->itemID,
 ];
 
 $this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
@@ -43,8 +44,13 @@ echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 		}
 		if ($this->access & ITM_CAN_DELE) {
 			echo HtmlUsernotes::delActIcon($itemID,Text::_('COM_USERNOTES_DELNOTE'));
+			echo HtmlUsernotes::toolInfoIcon($itemID,Text::_('COM_USERNOTES_NOTEINFO'));
 		}
 		?>
 		&nbsp;<?=$this->footMsg?>
 	</div>
+	<dialog id="popInfo">
+		<div class="popInfo"></div>
+		<button onclick="this.parentNode.close()">Close</button>
+	</dialog>
 </div>
