@@ -3,11 +3,12 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.1
+* @since		1.5.4
 */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseDriver;
 use Joomla\CMS\Installer\InstallerScript;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
@@ -41,7 +42,7 @@ class com_usernotesInstallerScript extends InstallerScript
 		if (parent::preflight($type, $parent) === false) return false;
 
 		// ensure that SQLite is active in joomla
-		$dbs = JDatabaseDriver::getConnectors();
+		$dbs = DatabaseDriver::getConnectors();
 		if (!in_array('sqlite', $dbs) && !in_array('Sqlite', $dbs)) {
 			Log::add('Joomla support for SQLite(3) is required for this component.', Log::WARNING, 'jerror');
 			return false;

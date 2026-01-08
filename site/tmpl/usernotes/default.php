@@ -1,12 +1,13 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.4
 */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
@@ -51,7 +52,7 @@ if (isset($this->posq)) {
 if ($this->state->secured && $_SERVER['SERVER_PORT'] != 443) {
 	$securl = $this->cparams->get('secureurl','');
 	if (!$securl) {
-		$securl = substr(strstr(dirname(JUri::root()), '://'), 3);
+		$securl = substr(strstr(dirname(Uri::root()), '://'), 3);
 	}
 	//var_dump($hostname,$paths);var_dump($_SERVER);
 	echo '<div style="background-color:red;color:white;">';

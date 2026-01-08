@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.1
+* @since		1.5.4
 */
 namespace RJCreations\Component\Usernotes\Site\Model;
 
@@ -11,6 +11,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Form\Form;
 use Joomla\Database\DatabaseDriver;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\Model\ItemModel;
@@ -236,7 +237,7 @@ class UsernoteModel extends ItemModel
 	public function getForm ($data = [], $loadData = true)
 	{
 		// Get the encryption phrase form.
-		$form = \JForm::getInstance('com_usernotes.ephrase', JPATH_COMPONENT.'/forms/ephrase.xml');
+		$form = Form::getInstance('com_usernotes.ephrase', JPATH_COMPONENT.'/forms/ephrase.xml');
 
 		if (empty($form)) {
 			return false;

@@ -1,12 +1,13 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.1
+* @since		1.5.4
 */
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Log\Log;
 use Joomla\CMS\Language\Text;
 
 if (file_exists($this->fpath)) {
@@ -24,7 +25,7 @@ if (file_exists($this->fpath)) {
 	header('Content-Length: '.$this->fsize);
 	if (JDEBUG) {
 		$hdmp = print_r(headers_list(), true);
-		JLog::add("download headers: {$hdmp}", JLog::INFO, 'com_usernotes');
+		Log::add("download headers: {$hdmp}", Log::INFO, 'com_usernotes');
 	}
 	if ($this->isecure) {
 		$ucfs = $this->attProps->ucfs;

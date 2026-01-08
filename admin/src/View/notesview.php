@@ -1,21 +1,24 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.4
 */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\HTML\Helpers\Sidebar;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
 /**
  * View class for a list of user notes.
  */
-class UsernotesView extends JViewLegacy
+class UsernotesView extends BaseHtmlView
 {
 	protected $items;
 	protected $pagination;
@@ -43,7 +46,7 @@ class UsernotesView extends JViewLegacy
 		//		}
 
 		$this->addToolbar();
-		$this->sidebar = JHtmlSidebar::render();
+		$this->sidebar = Sidebar::render();
 		parent::display($tpl);
 	}
 
@@ -53,12 +56,12 @@ class UsernotesView extends JViewLegacy
 	 */
 	protected function addSubmenu ($vName)
 	{
-		JHtmlSidebar::addEntry(
+		Sidebar::addEntry(
 			Text::_('COM_USERNOTES_SUBMENU_USER'),
 			'index.php?option=com_usernotes',
 			$vName == 'user'
 		);
-		JHtmlSidebar::addEntry(
+		Sidebar::addEntry(
 			Text::_('COM_USERNOTES_SUBMENU_GROUP'),
 			'index.php?option=com_usernotes&view=groupnotes',
 			$vName == 'group'
@@ -75,23 +78,24 @@ class UsernotesView extends JViewLegacy
 	{
 		$canDo = UsernotesHelper::getActions();
 
-		JToolBarHelper::title(Text::_('COM_USERNOTES_MENU').': '.Text::_('COM_USERNOTES_MANAGER_'.strtoupper($this->relm)), 'stack usernotes');
+		ToolBarHelper::title(Text::_('COM_USERNOTES_MENU').': '.Text::_('COM_USERNOTES_MANAGER_'.strtoupper($this->relm)), 'stack usernotes');
 
-		JToolBarHelper::deleteList(Text::_('COM_USERNOTES_MANAGER_DELETEOK'));
+		ToolBarHelper::deleteList(Text::_('COM_USERNOTES_MANAGER_DELETEOK'));
 		//JToolBarHelper::trash('usernotes.trash');
 
 	//	if ($canDo->get('core.edit.state')) {
 	//		JToolBarHelper::custom('notes.reset', 'refresh.png', 'refresh_f2.png', 'JUSERSCHED_RESET', false);
 	//	}
 
-		JToolBarHelper::custom('convertDb', 'wrench', '', 'Convert database');
+		ToolBarHelper::custom('convertDb', 'wrench', '', 'Convert database');
 
-		JToolBarHelper::divider();
-		if ($canDo->get('core.admin')) {
-			JToolBarHelper::preferences('com_usernotes');
+		ToolBarHelper::divider();
+	//	if ($canDo->get('core.admin')) {
+		if ($canDo->{'core.admin'}) {
+			ToolBarHelper::preferences('com_usernotes');
 		}
-		JToolBarHelper::divider();
-		JToolBarHelper::help('user_schedulers', true);
+		ToolBarHelper::divider();
+		ToolBarHelper::help('user_schedulers', true);
 	}
 
 

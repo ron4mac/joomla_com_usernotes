@@ -1,8 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.5.4
 */
 defined('_JEXEC') or die;
 
@@ -29,7 +30,7 @@ $canDo = UsernotesHelper::getActions();
 			<thead>
 				<tr>
 					<th width="1%"></th>
-					<th width="1%"><?php echo HTMLHelper::_('myGrid.checkall'); ?></th>
+					<th width="1%"><?php echo HTMLHelper::_('grid.checkall'); ?></th>
 					<th width="15%">
 						<?php echo HTMLHelper::_('grid.sort', 'COM_USERNOTES_GROUPNAME', 'username', $listDirn, $listOrder); ?>
 					</th>
@@ -66,7 +67,7 @@ $canDo = UsernotesHelper::getActions();
 					</td>
 					<td>
 						<?php
-						echo HTMLHelper::_('myGrid.info', $item['info']);
+						//echo HTMLHelper::_('grid.info', $item['info']);
 						foreach ($item['msgs'] as $msg) {
 							echo '<div class="errm">'.$msg.'</div>';
 						}

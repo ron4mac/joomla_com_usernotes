@@ -1,12 +1,13 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.3
+* @since		1.5.4
 */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Layout\LayoutHelper;
@@ -34,7 +35,7 @@ $jsvars = [
 $jsicns = [
 	'abrt' => HtmlUsernotes::getIcon('abrt')
 ];
-$this->jDoc->addScriptDeclaration('var baseURL = "'.JUri::base().'";
+$this->jDoc->addScriptDeclaration('var baseURL = "'.Uri::base().'";
 var upldDestURL = "'.$this->aUrl('format=raw').'";
 var fup_payload = {task:"EditRaw.attach",iID:'.$this->item->itemID.',cID:'.$this->item->contentID.',[Joomla.getOptions("csrf.token","")]:"1"};
 var uploadMaxFilesize = '.$this->maxUploadBytes.';
@@ -50,7 +51,7 @@ $prning = ($this->state->get('task', 0) === 'printNote');
 //echo'<xmp>';var_dump($prning,$this->state->get('task', 0));echo'</xmp>';
 if ($prning) echo '<button type="button" class="btn btn-primary" onclick="window.close();window.history.back();">'.Text::_('COM_USERNOTES_PRNDONE').'</button>';
 // if not printing, accommodate targeted breadcrumb module
-if (!$prning) echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
+if (!$prning && !$this->qview) echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 
 $ratings = $this->params->get('ratings', 0);
 $guestcom = $this->params->get('guest_comments', 0);

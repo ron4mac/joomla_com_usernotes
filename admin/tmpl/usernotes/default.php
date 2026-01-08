@@ -1,15 +1,17 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.4
 */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Table\Table;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Component\ComponentHelper;
 use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
 // Include the component HTML helpers.
@@ -21,8 +23,8 @@ $listOrder	= $this->state('list.ordering');
 $listDirn	= $this->state('list.direction');
 $canDo		= UsernotesHelper::getActions();
 
-$component = \JComponentHelper::getComponent('com_usernotes');
-$extension = \JTable::getInstance('extension');
+$component = ComponentHelper::getComponent('com_usernotes');
+$extension = Table::getInstance('extension');
 $extension->load($component->id);
 $manifest = new \Joomla\Registry\Registry($extension->manifest_cache);
 
@@ -37,7 +39,7 @@ echo $manifest->get('version');
 			<thead>
 				<tr>
 					<th width="1%"></th>
-					<th width="1%"><?php echo HTMLHelper::_('myGrid.checkall'); ?></th>
+					<th width="1%"><?php echo HTMLHelper::_('grid.checkall'); ?></th>
 					<th width="15%">
 						<?php echo HTMLHelper::_('grid.sort', 'COM_USERNOTES_USERNAME', 'username', $listDirn, $listOrder); ?>
 					</th>
@@ -80,7 +82,7 @@ echo $manifest->get('version');
 					</td>
 					<td>
 						<?php
-						echo HTMLHelper::_('myGrid.info', $item['info']);
+						//echo HTMLHelper::_('grid.info', $item['info']);
 						foreach ($item['msgs'] as $msg) {
 							echo '<div class="errm">'.$msg.'</div>';
 						}

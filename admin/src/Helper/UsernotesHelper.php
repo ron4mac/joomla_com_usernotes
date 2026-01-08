@@ -1,17 +1,18 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.1
+* @since		1.5.4
 */
 namespace RJCreations\Component\Usernotes\Administrator\Helper;
 
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Access\Access;
 use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Filesystem\FilesystemHelper;
+use Joomla\Filesystem\Helper as FilesystemHelper;
 use RJCreations\Library\RJUserCom;
 
 abstract class UsernotesHelper
@@ -35,7 +36,7 @@ abstract class UsernotesHelper
 		$maxUpload = $cparams->get('maxUpload');
 		$maxUpload = $maxUpload?:4194304;
 
-		$sysMaxUp = FilesystemHelper::fileUploadMaxSize(false);
+		$sysMaxUp = FilesystemHelper::getFileUploadMaxSize(false);
 
 		return ['storQuota'=>$storQuota, 'maxUpload'=>min($maxUpload, $sysMaxUp)];
 	}
@@ -173,11 +174,12 @@ abstract class UsernotesHelper
 	public static function getActions ()	// AO
 	{
 		$user = (int)JVERSION > 3 ? Factory::getApplication()->getIdentity() : Factory::getUser();
-		$result = new \JObject;
+		$result = new \stdClass();
 
-		$actions = \JAccess::getActionsFromFile(JPATH_ADMINISTRATOR . '/components/'.self::COMP.'/access.xml');
+		$actions = Access::getActionsFromFile(JPATH_ADMINISTRATOR . '/components/'.self::COMP.'/access.xml');
 		foreach ($actions as $action) {
-			$result->set($action->name, $user->authorise($action->name, self::COMP));
+		//	$act = $action->name;
+			$result->{$action->name} = $user->authorise($action->name, self::COMP);
 		}
 
 		return $result;

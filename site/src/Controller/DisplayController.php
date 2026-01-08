@@ -1,14 +1,15 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.4
 */
 namespace RJCreations\Component\Usernotes\Site\Controller;
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Log\Log;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
@@ -25,7 +26,7 @@ class DisplayController extends BaseController
 	public function __construct ($config = [], $factory = null, $app = null, $input = null)
 	{	//file_put_contents('REQUEST.txt',print_r($input,true),FILE_APPEND);
 		parent::__construct($config, $factory, $app, $input);
-		if (false && JDEBUG) { JLog::addLogger(['text_file'=>'com_usernotes.log.php'], JLog::ALL, ['com_usernotes']); }
+		if (JDEBUG) { Log::addLogger(['text_file'=>'com_usernotes.log.php'], Log::ALL, ['com_usernotes']); }
 		$this->instanceObj = RJUserCom::getInstObject();
 
 		// fail if public access attempt to a 'user' instance

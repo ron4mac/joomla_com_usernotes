@@ -10,6 +10,7 @@ CREATE TABLE notes(
 	parentID INTEGER NOT NULL DEFAULT 0,
 	secured BOOLEAN DEFAULT NULL,
 	cdate INTEGER,
+	mdate INTEGER,
 	udate INTEGER,
 	checked_out INTEGER DEFAULT 0,
 	checked_out_time DATETIME DEFAULT NULL,
