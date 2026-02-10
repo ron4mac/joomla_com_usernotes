@@ -1,8 +1,8 @@
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.3
+* @since		1.5.5
 */
 'use strict';
 
@@ -219,6 +219,14 @@
 		});
 	};
 
+	UNote.ePublish = (evt) => {
+		estop(evt);
+		postAction('Raw.ePub', { iID: UNote.V.itemID }, (data) => {
+			if (data) {
+				alert(data);
+			}
+		});
+	};
 
 	UNote.toolMenu = (evt) => {
 		estop(evt);

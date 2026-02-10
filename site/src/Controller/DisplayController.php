@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.4
+* @since		1.5.5
 */
 namespace RJCreations\Component\Usernotes\Site\Controller;
 
@@ -49,6 +49,7 @@ class DisplayController extends BaseController
 //				if ($iv == 'atvue') $iview->setModel($this->getModel('usernote'), true);
 			}
 			$view = $this->getView('usernotes','html');
+			$view->setModel($this->getModel('usernotes'));
 			// provide the edit model for use, as well
 			$view->setModel($this->getModel('edit'));
 		}

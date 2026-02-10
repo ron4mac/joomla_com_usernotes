@@ -1,21 +1,20 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.5
 */
 namespace RJCreations\Component\Usernotes\Administrator\Model;
 
 defined('_JEXEC') or die;
 
 use Joomla\CMS\User\User;
-use Joomla\CMS\MVC\Model\ListModel;
 use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelperDb;
 
-class UsernotesModel extends ListModel
+class UsernotesModel extends \Joomla\CMS\MVC\Model\ListModel
 {
 	protected $relm = 'u';
 	protected $_total = -1;
@@ -49,9 +48,9 @@ class UsernotesModel extends ListModel
 			if (file_exists(JPATH_COMPONENT_ADMINISTRATOR.'/sql/upd_'.$info['dbv'].'.sql')) $msgs[] = 'Database needs to be updated';
 			if ($this->relm == 'u') {
 				$user = User::getInstance($userid);
-				$unotes[] = ['name'=>$user->name,'uname'=>$user->username,'uid'=>$userid.'|'.$menuid, 'info'=>$info, 'msgs'=>$msgs];
+				$unotes[] = ['name'=>$user->name,'uname'=>$user->username,'uid'=>'@'.$userid.'|'.$menuid, 'info'=>$info, 'msgs'=>$msgs];
 			} else {
-				$unotes[] = ['uname'=> $userid ? UsernotesHelper::getGroupTitle($userid) : '[ Site ]','name'=>'group','uid'=>$userid.'|'.$menuid, 'info'=>$info, 'msgs'=>$msgs];
+				$unotes[] = ['uname'=> $userid ? UsernotesHelper::getGroupTitle($userid) : '[ Site ]','name'=>'group','uid'=>'_'.$userid.'|'.$menuid, 'info'=>$info, 'msgs'=>$msgs];
 			}
 		}
 		$this->_total = count($unotes);

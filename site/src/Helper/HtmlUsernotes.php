@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.3
+* @since		1.5.5
 */
 namespace RJCreations\Component\Usernotes\Site\Helper;
 
@@ -134,6 +134,10 @@ abstract class HtmlUsernotes
 	public static function attActIcon ($id, $titl)
 	{
 		return '<a href="javascript:void(0);" title="'.$titl.'" class="act act-left" onclick="UNote.addAttach(event)">'.self::getIcon('aa').'</a>';
+	}
+	public static function ePubIcon ($id, $titl)
+	{
+		return '<a href="javascript:void(0);" title="'.$titl.'" class="act act-left" onclick="UNote.ePublish(event)">'.self::getIcon('epub').'</a>';
 	}
 	public static function delActIcon ($id, $titl)
 	{
@@ -298,7 +302,8 @@ EOD;
 				'abrt'=>['icon-times','fa fa-window-close'],
 				'clip'=>['icon-attach','fa fa-xs fa-paperclip'],
 				'lock'=>['icon-lock','fas fa-lock'],
-				'ulck'=>['icon-unlock','fas fa-unlock']
+				'ulck'=>['icon-unlock','fas fa-unlock'],
+				'epub'=>['','fa fa-newspaper-o']
 			];
 		}
 

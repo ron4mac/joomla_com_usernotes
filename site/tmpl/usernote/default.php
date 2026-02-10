@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.4
+* @since		1.5.5
 */
 defined('_JEXEC') or die;
 
@@ -15,6 +15,8 @@ use RJCreations\Component\Usernotes\Site\Helper\HtmlUsernotes;
 use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
 $userCanRate = UsernotesHelper::userCanRate();
+$qview = $this->dmode==QVUMODE;
+$prning = $this->dmode==PRNMODE;
 
 $this->jDoc->addScript('components/com_usernotes/static/js/upload5d.js', ['version' => 'auto']);
 //$this->jDoc->addScript('components/com_usernotes/static/js/rating.js', ['version' => 'auto']);
@@ -47,16 +49,16 @@ var uploadMaxFilesize = '.$this->maxUploadBytes.';
 
 $itemID = $this->item->itemID;
 
-$prning = ($this->state->get('task', 0) === 'printNote');
+//$prning = ($this->state->get('task', 0) === 'printNote');
 //echo'<xmp>';var_dump($prning,$this->state->get('task', 0));echo'</xmp>';
 if ($prning) echo '<button type="button" class="btn btn-primary" onclick="window.close();window.history.back();">'.Text::_('COM_USERNOTES_PRNDONE').'</button>';
 // if not printing, accommodate targeted breadcrumb module
-if (!$prning && !$this->qview) echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
+if ($this->dmode==NORMODE) echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 
 $ratings = $this->params->get('ratings', 0);
 $guestcom = $this->params->get('guest_comments', 0);
 
-if (RJC_DBUG && !$this->qview) echo '<div class="RJDBG">'.json_encode($this->instanceObj).'</div>';
+if (RJC_DBUG && !$this->dmode) echo '<div class="RJDBG">'.json_encode($this->instanceObj).'</div>';
 
 $bottoms = '';
 
@@ -115,7 +117,7 @@ if ($prning) $bottoms .= '
 ';
 
 // kludge for quick view to indicate attachments
-if ($this->qview && $this->attached) {
+if ($this->dmode==QVUMODE && $this->attached) {
 	// set a header to let the fetch know that there are attachments
 	$this->app->setHeader('Has-Att', 1, true);
 }
@@ -134,12 +136,12 @@ if ($this->qview && $this->attached) {
 		<h3><?php if ($this->item->secured) echo HtmlUsernotes::getIcon('ulck','seclock'); ?> <?=$this->item->title?></h3>
 		<div id="note"><?=$this->item->serial_content?></div>
 	</div>
-<?php if (!$this->qview): ?>
+<?php if (!$qview): ?>
 <?php if (!$prning): ?>
 	<div id="attachments">
-<?php if ($this->attached): ?>
+	<?php if ($this->attached): ?>
 		<?=HtmlUsernotes::att_list($this->attached,$this->item->contentID, ($this->access & ITM_CAN_EDIT+ITM_CAN_DELE))?>
-<?php endif; ?>
+	<?php endif; //attached?>
 	</div>
 	<div class="footer">
 		<?php
@@ -151,6 +153,7 @@ if ($this->qview && $this->attached) {
 			echo HtmlUsernotes::movActIcon($itemID,Text::_('COM_USERNOTES_MOVNOTE'));
 			echo HtmlUsernotes::toolActIcon($itemID,Text::_('COM_USERNOTES_SPCTOOL'));
 			echo HtmlUsernotes::toolInfoIcon($itemID,Text::_('COM_USERNOTES_NOTEINFO'));
+			echo HtmlUsernotes::ePubIcon($itemID,Text::_('COM_USERNOTES_EPUBLISH'));
 		}
 		if ($this->access & ITM_CAN_DELE) {
 			echo HtmlUsernotes::delActIcon($itemID,Text::_('COM_USERNOTES_DELNOTE'));
@@ -175,7 +178,7 @@ if ($this->qview && $this->attached) {
 			<li><a href="#" onclick="UNote.toolAct(event,'unfraction')" title="<?=Text::_('COM_USERNOTES_UNFRACT');?>"><?=Text::_('COM_USERNOTES_UNFRACT');?></a></li>
 		<?php if ($this->attached): ?>
 			<li><a href="#" onclick="UNote.toolAct(event,'deleteAttachments')" title="<?=Text::_('COM_USERNOTES_DELAATTS');?>" data-sure="<?=strtolower(Text::_('COM_USERNOTES_DELAATTS'));?>"><?=Text::_('COM_USERNOTES_DEL_ATTS');?></a></li>
-		<?php endif; ?>
+		<?php endif; //attached?>
 		</ul>
 	</div>
 	<div id="popRate" class="popRate" style="display:none">
@@ -185,8 +188,8 @@ if ($this->qview && $this->attached) {
 		<div class="popInfo"></div>
 		<button onclick="this.parentNode.close()">Close</button>
 	</dialog>
-	<?php endif; ?>
-<?php endif; //prning?>
+	<?php endif; //edit?>
+<?php endif; //!prning?>
 </div>
 <div style="display:none">
 <form name="actForm" action="<?=$this->aUrl('')?>" method="POST">
@@ -197,9 +200,9 @@ if ($this->qview && $this->attached) {
 </div>
 <?php if ($this->attached): ?>
 <iframe id="dnldf" style="display:none;"></iframe>
-<?php endif; ?>
+<?php endif; //attached?>
 <?php if ($bottoms) echo '<script>'.$bottoms.'</script>'; ?>
-<?php endif; //qview?>
+<?php endif; //!qview?>
 <?php if (true || $use_comments) {
 	echo LayoutHelper::render('comments', ['cancmnt'=>$cancmnt ?? true]);
 	if (true || $cancmnt) {

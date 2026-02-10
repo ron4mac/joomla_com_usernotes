@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.4.0
+* @since		1.5.5
 */
 namespace RJCreations\Component\Usernotes\Site\View\Usernote;
 
@@ -15,13 +15,19 @@ use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Usernotes\Site\View\ViewBase;
 use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
+define('NORMODE', 0);
+define('QVUMODE', 1);
+define('PRNMODE', 2);
+define('PUBMODE', 3);
+
 class HtmlView extends ViewBase
 {
 	protected $app;
 	protected $userid;
 	protected $state;
 	protected $params;
-	protected $qview;
+//	protected $qview;
+	protected $dmode = NORMODE;
 	protected $smallDevice = false;
 
 	// use alternate css
@@ -35,6 +41,11 @@ class HtmlView extends ViewBase
 		// Get model data.
 		$this->state = $this->get('State');
 		$this->item = $this->get('Item');
+
+		// flag if printing
+		if ($this->state->get('task', 0) === 'printNote') $this->dmode = PRNMODE;
+		// flag if e-publish
+		if ($this->app->input->get->getInt('nid',0)<0) $this->dmode = PUBMODE;
 
 		// Construct the breadcrumb
 		$this->buildPathway($this->item->itemID);
@@ -53,7 +64,8 @@ class HtmlView extends ViewBase
 			setcookie($cookn, $cookv, 0, '', '', true);
 		}
 
-		$this->qview = $this->app->input->post->get('qview',0,'integer');
+//		$this->qview = $this->app->input->post->get('qview',0,'integer');
+		if ($this->app->input->post->get('qview',0,'integer')) $this->dmode = QVUMODE;
 
 		// Check for errors.
 		// @TODO: Maybe this could go into ComponentHelper::raiseErrors($this->get('Errors'))
@@ -80,7 +92,7 @@ class HtmlView extends ViewBase
 
 		$this->_prepareDocument();
 
-		return parent::display($tpl);
+		return parent::display($this->dmode==PUBMODE?'epub':$tpl);
 	}
 
 }

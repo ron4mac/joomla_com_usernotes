@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.4
+* @since		1.5.5
 */
 namespace RJCreations\Component\Usernotes\Site\Model;
 
@@ -40,6 +40,8 @@ class UsernoteModel extends ItemModel
 	{
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState('usernote.id');
 
+		if ($pk < 0) $pk = $this->getPublish();
+
 		if ($this->_item === null) {
 			$this->_item = [];
 		}
@@ -59,7 +61,7 @@ class UsernoteModel extends ItemModel
 				$data = $db->loadObject();
 
 				if (empty($data)) {
-					throw new Exception(Text::_('COM_USERNOTES_ERROR_NOTE_NOT_FOUND'), 404);
+					throw new \Exception(Text::_('COM_USERNOTES_ERROR_NOTE_NOT_FOUND')." : $pk", 404);
 				} else {
 					if ($nm = @unserialize($data->serial_content)) {
 						$data->serial_content = $nm->rendered();
@@ -278,7 +280,7 @@ class UsernoteModel extends ItemModel
 					if ($gz) {	// gzip the file
 						$tmpf = $path.'/'.basename($uploadf);
 						if ($tmpf = $this->gzFile($uploadf, $tmpf.'.gz')) {
-							$cfs = filesize($tmpf);	// compredded file size
+							$cfs = filesize($tmpf);	// compressed file size
 							if ($cfs<$fsize) { // only if compressed is smaller
 								$fsize = $cfs;
 								$ucfs = filesize($uploadf);
@@ -496,6 +498,36 @@ class UsernoteModel extends ItemModel
 		return false;
 	}
 
+
+	public function setPublish ($nid)
+	{
+		try
+		{
+			$db = $this->getDbo();
+			$db->setQuery('PRAGMA  application_id='.$nid);
+			$db->execute();
+			return 'Published';
+		}
+		catch (Exception $e)
+		{
+			$this->setError($e);
+		}
+	}
+
+	public function getPublish ()
+	{
+		try
+		{
+			$db = $this->getDbo();
+			$db->setQuery('PRAGMA  application_id');
+			$pid = $db->loadResult();
+			return $pid;
+		}
+		catch (Exception $e)
+		{
+			$this->setError($e);
+		}
+	}
 
 	private function gzFile ($src, $dest)
 	{

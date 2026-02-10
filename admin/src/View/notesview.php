@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.4
+* @since		1.5.5
 */
 defined('_JEXEC') or die;
 
@@ -66,11 +66,6 @@ class UsernotesView extends BaseHtmlView
 			'index.php?option=com_usernotes&view=groupnotes',
 			$vName == 'group'
 		);
-//		JHtmlSidebar::addEntry(
-//			Text::_('COM_USERNOTES_SUBMENU_SITE'),
-//			'index.php?option=com_usernotes&view=site',
-//			$vName == 'site'
-//		);
 	}
 
 

@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.5
 */
 defined('_JEXEC') or die;
 
@@ -19,6 +19,7 @@ use Joomla\CMS\HTML\Registry;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
+use RJCreations\Component\Usernotes\Administrator\Extension\UsernotesComponent;
 
 return new class implements ServiceProviderInterface
 {
@@ -30,8 +31,9 @@ return new class implements ServiceProviderInterface
 				ComponentInterface::class,
 				function (Container $container)
 				{
-					$component = new MVCComponent($container->get(ComponentDispatcherFactoryInterface::class));
+					$component = new UsernotesComponent($container->get(ComponentDispatcherFactoryInterface::class));
 					$component->setMVCFactory($container->get(MVCFactoryInterface::class));
+					$component->setRegistry($container->get(Registry::class));
 					return $component;
 		}
 		);
