@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.5.6
 */
 namespace RJCreations\Component\Usernotes\Site\Helper;
 
@@ -296,6 +296,7 @@ EOD;
 				'inf'=>['icon-info-2','fa fa-info-circle'],
 				'cm'=>['icon-comment','far fa-comment'],
 				'cmm'=>['icon-comments-2','fas fa-comments'],
+				'cmms'=>['icon-comments-2','far fa-xs fa-comments'],
 				'cmmm'=>['icon-comments-2','far fa-comments'],
 				'dl'=>['icon-download','fa fa-download'],
 				'xdel'=>['icon-remove','far fa-times-circle'],

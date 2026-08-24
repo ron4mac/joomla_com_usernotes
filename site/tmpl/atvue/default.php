@@ -3,12 +3,13 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.4
+* @since		1.5.6
 */
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Language\Text;
+use RJCreations\Component\Usernotes\Site\Helper\FileEncrypt;
 
 if (file_exists($this->fpath)) {
 	if ($this->down) {
@@ -29,7 +30,7 @@ if (file_exists($this->fpath)) {
 	}
 	if ($this->isecure) {
 		$ucfs = $this->attProps->ucfs;
-		\UserNotesFileEncrypt::output($this->key, $this->fpath, !is_null($ucfs));
+		FileEncrypt::output($this->key, $this->fpath, !is_null($ucfs));
 		flush();
 	} else {
 		if ($this->attProps->ucfs) {

@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.5.6
 */
 defined('_JEXEC') or die;
 
@@ -14,13 +14,9 @@ use Joomla\CMS\Layout\LayoutHelper;
 use RJCreations\Component\Usernotes\Site\Helper\HtmlUsernotes;
 use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
-$userCanRate = UsernotesHelper::userCanRate();
 $qview = $this->dmode==QVUMODE;
 $prning = $this->dmode==PRNMODE;
 
-$this->jDoc->addScript('components/com_usernotes/static/js/upload5d.js', ['version' => 'auto']);
-//$this->jDoc->addScript('components/com_usernotes/static/js/rating.js', ['version' => 'auto']);
-if ($userCanRate) $this->jDoc->addScript('components/com_usernotes/static/js/rater1.js', ['version' => 'auto']);
 $jslang = [
 	'ru_sure' => Text::_('COM_USERNOTES_RU_SURE'),
 	'fsz2big' => Text::_('COM_USERNOTES_FSZ2BIG'),
@@ -56,7 +52,7 @@ if ($prning) echo '<button type="button" class="btn btn-primary" onclick="window
 if ($this->dmode==NORMODE) echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 
 $ratings = $this->params->get('ratings', 0);
-$guestcom = $this->params->get('guest_comments', 0);
+$pubcmnt = $this->params->get('pubcmnt', 0);
 
 if (RJC_DBUG && !$this->dmode) echo '<div class="RJDBG">'.json_encode($this->instanceObj).'</div>';
 
@@ -69,7 +65,7 @@ if (!$prning && $ratings) {
 //	let r = UNote.hoistRating(rating);
 //	UNote.robj = r;
 	';
-	if ($userCanRate) {
+	if ($this->userCanRate) {
 		$bottoms .= '
 	//	rating.addEventListener("rate", UNote.rateEvt);
 		let popr = _Id("popRate");	console.log(popr);
@@ -116,18 +112,24 @@ if ($prning) $bottoms .= '
 }());
 ';
 
-// kludge for quick view to indicate attachments
-if ($this->dmode==QVUMODE && $this->attached) {
-	// set a header to let the fetch know that there are attachments
-	$this->app->setHeader('Has-Att', 1, true);
+// kludge for quick view to indicate attachments and/or comments
+if ($this->dmode==QVUMODE) {
+	if ($this->attached) {
+		// set a header to let the fetch know that there are attachments
+		$this->app->setHeader('Has-Att', 1, true);
+	}
+	if ($this->comments) {
+		// set a header to let the fetch know that there are attachments
+		$this->app->setHeader('Has-Cmnt', 1, true);
+	}
 }
 ?>
 <div id="container">
-	<?php if ($userCanRate) echo LayoutHelper::render('rater1'); ?>
+	<?php if ($this->userCanRate) echo LayoutHelper::render('rater1'); ?>
 	<div id="body">
 		<?php if($ratings): ?>
 		<div class="rated"><span id="numrats">(<?=$this->item->vcount?>)</span></div>
-		<?php if ($userCanRate): ?>
+		<?php if ($this->userCanRate): ?>
 		<div id="ratep" class="rated active" onclick="UNote.popRate()"><?=HtmlUsernotes::itemStars($this->item)?></div>
 		<?php else: ?>
 		<div class="rated"><?=HtmlUsernotes::itemStars($this->item)?></div>
@@ -146,7 +148,10 @@ if ($this->dmode==QVUMODE && $this->attached) {
 	<div class="footer">
 		<?php
 			echo HtmlUsernotes::prnActIcon($itemID,Text::_('COM_USERNOTES_PRNNOTE'));
-			if ($guestcom || $this->item->cmntcnt || $this->access & ITM_CAN_COMMENT) echo HtmlUsernotes::cmntActIcon($itemID,Text::_('COM_USERNOTES_CMNTNOTE'.($this->item->cmntcnt?'S':'')),$this->item->cmntcnt);
+			if ($this->access & ITM_CAN_COMMENT || $this->item->cmntcnt) {
+				echo HtmlUsernotes::cmntActIcon($itemID,Text::_('COM_USERNOTES_CMNTNOTE'.($this->item->cmntcnt?'S':'')),$this->item->cmntcnt);
+			}
+		//	if ($pubcmnt || $this->item->cmntcnt || $this->access & ITM_CAN_COMMENT) echo HtmlUsernotes::cmntActIcon($itemID,Text::_('COM_USERNOTES_CMNTNOTE'.($this->item->cmntcnt?'S':'')),$this->item->cmntcnt);
 		if ($this->access & ITM_CAN_EDIT) {
 			echo HtmlUsernotes::edtActIcon($itemID,Text::_('COM_USERNOTES_EDTNOTE'));
 			echo HtmlUsernotes::attActIcon($itemID,Text::_('COM_USERNOTES_ADDATCH'));
@@ -206,6 +211,6 @@ if ($this->dmode==QVUMODE && $this->attached) {
 <?php if (true || $use_comments) {
 	echo LayoutHelper::render('comments', ['cancmnt'=>$cancmnt ?? true]);
 	if (true || $cancmnt) {
-		echo LayoutHelper::render('comment',['userid'=>$this->userid,'view'=>$this]);
+		echo LayoutHelper::render('comment',['userid'=>$this->userID,'view'=>$this]);
 	}
 }

@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.5.6
 */
 namespace RJCreations\Component\Usernotes\Site\Model;
 
@@ -16,9 +16,8 @@ use Joomla\Database\DatabaseDriver;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\Model\ItemModel;
 use RJCreations\Library\RJUserCom;
+use RJCreations\Component\Usernotes\Site\Helper\FileEncrypt;
 use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
-
-\JLoader::register('UserNotesFileEncrypt', JPATH_COMPONENT.'/classes/file_encrypt.php');
 
 class UsernoteModel extends ItemModel
 {
@@ -291,7 +290,7 @@ class UsernoteModel extends ItemModel
 					}
 					// encrypt it into position or just "move" it there
 					if ($key) {
-						\UserNotesFileEncrypt::save($key, $uploadf, $dest);
+						FileEncrypt::save($key, $uploadf, $dest);
 						$fsize = filesize($dest);	// encrypting adds 16 bytes 
 						unlink($uploadf);
 					} else {

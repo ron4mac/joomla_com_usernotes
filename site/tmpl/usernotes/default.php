@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.4
+* @since		1.5.6
 */
 defined('_JEXEC') or die;
 
@@ -26,7 +26,8 @@ $jsvars = [
 	'aBaseURL' => $this->aUrl('format=raw'),
 ];
 $jsicns = [
-	'clip' => HtmlUsernotes::getIcon('clip')
+	'clip' => HtmlUsernotes::getIcon('clip'),
+	'cmnt' => HtmlUsernotes::getIcon('cmms')
 ];
 $this->jDoc->addScriptDeclaration('UNote.L = '.json_encode($jslang).';
 UNote.V = '.json_encode($jsvars).';

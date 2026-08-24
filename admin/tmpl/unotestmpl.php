@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.5.6
 */
 defined('_JEXEC') or die;
 
@@ -14,10 +14,12 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Component\ComponentHelper;
 use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
+$wa = $this->getDocument()->getWebAssetManager();
+$wa->useStyle('com_usernotes.css.admin')
+	->useScript('multiselect');
+
 // Include the component HTML helpers.
-HTMLHelper::addIncludePath(JPATH_COMPONENT.'/helpers/html');
-//HTMLHelper::_('behavior.tooltip');
-HTMLHelper::_('behavior.multiselect');
+//HTMLHelper::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 
 $listOrder	= $this->state('list.ordering');
 $listDirn	= $this->state('list.direction');

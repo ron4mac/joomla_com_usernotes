@@ -1,15 +1,17 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.1
+* @since		1.5.6
 */
+namespace RJCreations\Component\Usernotes\Site\Helper;
+
 defined('_JEXEC') or die;
 
 define('FILE_ENCRYPTION_BLOCKS', 32768);
 
-abstract class UserNotesFileEncrypt
+abstract class FileEncrypt
 {
 	const METHOD = 'aes-256-ctr';
 

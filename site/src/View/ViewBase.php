@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.6
 */
 namespace RJCreations\Component\Usernotes\Site\View;
 
@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Component\ComponentHelper;
 use RJCreations\Library\RJUserCom;
 
 define('ITM_CAN_EDIT', 1);
@@ -23,12 +24,13 @@ define('IS_SMALL_DEVICE', 0);
 
 class ViewBase extends HtmlView
 {
-//	protected $userID;
+	protected $userID;
 //	protected $notesID;
 	protected $access = 0;
 	protected $item;
 	protected $footMsg;
 	protected $attached;
+	protected $comments;
 
 	protected $instanceObj;
 //	protected $instance;
@@ -42,25 +44,37 @@ class ViewBase extends HtmlView
 	public function __construct ($config = [])
 	{
 		parent::__construct($config);
+		if (empty($this->app)) $this->app = Factory::getApplication();
 		$this->instanceObj = RJUserCom::getInstObject();
-//		$this->userID = $this->instanceObj->uid;
+		$this->userID = $this->instanceObj->uid;
 		if (empty($this->menuid)) {
 			$this->menuid = $this->instanceObj->menuid;
 		}
 //		$this->instance = Factory::getApplication()->getUserState('com_usernotes.instance', '::');
 		$this->jDoc = Factory::getDocument();
+
+if ($this->jDoc->getType() === 'html') {
+
+		// get the web asset manager
+		$wa = $this->jDoc->getWebAssetManager();
+
 		// get css's for subclasses
 		if (!is_array($this->usecss)) $this->usecss = [$this->usecss];
 		foreach ($this->usecss as $css) {
-			HTMLHelper::stylesheet('components/com_usernotes/static/css/'.$css.'.css', ['version' => 'auto']);
+			$wa->useStyle('com_usernotes.css.'.$css);
 		}
-		if ((int)JVERSION<4) HTMLHelper::stylesheet('components/com_usernotes/static/css/legacy.css', ['version' => 'auto']);
+
 		// get js's ... jQuery required for now
 //		HTMLHelper::_('jquery.framework', false);
 		if (!is_array($this->usejs)) $this->usejs = [$this->usejs];
 		foreach ($this->usejs as $js) {
-			$this->jDoc->addScript('components/com_usernotes/static/js/'.$js.'.js', ['version' => 'auto']);
+			$wa->useScript('com_usernotes.'.$js);
 		}
+}
+		// Get the component parameters
+		$this->cparams = ComponentHelper::getParams('com_usernotes');		//echo'<xmp>';var_dump($this->cparams);echo'</xmp>';
+		// and the menu instance parameters
+		$this->mparams = $this->app->getParams();		//echo'<xmp>';var_dump($this->mparams);echo'</xmp>';
 	}
 
 	// return an action url for use (mostly) with ajax/javascript
@@ -73,7 +87,7 @@ class ViewBase extends HtmlView
 	protected function buildPathway ($to)
 	{
 		$db = $this->getModel()->getDbo();
-		$pw = Factory::getApplication()->getPathway();
+		$pw = $this->app->getPathway();
 		$crums = [];
 		while ($to) {
 			$db->setQuery('SELECT title,parentID,secured FROM notes WHERE itemID='.$to);
@@ -98,7 +112,7 @@ class ViewBase extends HtmlView
 				if ($this->item && $this->item->checked_out && $this->item->checked_out != $this->instanceObj->uid) {
 					$this->footMsg = 'Checked out by '.Factory::getUser($this->item->checked_out)->get('username').'.';
 				} else {
-					$this->access = 15;
+					$this->access = ITM_CAN_EDIT + ITM_CAN_DELE + ITM_CAN_CREA;	// + ITM_CAN_COMMENT;
 				}
 			}
 		}
@@ -107,12 +121,15 @@ class ViewBase extends HtmlView
 			if (isset($this->item->attached)) {
 				$this->attached = $this->item->attached;
 			}
+			if (isset($this->item->cmntcnt)) {
+				$this->comments = $this->item->cmntcnt;
+			}
 		}
 	}
 
 	protected function nqMessage ($msg, $svrty)
 	{
-		Factory::getApplication()->enqueueMessage($msg, $svrty);
+		$this->app->enqueueMessage($msg, $svrty);
 	}
 
 }

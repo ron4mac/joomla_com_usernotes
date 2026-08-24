@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.6
 */
 defined('_JEXEC') or die;
 
@@ -19,7 +19,8 @@ $jslang = [
 		'ru_sure' => Text::_('COM_USERNOTES_RU_SURE')
 	];
 $jsicns = [
-	'clip' => HtmlUsernotes::getIcon('clip')
+	'clip' => HtmlUsernotes::getIcon('clip'),
+	'cmnt' => HtmlUsernotes::getIcon('cmms')
 ];
 $this->jDoc->addScriptDeclaration('UNote.L = '.json_encode($jslang).';
 UNote.I = '.json_encode($jsicns).';
@@ -29,6 +30,8 @@ UNote.I = '.json_encode($jsicns).';
 echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 // display the search field
 HtmlUsernotes::searchField(!empty($this->parentID) ? $this->parentID : 0, $this->sterm);
+
+$ratings = $this->mparams->get('ratings', false);
 
 Bootstrap::modal('#qview-modal');
 ?>
@@ -40,7 +43,7 @@ Bootstrap::modal('#qview-modal');
 	<div id="itemsList">
 	<?php
 	foreach($this->items as $item) {
-		echo '<div class="item">'. HtmlUsernotes::itemQview($item, true).'</div>';
+		echo '<div class="item">'. HtmlUsernotes::itemQview($item, $ratings).'</div>';
 	}
 	?>
 	</div>

@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
-use Joomla\CMS\Component\ComponentHelper;
+//use Joomla\CMS\Component\ComponentHelper;
 use RJCreations\Component\Usernotes\Site\View\ViewBase;
 use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
@@ -50,9 +50,9 @@ class HtmlView extends ViewBase
 		}
 
 		// Get the component parameters
-		$this->cparams = ComponentHelper::getParams('com_usernotes');		//echo'<xmp>';var_dump($this->cparams);echo'</xmp>';
+//		$this->cparams = ComponentHelper::getParams('com_usernotes');		//echo'<xmp>';var_dump($this->cparams);echo'</xmp>';
 		// and the menu instance parameters
-		$this->mparams = $app->getParams();		//echo'<xmp>';var_dump($this->mparams);echo'</xmp>';
+//		$this->mparams = $app->getParams();		//echo'<xmp>';var_dump($this->mparams);echo'</xmp>';
 		
 
 		$this->_prepareDocument();

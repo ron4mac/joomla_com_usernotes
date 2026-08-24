@@ -2,7 +2,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.5.6
 */
 'use strict';
 
@@ -333,14 +333,17 @@
 		dlg.open ? dlg.open() : jQuery(dlg).modal('show');
 		let parms = new URLSearchParams('qview=1');
 		let hAtt = null;
+		let hCmnt = null;
 		fetch(nlnk+'&format=raw', {method:'POST',body:parms})
 		.then(resp => {
 			if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 			hAtt = resp.headers.get('Has-Att');
+			hCmnt = resp.headers.get('Has-Cmnt');
 			return resp.text() }
 		)
 		.then(data => {
 				if (hAtt) dttl.innerHTML += ' '+UNote.I.clip;
+				if (hCmnt) dttl.innerHTML += ' '+UNote.I.cmnt;
 				_Id('qviewdata').innerHTML = data;
 			}
 		)

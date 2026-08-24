@@ -3,25 +3,29 @@
 <extension type="component" method="upgrade">
 	<name>com_usernotes</name>
 	<author>Ron Crans</author>
-	<creationDate>February 2026</creationDate>
+	<creationDate>August 2026</creationDate>
 	<copyright>(C) 2015-2026 RJCreations. All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@jrjconline.net</authorEmail>
 	<authorUrl>rjconline.net</authorUrl>
-	<version>1.5.5</version>
+	<version>1.5.6</version>
 	<updater jver="(4\.[0-9])||(5\.[0-1])" pver="8.0" />
 	<description>COM_USERNOTES_XML_DESCRIPTION</description>
 	<namespace path="src">RJCreations\Component\Usernotes</namespace>
 	<scriptfile>script.php</scriptfile>
 	<files folder="site">
-		<folder>classes</folder>
 		<folder>forms</folder>
 		<folder>language</folder>
 		<folder>layouts</folder>
 		<folder>src</folder>
-		<folder>static</folder>
 		<folder>tmpl</folder>
 	</files>
+	<media destination="com_usernotes" folder="media">
+		<filename>joomla.asset.json</filename>
+		<folder>css</folder>
+		<folder>imgs</folder>
+		<folder>js</folder>
+	</media>
 	<administration>
 		<menu img="class:usernotes">com_usernotes</menu>
 		<submenu>
@@ -31,13 +35,11 @@
 		<files folder="admin">
 			<filename>access.xml</filename>
 			<filename>config.xml</filename>
-			<folder>helpers</folder>
 			<folder>forms</folder>
 			<folder>language</folder>
 			<folder>services</folder>
 			<folder>sql</folder>
 			<folder>src</folder>
-			<folder>static</folder>
 			<folder>tmpl</folder>
 		</files>
 	</administration>

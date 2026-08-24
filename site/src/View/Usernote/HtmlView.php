@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.5.6
 */
 namespace RJCreations\Component\Usernotes\Site\View\Usernote;
 
@@ -23,20 +23,27 @@ define('PUBMODE', 3);
 class HtmlView extends ViewBase
 {
 	protected $app;
-	protected $userid;
 	protected $state;
 	protected $params;
-//	protected $qview;
 	protected $dmode = NORMODE;
-	protected $smallDevice = false;
 
+	protected $userCanRate;
 	// use alternate css
 	protected $usecss = ['unotes','unote'];
+	protected $usejs = [];
+	protected $epub = '';
+
+	public function __construct ($config = [])
+	{
+		$this->userCanRate = UsernotesHelper::userCanRate();
+		if ($this->userCanRate) $this->usejs[] = 'rater1';
+		$this->usejs[] = 'upload5d';
+		parent::__construct($config);
+	}
 
 	public function display ($tpl = null)
 	{
 		$this->app = Factory::getApplication();
-		$this->userid = Factory::getUser()->id;
 
 		// Get model data.
 		$this->state = $this->get('State');
@@ -45,7 +52,10 @@ class HtmlView extends ViewBase
 		// flag if printing
 		if ($this->state->get('task', 0) === 'printNote') $this->dmode = PRNMODE;
 		// flag if e-publish
-		if ($this->app->input->get->getInt('nid',0)<0) $this->dmode = PUBMODE;
+		if ($this->app->input->get->getInt('nid',0)<0) {
+			$this->dmode = PUBMODE;
+			$this->epub = $this->app->input->get->getString('d','')=='X'?'epubx':'epub';
+		}
 
 		// Construct the breadcrumb
 		$this->buildPathway($this->item->itemID);
@@ -64,7 +74,6 @@ class HtmlView extends ViewBase
 			setcookie($cookn, $cookv, 0, '', '', true);
 		}
 
-//		$this->qview = $this->app->input->post->get('qview',0,'integer');
 		if ($this->app->input->post->get('qview',0,'integer')) $this->dmode = QVUMODE;
 
 		// Check for errors.
@@ -92,7 +101,7 @@ class HtmlView extends ViewBase
 
 		$this->_prepareDocument();
 
-		return parent::display($this->dmode==PUBMODE?'epub':$tpl);
+		return parent::display($this->epub?:$tpl);
 	}
 
 }

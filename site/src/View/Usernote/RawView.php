@@ -15,6 +15,8 @@ require_once 'HtmlView.php';
 
 class RawView extends HtmlView
 {
+	protected $usecss = [];
+
 	public function display ($tpl = null)
 	{
 		return parent::display($tpl);

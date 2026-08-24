@@ -1,0 +1,70 @@
+{
+  "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+  "name": "com_usernotes",
+  "version": "1.5.6",
+  "description": "User Notes",
+  "license": "GPL-3.0+",
+  "assets": [
+    {
+      "name": "com_usernotes.css.admin",
+      "type": "style",
+      "uri": "com_usernotes/admin.css"
+    },
+    {
+      "name": "com_usernotes.css.usernotes",
+      "type": "style",
+      "uri": "com_usernotes/usernotes.css"
+    },
+    {
+      "name": "com_usernotes.css.unotes",
+      "type": "style",
+      "uri": "com_usernotes/unotes.css"
+    },
+    {
+      "name": "com_usernotes.css.unote",
+      "type": "style",
+      "uri": "com_usernotes/unote.css"
+    },
+    {
+      "name": "com_usernotes.usernotes.min",
+      "type": "script",
+      "uri": "com_usernotes/usernotes.min.js"
+    },
+    {
+      "name": "com_usernotes.usernotes",
+      "type": "script",
+      "uri": "com_usernotes/usernotes.js"
+    },
+    {
+      "name": "com_usernotes.upload5d.min",
+      "type": "script",
+      "uri": "com_usernotes/upload5d.min.js"
+    },
+    {
+      "name": "com_usernotes.upload5d",
+      "type": "script",
+      "uri": "com_usernotes/upload5d.js",
+      "dependencies": [
+        "com_usernotes.usernotes"
+      ]
+    },
+    {
+      "name": "com_usernotes.rating.min",
+      "type": "script",
+      "uri": "com_usernotes/rating.min.js"
+    },
+    {
+      "name": "com_usernotes.rating",
+      "type": "script",
+      "uri": "com_usernotes/rating.js"
+    },
+    {
+      "name": "com_usernotes.rater1",
+      "type": "script",
+      "uri": "com_usernotes/rater1.js",
+      "dependencies": [
+        "com_usernotes.usernotes"
+      ]
+    }
+  ]
+}

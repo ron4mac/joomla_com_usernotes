@@ -65,7 +65,7 @@ div.search .fa {
 	background-position-y: -2px;
 }
 #itemsList .cmnticn {
-	font-size: smaller;
+	/*font-size: smaller;*/
 	padding-top: .2rem;
 	color: blue;
 }

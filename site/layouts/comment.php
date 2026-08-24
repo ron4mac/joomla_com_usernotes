@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.6
 */
 defined('JPATH_BASE') or die;
 
@@ -13,13 +13,6 @@ use Joomla\CMS\Session\Session;
 use RJCreations\Component\Usernotes\Site\Helper\M34C;
 
 extract($displayData);	//userid,view
-
-//if ((int)JVERSION<4) {
-//	HTMLHelper::_('behavior.formvalidator');
-//} else {
-//	$wa = $view->document->getWebAssetManager();
-//	$wa->useScript('keepalive')->useScript('form.validate');
-//}
 
 $nextra = $userid ? '<input type="hidden" name="name" value="?" />' : '<br><label>Name <input type="text" name="name" value="" onkeyup="UNote.watchcmnt()" /></label>';
 

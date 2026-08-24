@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.1
+* @since		1.5.6
 */
 namespace RJCreations\Component\Usernotes\Site\Model;
 
@@ -14,8 +14,6 @@ use Joomla\CMS\Language\Text;
 use Joomla\Database\DatabaseDriver;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use RJCreations\Library\RJUserCom;
-
-\JLoader::register('UserNotesFileEncrypt', JPATH_COMPONENT.'/classes/file_encrypt.php');
 
 class AtvueModel extends BaseDatabaseModel
 {

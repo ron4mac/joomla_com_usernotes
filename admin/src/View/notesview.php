@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.5.6
 */
 defined('_JEXEC') or die;
 
@@ -27,10 +27,8 @@ class UsernotesView extends BaseHtmlView
 	/**
 	 * Display the view
 	 */
-	public function display($tpl = null)
+	public function display ($tpl = null)
 	{
-		HTMLHelper::stylesheet('administrator/components/com_usernotes/static/usernotes.css', ['version' => 'auto']);
-
 		$this->items = $this->get('Items');
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');	//var_dump($this->state);

@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.6
 */
 namespace RJCreations\Component\Usernotes\Site\View\Atvue;
 
@@ -11,9 +11,8 @@ defined('_JEXEC') or die('Restricted access');
  
 use Joomla\CMS\Factory;
 use RJCreations\Library\RJUserCom;
+use RJCreations\Component\Usernotes\Site\Helper\FileEncrypt;
 use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
-
-//\JLoader::register('UserNotesFileEncrypt', JPATH_COMPONENT.'/classes/file_encrypt.php');
 
 class HtmlView extends \Joomla\CMS\MVC\View\HtmlView
 {
@@ -49,7 +48,7 @@ class HtmlView extends \Joomla\CMS\MVC\View\HtmlView
 
 		$this->attProps = $m->atFileProps($cat[1],$cat[2]);
 		// resolve actual file size
-		$this->fsize = $this->attProps->ucfs ?: $this->attProps->fsize - ($this->isecure ? 	\UserNotesFileEncrypt::fsOverhead() : 0);
+		$this->fsize = $this->attProps->ucfs ?: $this->attProps->fsize - ($this->isecure ? 	FileEncrypt::fsOverhead() : 0);
 
 		return parent::display($tpl);
 	}

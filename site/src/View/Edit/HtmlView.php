@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.1
+* @since		1.5.6
 */
 namespace RJCreations\Component\Usernotes\Site\View\Edit;
 
@@ -33,17 +33,18 @@ class HtmlView extends ViewBase
 
 	public function display ($tpl = null)
 	{
-		$app  = Factory::getApplication();
+		$app = Factory::getApplication();
+		$input = $app->input;
 
 		// Get view related request variables.
-		$this->type = $app->input->get('type','','cmd');
-		$this->pid = $app->input->get('pid',0,'int');
+		$this->type = $input->get('type','','cmd');
+		$this->pid = $input->get('pid',0,'int');
 
 		// Get model data.
 		$m = $this->getModel();
 		$this->state = $this->get('State');
 		$this->isecure = $m->itemIsSecure($this->pid);
-		$item = $m->getItem($app->input->get('nid',0,'int'));
+		$item = $m->getItem($input->get('nid',0,'int'));
 
 		// Construct the breadcrumb
 		$this->buildPathway($item ? $item->itemID : $this->pid);
@@ -52,11 +53,11 @@ class HtmlView extends ViewBase
 			$item->title = base64_decode($item->title);
 			if ($item->contentID) {
 				$cookn = UsernotesHelper::hashCookieName(RJUserCom::getInstObject(), $item->itemID, $item->contentID);
-				$cookv = $app->input->cookie->getBase64($cookn);
+				$cookv = $input->cookie->getBase64($cookn);
 				if ($cookv) {
 					setcookie($cookn, '', time() - 3600);
 					$item->ephrase = UsernotesHelper::doCrypt($item->itemID.'-@:'.$item->contentID, $cookv, true);
-				} elseif ($ephrase = $app->input->post->get('ephrase','','string')) {
+				} elseif ($ephrase = $input->post->get('ephrase','','string')) {
 					$item->ephrase = $ephrase;
 				} else {
 					$this->item = $item;
