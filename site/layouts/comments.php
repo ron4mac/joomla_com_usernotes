@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.6.0
 */
 defined('JPATH_BASE') or die;
 
@@ -20,10 +20,10 @@ $addbutton = $cancmnt
 echo HTMLHelper::_(
 	'bootstrap.renderModal',
 	'comments-modal', // selector
-	array( // options
+	[ // options
 		'title'  => Text::_('COM_USERNOTES_COMMENTS_TITLE'),
 		'footer' => '<button type="button" class="btn btn-secondary" '.M34C::bs('dismiss').'="modal">Close</button>' . $addbutton,
 		//'modalWidth' => 30
-	),
+	],
 	'<div class="comments"></div>'
 );

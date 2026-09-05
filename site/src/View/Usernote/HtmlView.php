@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.6
+* @since		1.6.0
 */
 namespace RJCreations\Component\Usernotes\Site\View\Usernote;
 
@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Component\ComponentHelper;
 use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Usernotes\Site\View\ViewBase;
+use RJCreations\Component\Usernotes\Site\Model\UsernoteModel;
 use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
 define('NORMODE', 0);
@@ -22,6 +23,10 @@ define('PUBMODE', 3);
 
 class HtmlView extends ViewBase
 {
+	public $form;
+	public $maxUploadBytes;
+	public $pageclass_sfx;
+
 	protected $app;
 	protected $state;
 	protected $params;
@@ -43,11 +48,13 @@ class HtmlView extends ViewBase
 
 	public function display ($tpl = null)
 	{
+		$m = $this->getModel();
+
 		$this->app = Factory::getApplication();
 
 		// Get model data.
-		$this->state = $this->get('State');
-		$this->item = $this->get('Item');
+		$this->state = $m->getState();
+		$this->item = $m->getItem();
 
 		// flag if printing
 		if ($this->state->get('task', 0) === 'printNote') $this->dmode = PRNMODE;
@@ -61,7 +68,7 @@ class HtmlView extends ViewBase
 		$this->buildPathway($this->item->itemID);
 
 		if ($this->item->secured && !$this->app->input->post->get('ephrase','','string')) {
-			$this->form = $this->get('Form');
+			$this->form = $m->getForm();
 			$this->_prepareDocument(true);
 			return parent::display('ephrase');
 		}
@@ -71,16 +78,15 @@ class HtmlView extends ViewBase
 			$ephrase = $this->app->input->post->get('ephrase','','string');
 			$this->item->serial_content = UsernotesHelper::doCrypt($ephrase, $this->item->serial_content, true, $this->item->secured);
 			$cookv = UsernotesHelper::doCrypt($this->item->itemID.'-@:'.$this->item->contentID, $ephrase);
-			setcookie($cookn, $cookv, 0, '', '', true);
+			setcookie($cookn, $cookv, ['expires' => 0, 'path' => '', 'domain' => '', 'secure' => true]);
 		}
 
 		if ($this->app->input->post->get('qview',0,'integer')) $this->dmode = QVUMODE;
 
 		// Check for errors.
 		// @TODO: Maybe this could go into ComponentHelper::raiseErrors($this->get('Errors'))
-		if (count($errors = $this->get('Errors'))) {
+		if (count($errors = $m->getErrors())) {
 			throw new Exception(implode("\n", $errors), 500);
-			return false;
 		}
 
 		// Get the component parameters

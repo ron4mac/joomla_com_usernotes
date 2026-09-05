@@ -3,11 +3,12 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.6.0
 */
+/** @var \RJCreations\Component\Usernotes\Site\View\Usernote\HtmlView $this */
 defined('_JEXEC') or die;
 
-function sendParts ($html)
+function sendParts ($html): string
 {
 	// Suppress potential HTML parsing errors for malformed HTML
 	libxml_use_internal_errors(TRUE); 
@@ -18,12 +19,8 @@ function sendParts ($html)
 	// Clear errors to avoid memory issues
 	libxml_clear_errors(); 
 
-	// get title element
-	$title = $dom->getElementsByTagName('h3')[0];
-//	echo "<h3>{$title->textContent}</h3>";
 	$note = $dom->getElementById('note');
-//	echo '<div class="newspaper">'.$dom->saveHTML($note).'</div>';	//$note->textContent;
-	$n = $dom->saveHTML($note);	//$note->textContent;
+	$n = $dom->saveHTML($note);
 			while (str_ends_with($n,'<br>')) { $n = substr($c, 0, -4); };
 			while (str_starts_with($n,'<br>')) { $n = substr($c, 4); };
 	file_put_contents('htm.txt', $n);
@@ -38,7 +35,7 @@ function sendParts ($html)
 		}
 		$n .= '</div>';
 	} else {$n .= '@@NOPE@@';}
-	return /*"<h3>{$title->textContent}</h3>".*/$n;
+	return $n;
 }
 
 $cntnt = $this->item->serial_content;

@@ -10,7 +10,7 @@
 	</fields>
 
 	<!-- Add fields to the parameters object for the layout. -->
-	<fields name="params">
+	<fields name="params" addfieldprefix="RJCreations\Library\Fields">
 
 		<fieldset name="request">
 
@@ -37,15 +37,15 @@
 
 			<field
 				name="group_admin"
-				type="usergrouplist"
+				type="OptGroupList"
 				multiple="multiple"
-				label="COM_MEEDYA_FIELD_AGROUP_LABEL"
-				description="COM_MEEDYA_FIELD_AGROUP_DESC"
+				label="COM_USERNOTES_FIELD_AGROUP_LABEL"
+				description="COM_USERNOTES_FIELD_AGROUP_DESC"
 				default=""
 				showon="instance_type:1" />
 
 			<field name="site_admin"
-				type="usergrouplist"
+				type="OptGroupList"
 				multiple="true"
 				label="COM_USERNOTES_CONFIG_SITE_AUTH_LABEL"
 				description="COM_USERNOTES_CONFIG_SITE_AUTH_DESC"
@@ -67,7 +67,7 @@
 		</fieldset>
 
 		<!-- Basic options. -->
-		<fieldset name="basic" label="COM_USERNOTES_MENU_FIELDSET_OPTIONS_LABEL" addfieldpath="/libraries/rjuser/fields">
+		<fieldset name="basic" label="COM_USERNOTES_MENU_FIELDSET_OPTIONS_LABEL">
 
 			<field name="storQuota" type="GmkbValue"
 				label="COM_USERNOTES_CONFIG_QUOTA_LABEL"

@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.6
+* @since		1.6.0
 */
 namespace RJCreations\Component\Usernotes\Site\Helper;
 
@@ -17,7 +17,7 @@ use RJCreations\Component\Usernotes\Site\Helper\M34C;
 
 abstract class HtmlUsernotes
 {
-	protected static $instanceObj = null;
+	protected static $instanceObj;
 
 	public static function setInstance (Object $obj)
 	{
@@ -68,13 +68,6 @@ abstract class HtmlUsernotes
 		if (isset($item->lPath)) $attrs['title'] = $item->lPath;
 	//	return '<div class="itml '.$iclass.($item->secured?' isecure':'').'"><button class="link2" data-href="'.self::aiUrl($param.$item->itemID).'">'.$ttl.'</button></div>'.$strate;
 		return '<div class="itml '.$iclass.($item->secured?' isecure':'').'" data-href="'.self::aiUrl($param.$item->itemID).'"><button class="link2">'.$ttl.'</button></div>'.$strate;
-
-		return HTMLHelper::link(
-				self::aiUrl($param.$item->itemID),
-				'<div class="itml '.($item->isParent?'foldm':'docum').($item->secured?' isecure':'').'">'.htmlspecialchars($ttl).'</div>',
-			//	htmlspecialchars($ttl),
-				$attrs
-			) . $strate;
 	}
 	public static function itemQview ($item, $ratings=false)
 	{
@@ -102,7 +95,7 @@ abstract class HtmlUsernotes
 	}
 	public static function cmntActIcon ($id, $titl, $has=0, $upd=false)
 	{
-		list($icnv,$xclass,$task) = $has ? ['cmm',' hasem','cmntDisp'] : ['cm','','cmntNote'];
+		[$icnv, $xclass, $task] = $has ? ['cmm',' hasem','cmntDisp'] : ['cm','','cmntNote'];
 		$icon = self::getIcon($icnv,'large-icon'.$xclass);
 		if ($upd) return $icon;
 		return HTMLHelper::link(
@@ -185,10 +178,7 @@ abstract class HtmlUsernotes
 
 	public static function searchField ($pid, $val='')
 	{
-//		$mnuId = self::mnuId();
-		$mnuId = self::$instanceObj->menuid;
 		$fact = self::aiUrl('');
-//		$sturl = str_replace(['+','/','='], ['-','_',''], base64_encode($string));
 		return <<<EOD
 <div class="search">
 	<form name="sqry" action="{$fact}" method="POST" onsubmit="return UNote.performSearch(this)">
@@ -222,24 +212,23 @@ EOD;
 			}
 		}
 		if ($extra != '') $extra = ' '.$extra;
-		$multiple = (count($selected) > 1 && strpos($extra, 'multiple') === FALSE) ? ' multiple="multiple"' : '';
+		$multiple = (count($selected) > 1 && !str_contains($extra, 'multiple')) ? ' multiple="multiple"' : '';
 		$form = '<select name="'.$name.'"'.$extra.$multiple.">\n";
 		foreach ($options as $key => $val) {
 			$key = (string) $key;
-			if (is_array($val) && ! empty($val)) {
+			if (is_array($val) && $val !== []) {
 				$form .= '<optgroup label="'.$key.'">'."\n";
 				foreach ($val as $optgroup_key => $optgroup_val) {
 					$sel = (in_array($optgroup_key, $selected)) ? ' selected="selected"' : '';
-					$form .= '<option value="'.$optgroup_key.'"'.$sel.'>'.(string) $optgroup_val."</option>\n";
+					$form .= '<option value="'.$optgroup_key.'"'.$sel.'>'.$optgroup_val."</option>\n";
 				}
 				$form .= '</optgroup>'."\n";
 			} else {
 				$sel = (in_array($key, $selected)) ? ' selected="selected"' : '';
-				$form .= '<option value="'.$key.'"'.$sel.'>'.(string) $val."</option>\n";
+				$form .= '<option value="'.$key.'"'.$sel.'>'.$val."</option>\n";
 			}
 		}
-		$form .= '</select>';
-		return $form;
+		return $form . '</select>';
 	}
 
 
@@ -315,7 +304,7 @@ EOD;
 
 /***** private functions *****/
 
-	private static function _parse_form_attributes ($attributes, $default)
+	private static function _parse_form_attributes ($attributes, array $default): string
 	{
 		if (is_array($attributes)) {
 			foreach ($default as $key => $val) {
@@ -339,11 +328,10 @@ EOD;
 	}
 
 
-	private static function aiUrl ($prms, $xml=true)
+	private static function aiUrl (string $prms, $xml=true)
 	{
 		if (is_array($prms)) $prms = http_build_query($prms);
-		$url = Route::_('index.php?option=com_usernotes'.($prms?('&'.$prms):'').'&Itemid='.self::$instanceObj->menuid, $xml);
-		return $url;
+		return Route::_('index.php?option=com_usernotes'.($prms?('&'.$prms):'').'&Itemid='.self::$instanceObj->menuid, $xml);
 	}
 
 

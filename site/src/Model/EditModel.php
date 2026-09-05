@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.6.0
 */
 namespace RJCreations\Component\Usernotes\Site\Model;
 
@@ -39,7 +39,7 @@ class EditModel extends FormModel
 		$data = null;
 		try
 		{
-			$db = $this->getDbo();
+			$db = $this->getDatabase();
 			$query = $db->getQuery(true)
 				->select('n.*, c.serial_content'/*, a.attached'*/)
 				->from('notes AS n')
@@ -52,16 +52,17 @@ class EditModel extends FormModel
 
 			if (empty($data)) {
 				throw new Exception(Text::_('COM_USERNOTES_ERROR_NOTE_NOT_FOUND'), 404);
-			} else {
-				if ($data->serial_content) {
-					if ($nm = @unserialize($data->serial_content)) {
-						$data->serial_content = $nm->rendered();
-					}
+			}
+
+			if ($data->serial_content) {
+				if ($nm = @unserialize($data->serial_content)) {
+					$data->serial_content = $nm->rendered();
 				}
-				if ($data->contentID) {
-					$db->setQuery('SELECT attached FROM fileatt WHERE contentID='.$data->contentID);
-					$data->attached = $db->loadRowList();
-				}
+			}
+
+			if ($data->contentID) {
+				$db->setQuery('SELECT attached FROM fileatt WHERE contentID='.$data->contentID);
+				$data->attached = $db->loadRowList();
 			}
 		}
 		catch (JDatabaseExceptionExecuting $e)
@@ -77,9 +78,10 @@ class EditModel extends FormModel
 		if (!$nid) return true;
 		$uid = $this->instanceObj->uid;
 		if (!$uid) return false;
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('UPDATE notes SET checked_out = '.$uid.', checked_out_time = '.time().' WHERE itemID == '.$nid);
 		$db->execute();
+		return null;
 	}
 
 
@@ -87,20 +89,21 @@ class EditModel extends FormModel
 	{
 		if (!$nid) return true;
 		if (!$this->instanceObj->uid) return false;
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('UPDATE notes SET checked_out = 0, checked_out_time = NULL WHERE itemID == '.$nid);
 		$db->execute();
+		return null;
 	}
 
 
 	public function checkedOut ($nid=null)
 	{
 		if (!$nid) return [false,false];
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT checked_out FROM notes WHERE itemID='.$nid);
 		$cou = $db->loadResult();
 		if (!$cou) return [false,false];
-		$unam = Factory::getUser($cou)->get('username');
+		$unam = Factory::getApplication()->getIdentity($cou)->get('username');
 		return [$cou,$unam];
 	}
 
@@ -108,7 +111,7 @@ class EditModel extends FormModel
 	public function itemIsSecure ($nid)
 	{
 		if (!$nid) return false;
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT secured FROM notes WHERE itemID='.$nid);
 		return $db->loadResult();
 	}
@@ -118,7 +121,7 @@ class EditModel extends FormModel
 	{
 		// Initialize variables
 		$app = Factory::getApplication();
-		$input = $app->input;
+		$input = $app->getInput();
 
 		if ($input->get('type','','cmd') == 'f') {
 			$src = 'com_usernotes.fold';
@@ -157,7 +160,7 @@ class EditModel extends FormModel
 		// Initialize variables
 		$app = Factory::getApplication();
 		$params = ComponentHelper::getParams('com_usernotes');
-		$input = $app->input;
+		$input = $app->getInput();
 
 		// album ID
 		$nid = $input->get('nid', 0, 'INT');

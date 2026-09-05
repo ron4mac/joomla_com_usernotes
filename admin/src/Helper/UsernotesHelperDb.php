@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.5.8
 */
 namespace RJCreations\Component\Usernotes\Administrator\Helper;
 
@@ -16,7 +16,7 @@ abstract class UsernotesHelperDb
 {
 	public static function buildDb ($db)
 	{
-		$execs = explode(';', file_get_contents(JPATH_COMPONENT_ADMINISTRATOR.'/sql/usernotes.sql'));
+		$execs = explode(';', file_get_contents(JPATH_ADMINISTRATOR.'/sql/usernotes.sql'));
 		foreach ($execs as $exec) {
 			$exec = trim($exec);
 			if ($exec[0] != '#') $db->setQuery($exec)->execute();

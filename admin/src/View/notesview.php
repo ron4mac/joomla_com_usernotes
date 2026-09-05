@@ -3,13 +3,12 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.6
+* @since		1.6.0
 */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\HTML\Helpers\Sidebar;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
@@ -27,7 +26,7 @@ class UsernotesView extends BaseHtmlView
 	/**
 	 * Display the view
 	 */
-	public function display ($tpl = null)
+	public function display ($tpl = null): void
 	{
 		$this->items = $this->get('Items');
 		$this->pagination = $this->get('Pagination');

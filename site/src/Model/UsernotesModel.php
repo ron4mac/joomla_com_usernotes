@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.3
+* @since		1.6.0
 */
 namespace RJCreations\Component\Usernotes\Site\Model;
 
@@ -19,7 +19,7 @@ class UsernotesModel extends ListModel
 {
 	const DBFILE = '/usernotes.db3';
 	protected $instanceObj;
-	protected $_storPath = null;
+	protected $_storPath;
 
 	public function __construct ($config = [], $factory = null)
 	{
@@ -29,8 +29,8 @@ class UsernotesModel extends ListModel
 		$db = RJUserCom::getDb(true);
 		$dbc = $db->getConnection();
 		$dbc->sqliteCreateFunction('b64d', 'base64_decode', 1);
-		$dbc->sqliteCreateFunction('sfunc', [$this,'sfunc'], 1);
-		$dbc->sqliteCreateFunction('vavg', [$this,'vavg'], 2);
+		$dbc->sqliteCreateFunction('sfunc', $this->sfunc(...), 1);
+		$dbc->sqliteCreateFunction('vavg', $this->vavg(...), 2);
 
 		$config['dbo'] = $db;
 		parent::__construct($config, $factory);
@@ -43,17 +43,16 @@ class UsernotesModel extends ListModel
 		switch ($this->smod) {
 			case '|':
 				foreach ($this->sstrs as $sstr) {
-					if (stripos($str, $sstr) !== false) return true;
+					if (stripos($str, (string) $sstr) !== false) return true;
 				}
 				break;
 			case '&':
 				foreach ($this->sstrs as $sstr) {
-					if (stripos($str, $sstr) === false) return false;
+					if (stripos($str, (string) $sstr) === false) return false;
 				}
 				return true;
-				break;
 			default:
-				if (stripos($str, $this->sstrs[0]) !== false) return true;
+				if (stripos($str, (string) $this->sstrs[0]) !== false) return true;
 		}
 		return false;
 	}
@@ -65,9 +64,8 @@ class UsernotesModel extends ListModel
 
 	public function search ($sterm, $pid)
 	{
-		if ($sterm == '**starred') return $this->starred($pid);
-		if ($sterm == '**recent') return $this->recent($pid);
-		$special = ['**starred'=>'I.vcount > 0','**recent'=>''];
+		if ($sterm == '**starred') return $this->starred();
+		if ($sterm == '**recent') return $this->recent();
 
 		if (strpos($sterm, ' OR ') > 0) {
 			$this->smod = '|';
@@ -87,7 +85,7 @@ class UsernotesModel extends ListModel
 
 		$userID = $this->instanceObj->uid;
 
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 //		$db->getConnection()->sqliteCreateFunction('sfunc', [$this,'sfunc'], 1);
 
 		$query = $db->getQuery(true);
@@ -115,10 +113,10 @@ class UsernotesModel extends ListModel
 	}
 
 
-	private function starred ($pid)
+	private function starred ()
 	{
 		$userID = $this->instanceObj->uid;
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$query = $db->getQuery(true);
 		$query->select('I.itemID,I.title,I.isParent,I.parentID,I.shared,I.secured,I.vtotal,I.vcount')
 			->from('notes AS I')
@@ -127,15 +125,14 @@ class UsernotesModel extends ListModel
 			->order('vavg(I.vtotal,I.vcount) DESC');
 		$db->setQuery($query);
 		$this->logQ($db);
-		$lst = $db->loadObjectList();
-		return $lst;
+		return $db->loadObjectList();
 	}
 
 
-	private function recent ($pid)
+	private function recent ()
 	{
 		$userID = $this->instanceObj->uid;
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$query = $db->getQuery(true);
 		$query->select('I.itemID,I.title,I.isParent,I.parentID,I.shared,I.secured,I.vtotal,I.vcount')
 			->from('notes AS I')
@@ -145,16 +142,15 @@ class UsernotesModel extends ListModel
 			->order('I.cdate DESC');
 		$db->setQuery($query, 0, 20);
 		$this->logQ($db);
-		$lst = $db->loadObjectList();
-		return $lst;
+		return $db->loadObjectList();
 	}
 
 
-	public function addItemPaths (&$items)
+	public function addItemPaths (&$items): void
 	{
 		static $C = [];	// cache parent items
 
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		foreach ($items as &$item) {
 			$pid = $item->parentID;
 			$path = [$item->secured ? base64_decode($item->title) : $item->title];
@@ -182,17 +178,16 @@ class UsernotesModel extends ListModel
 	{
 		$iid = (!empty($iid)) ? $iid : (int) $this->getState('parent.id');
 		if (!$iid) return false;
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT * FROM notes WHERE itemID == '.$iid);
 		$this->logQ($db);
-		$data = $db->loadObject();
-		return $data;
+		return $db->loadObject();
 	}
 
 
 	public function moveItem ($iid, $pid)
 	{
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('UPDATE notes SET parentID = '.$pid.' WHERE itemID == '.$iid);
 		$this->logQ($db);
 		$db->execute();
@@ -200,7 +195,7 @@ class UsernotesModel extends ListModel
 	}
 
 
-	private function buildBranch ($id, $ind, &$rows, &$tree)
+	private function buildBranch ($id, string $ind, &$rows, array &$tree): void
 	{
 		foreach ($rows as $row) {
 			if ($row->parentID == $id) {
@@ -214,7 +209,7 @@ class UsernotesModel extends ListModel
 
 	public function get_item_hier ($userID=0)
 	{
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT * FROM notes WHERE isParent == 1 AND (ownerID == '.$userID.' OR shared) ORDER BY parentID,title');
 		$this->logQ($db);
 		$rows = $db->loadObjectList();
@@ -231,7 +226,7 @@ class UsernotesModel extends ListModel
 		$dbsz = filesize($this->_storPath.self::DBFILE);
 
 		// get total of attachment sizes
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$atsz = $db->setQuery('SELECT totatt FROM attsizsum')->loadResult();
 
 		return $dbsz + $atsz;
@@ -241,7 +236,7 @@ class UsernotesModel extends ListModel
 	protected function getListQuery ()
 	{
 		$pid = $this->getState('parent.id') ? : 0;
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$query = $db->getQuery(true);
 		$query->select('*')->from('notes')->where('parentID='.$pid);
 		if ($this->getState('hide-secure')) $query->where('secured IS NOT 1');
@@ -255,7 +250,7 @@ class UsernotesModel extends ListModel
 		// Initialize variables
 		$app = Factory::getApplication();
 		$params = ComponentHelper::getParams('com_usernotes');
-		$input = $app->input;
+		$input = $app->getInput();
 
 		// menu params
 		$mparams = $app->getParams();
@@ -281,10 +276,10 @@ class UsernotesModel extends ListModel
 	}
 
 
-	private function logQ ($db)
-	{	return;
+	private function logQ ($db): void
+	{
 		$q = (string)$db->getQuery();
-		file_put_contents('QLOG.txt', $q."\n", FILE_APPEND);
+		if ($q === 'nolog') file_put_contents('QLOG.txt', $q."\n", FILE_APPEND);
 	}
 
 }

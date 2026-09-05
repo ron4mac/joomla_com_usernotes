@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.4
+* @since		1.6.0
 */
 namespace RJCreations\Component\Usernotes\Site\Controller;
 
@@ -48,17 +48,17 @@ class EditController extends FormController
 	}
 
 
-	public function addNote ()
+	public function addNote (): void
 	{
 		$this->input->set('view', 'edit');
 		$this->display();
 	}
 
 
-	public function editNote ()
+	public function editNote (): void
 	{
 		$nid = $this->input->getInt('nid', 0);
-		list($ckd,$unm) = $this->getModel()->checkedOut($nid);
+		[$ckd, $unm] = $this->getModel()->checkedOut($nid);
 		if ($ckd && $ckd != $this->instanceObj->uid) {
 			HtmlUsernotes::nqMessage(Text::sprintf('COM_USERNOTES_CHECKED_OUT',$unm), 'warning');
 			$this->setRedirect(Route::_('index.php?option=com_usernotes&view=usernote&nid='.$nid.'&Itemid='.$this->instanceObj->menuid, false));
@@ -69,7 +69,7 @@ class EditController extends FormController
 	}
 
 
-	public function cancelEdit ()
+	public function cancelEdit (): void
 	{
 		$formData = new Input($this->input->post->get('jform', [], 'array'));
 		$iid = $formData->getInt('itemID');
@@ -90,7 +90,7 @@ class EditController extends FormController
 	}
 
 
-	public function saveNote ()
+	public function saveNote (): void
 	{
 		// Check for request forgeries.
 		if (!Session::checkToken()) throw new \Exception(Text::_('JINVALID_TOKEN'), 401);
@@ -99,7 +99,7 @@ class EditController extends FormController
 		$formData = new Input($this->input->post->get('jform', [], 'array'));
 
 		// Check permissions
-		if (!(($formData->getInt('itemID', 0) && $this->instanceObj->canEdit()) || $this->instanceObj->canCreate())) throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+		if ((!$formData->getInt('itemID', 0) || !$this->instanceObj->canEdit()) && !$this->instanceObj->canCreate()) throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
 
 		$model = $this->getModel('usernote');
 		try {
@@ -127,7 +127,7 @@ class EditController extends FormController
 	}
 
 
-	public function deleteItem ()
+	public function deleteItem (): void
 	{
 		// Check for request forgeries.
 		if (!Session::checkToken()) throw new \Exception(Text::_('JINVALID_TOKEN'), 401);

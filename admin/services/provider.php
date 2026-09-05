@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.6.0
 */
 defined('_JEXEC') or die;
 
@@ -23,13 +23,13 @@ use RJCreations\Component\Usernotes\Administrator\Extension\UsernotesComponent;
 
 return new class implements ServiceProviderInterface
 {
-	public function register(Container $container)
+	public function register(Container $container): void
 	{
 		$container->registerServiceProvider(new MVCFactory('\\RJCreations\\Component\\Usernotes'));
 		$container->registerServiceProvider(new ComponentDispatcherFactory('\\RJCreations\\Component\\Usernotes'));
 		$container->set(
 				ComponentInterface::class,
-				function (Container $container)
+				function (Container $container): \RJCreations\Component\Usernotes\Administrator\Extension\UsernotesComponent
 				{
 					$component = new UsernotesComponent($container->get(ComponentDispatcherFactoryInterface::class));
 					$component->setMVCFactory($container->get(MVCFactoryInterface::class));

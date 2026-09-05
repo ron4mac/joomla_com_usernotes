@@ -1,9 +1,11 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2022 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.6.0
 */
+/** @var \RJCreations\Component\Usernotes\Site\View\Edit\HtmlView $this */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Router\Route;

@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.6.0
 */
 namespace RJCreations\Component\Usernotes\Site\Controller;
 
@@ -59,7 +59,7 @@ class DisplayController extends BaseController
 	}
 
 
-	public function begin ()
+	public function begin (): void
 	{
 		if (!$this->instanceObj->uid) return;
 		$htm = '<!DOCTYPE html><title></title>';
@@ -71,7 +71,7 @@ class DisplayController extends BaseController
 	}
 
 
-	public function search ()
+	public function search (): void
 	{
 		$view = $this->getView('search', 'html');
 		$view->setModel($this->getModel('usernotes'), true);
@@ -79,7 +79,7 @@ class DisplayController extends BaseController
 	}
 
 
-	public function printNote ()
+	public function printNote (): void
 	{
 		$this->input->set('tmpl','component');
 		$view = $this->getView('usernote', 'html');

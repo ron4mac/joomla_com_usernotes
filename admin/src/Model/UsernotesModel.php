@@ -3,18 +3,19 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.6.0
 */
 namespace RJCreations\Component\Usernotes\Administrator\Model;
 
 defined('_JEXEC') or die;
 
 use Joomla\CMS\User\User;
+use Joomla\CMS\MVC\Model\ListModel;
 use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelperDb;
 
-class UsernotesModel extends \Joomla\CMS\MVC\Model\ListModel
+class UsernotesModel extends ListModel
 {
 	protected $relm = 'u';
 	protected $_total = -1;
@@ -38,14 +39,14 @@ class UsernotesModel extends \Joomla\CMS\MVC\Model\ListModel
 
 		$unotes = [];
 		$folds = RJUserCom::getDbPaths($this->relm, 'usernotes', true);
-		foreach ($folds as $dir => $unis) foreach ($unis as $uni) {
+		foreach ($folds as $unis) foreach ($unis as $uni) {
 			$msgs = [];
-			$ufold = basename(dirname(dirname($uni['path'])));
+			$ufold = basename(dirname($uni['path'], 2));
 			$userid = (int)substr($ufold,1);
 			$menuid = (int)substr(strrchr($uni['path'], '_'), 1);
 			if (!$menuid) $msgs[] = 'Requires alignment with menu item';
 			$info = UsernotesHelperDb::getInfo($uni['path']);
-			if (file_exists(JPATH_COMPONENT_ADMINISTRATOR.'/sql/upd_'.$info['dbv'].'.sql')) $msgs[] = 'Database needs to be updated';
+			if (file_exists(JPATH_ADMINISTRATOR.'/sql/upd_'.$info['dbv'].'.sql')) $msgs[] = 'Database needs to be updated';
 			if ($this->relm == 'u') {
 				$user = User::getInstance($userid);
 				$unotes[] = ['name'=>$user->name,'uname'=>$user->username,'uid'=>'@'.$userid.'|'.$menuid, 'info'=>$info, 'msgs'=>$msgs];
@@ -58,14 +59,13 @@ class UsernotesModel extends \Joomla\CMS\MVC\Model\ListModel
 		$start = $this->getState('list.start');
 		$limit = $this->getState('list.limit');
 		$listOrder = $this->getState('list.ordering');
-		$listDirn = $this->getState('list.direction');
 
 		foreach ($unotes as $key => $row) {
 			$name[$key]  = $row['name'];
 			$uname[$key] = $row['uname'];
 			$uid[$key] = $row['uid'];
 		}
-		
+
 		if ($this->_total)
 		// Sort the data with volume descending, edition ascending
 		// Add $data as the last parameter, to sort by the common key
@@ -83,7 +83,7 @@ class UsernotesModel extends \Joomla\CMS\MVC\Model\ListModel
 
 
 		// Add the items to the internal cache.
-		$this->cache[$stork] = array_slice($unotes,$start,$limit?$limit:null);
+		$this->cache[$stork] = array_slice($unotes,$start,$limit ?: null);
 
 		return $this->cache[$stork];
 	}

@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.6.0
 */
 namespace RJCreations\Component\Usernotes\Administrator\Controller;
 
@@ -19,28 +19,28 @@ class DisplayController extends BaseController
 {
 	protected $default_view = 'usernotes';
 
-	public function remove ()
+	public function remove (): void
 	{
 		$this->tokenCheck();
-		$cids = $this->input->get('cid',array(),'array');
+		$cids = $this->input->get('cid',[],'array');
 		$view = $this->input->get('view');
 		foreach ($cids as $cid) {
-			list($guid,$iid) = explode('|', $cid);
+			[$guid, $iid] = explode('|', $cid);
 			$mid = $iid ?: '';
 			RJUserCom::deleteStorageInstance($guid, $mid);
 		}
 		$this->setRedirect('index.php?option=com_usernotes&view='.$view, Text::_('COM_USERNOTES_MSG_COMPLETE'));
 	}
 
-	public function convertDb ()
+	public function convertDb (): void
 	{
 		$this->tokenCheck();
 		$sdp = RJUserCom::getStorageBase();
-		$cids = $this->input->get('cid',array(),'array');
+		$cids = $this->input->get('cid',[],'array');
 		$view = $this->input->get('view');
 		$tc = $view == 'usernotes' ? '@' : '_';
 		foreach ($cids as $cid) {
-			list($uid,$iid) = explode('|', $cid);
+			[$uid, $iid] = explode('|', $cid);
 			$mid = $iid ? ('_'.$iid) : '';
 			$msgs = RJUserCom::updateDb(JPATH_ROOT.'/'.$sdp.'/'.$tc.$uid.'/'.ApplicationHelper::getComponentName().$mid.'/usernotes.db3');
 		//	$dbpath = JPATH_ROOT.'/'.$sdp.'/'.$tc.$uid.'/'.JApplicationHelper::getComponentName().$mid;
@@ -48,7 +48,7 @@ class DisplayController extends BaseController
 		$this->setRedirect('index.php?option=com_usernotes&view='.$view, Text::_('COM_USERNOTES_DBUP_DONE').($msgs ? '<br>'.implode('<br>',$msgs) : ''));
 	}
 
-	private function tokenCheck ()
+	private function tokenCheck (): void
 	{
 		if (!Session::checkToken()) {
 			header('HTTP/1.1 403 Not Allowed');

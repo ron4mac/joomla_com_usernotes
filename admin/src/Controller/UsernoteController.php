@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.6.0
 */
 namespace RJCreations\Component\Usernotes\Administrator\Controller;
 
@@ -18,7 +18,7 @@ class UserNoteController extends FormController
 
 	protected function allowAdd ($data = [])
 	{
-		$user = Factory::getUser();
+		$user = Factory::getApplication()->getIdentity();
 		$categoryId = JArrayHelper::getValue($data, 'catid', $this->input->getInt('filter_category_id'), 'int');
 		$allow = null;
 
@@ -30,15 +30,15 @@ class UserNoteController extends FormController
 		if ($allow === null) {
 			// In the absence of better information, revert to the component permissions.
 			return parent::allowAdd($data);
-		} else {
-			return $allow;
 		}
+
+		return $allow;
 	}
 
 
 	protected function allowEdit ($data = [], $key = 'id')
 	{
-		$user = Factory::getUser();
+		$user = Factory::getApplication()->getIdentity();
 		$recordId = (int) isset($data[$key]) ? $data[$key] : 0;
 		$categoryId = 0;
 
@@ -49,10 +49,10 @@ class UserNoteController extends FormController
 		if ($categoryId) {
 			// The category has been set. Check the category permissions.
 			return $user->authorise('core.edit', $this->option . '.category.' . $categoryId);
-		} else {
-			// Since there is no asset tracking, revert to the component permissions.
-			return parent::allowEdit($data, $key);
 		}
+
+		// Since there is no asset tracking, revert to the component permissions.
+		return parent::allowEdit($data, $key);
 	}
 
 

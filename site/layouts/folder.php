@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.6
+* @since		1.6.0
 */
 defined('JPATH_BASE') or die;
 
@@ -23,7 +23,7 @@ $wa->useScript('keepalive')
 function un_formGet ($view, $vitm, $ed=false)
 {
 		$app = Factory::getApplication();
-		$input = $app->input;
+		$input = $app->getInput();
 		$input->set('type','f');
 //		echo'<xmp>';var_dump($vitm);echo'</xmp>';
 	$m = $view->getModel('edit');
@@ -51,22 +51,22 @@ $instlink = Route::_('index.php?option=com_usernotes&Itemid='.$view->menuid, fal
 if (!empty($vitm->itemID)) echo HTMLHelper::_(
 	'bootstrap.renderModal',
 	'foldered-modal', // selector
-	array( // options
+	[ // options
 		'title'  => Text::_('COM_USERNOTES_EDIT_FORM_EDIT_F'),
 		'footer' => '<button type="button" class="btn btn-secondary" '.M34C::bs('dismiss').'="modal">Close</button>
 					<button type="button" class="btn btn-primary" onclick="UNote.saveFolder(this)">Save Folder</button>',
 	//	'modalWidth' => 20
-	),
+	],
 	'<form id="un_edtfold" method="POST" class="form-validate" onsubmit="return false">' . un_formGet($view, $vitm, true) . '</form>'
 );
 echo HTMLHelper::_(
 	'bootstrap.renderModal',
 	'foldercr-modal', // selector
-	array( // options
+	[ // options
 		'title'  => Text::_('COM_USERNOTES_EDIT_FORM_CREATE_F'),
 		'footer' => '<button type="button" class="btn btn-secondary" '.M34C::bs('dismiss').'="modal">Close</button>
 					<button type="button" class="btn btn-primary" onclick="UNote.newFolder(event, this)">Create Folder</button>',
 	//	'modalWidth' => 20
-	),
+	],
 	'<form id="un_newfold" method="POST" class="form-validate" onsubmit="return false">' . un_formGet($view, $vitm) . '</form>'
 );

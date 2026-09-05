@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.6.0
 */
 namespace RJCreations\Component\Usernotes\Site\Controller;
 
@@ -20,7 +20,7 @@ use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 class RawController extends BaseController
 {
 
-	public function addRating ()
+	public function addRating (): void
 	{
 		$rate = $this->input->post->getFloat('rate', 0);
 		// don't let unauthorized users cause a ratings reset
@@ -31,7 +31,7 @@ class RawController extends BaseController
 		echo json_encode($m->addRating($iid, $rate));
 	}
 
-	public function addComment ()
+	public function addComment (): void
 	{
 		$this->tokenCheck();
 		// add the comment to the note
@@ -39,11 +39,11 @@ class RawController extends BaseController
 		$cmnt = trim($this->input->post->getString('cmntext', ''));
 		$who = trim($this->input->post->getString('name', ''));
 		$m = $this->getModel('social');
-		$newcnt = $m->addComment($nid, $cmnt, Factory::getUser()->id, $who);
+		$m->addComment($nid, $cmnt, Factory::getApplication()->getIdentity()->id, $who);
 		echo json_encode(['htm'=>HtmlUsernotes::cmntActIcon($nid,Text::_('COM_USERNOTES_CMNTNOTE'),1,true)]);
 	}
 
-	public function delComment ()
+	public function delComment (): void
 	{
 		$this->tokenCheck();
 		$cid = $this->input->post->getInt('cmntid', 0);
@@ -53,7 +53,7 @@ class RawController extends BaseController
 		echo json_encode($resp);
 	}
 
-	public function getComments ()
+	public function getComments (): void
 	{
 		$nid = $this->input->post->getInt('nid', 0);
 		$m = $this->getModel('social');
@@ -70,7 +70,7 @@ class RawController extends BaseController
 		echo json_encode(['htm'=>$html]);
 	}
 
-	public function getInfo ()
+	public function getInfo (): void
 	{
 		$nid = $this->input->post->getInt('iID', 0);
 		$username = $cdate = $mdate = '&lt;'.strtolower(Text::_('JLIB_UNKNOWN')).'&gt;';
@@ -78,7 +78,7 @@ class RawController extends BaseController
 		$note = $m->getItem($nid);
 		//echo print_r($note,true);
 		$userId = $note->ownerID;
-		$user = Factory::getUser($userId);
+		$user = Factory::getApplication()->getIdentity();
 		if ($user->id) {
 			$username = $user->username;
 		}
@@ -93,14 +93,14 @@ class RawController extends BaseController
 		echo Text::sprintf('COM_USERNOTES_NOTEINFO', $username, $cdate, $mdate);
 	}
 
-	public function ePub ()
+	public function ePub (): void
 	{
 		$nid = $this->input->post->getInt('iID', 0);
 		$m = $this->getModel('usernote');
 		echo $m->setPublish($nid);
 	}
 
-	public function help ()
+	public function help (): void
 	{
 		$wht = $this->input->post->getCmd('wht', 'general');
 		echo Text::_('COM_USERNOTES_HELP_'.strtoupper($wht));
@@ -112,12 +112,12 @@ class RawController extends BaseController
 	{
 		static $unams = [0=>'-anonymous-'];
 		if (empty($unams[$id])) {
-			$unams[$id] = Factory::getUser($id)->username;
+			$unams[$id] = Factory::getApplication()->getIdentity()->username;
 		}
 		return $unams[$id];
 	}
 
-	private function tokenCheck ()
+	private function tokenCheck (): void
 	{
 		if (!Session::checkToken()) {
 			//$this->app->setHeader('status', 401, true);

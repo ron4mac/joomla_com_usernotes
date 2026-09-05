@@ -3,14 +3,15 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.6
+* @since		1.6.0
 */
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Table\Table;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Table\Extension;
 use Joomla\CMS\Component\ComponentHelper;
 use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
@@ -18,15 +19,13 @@ $wa = $this->getDocument()->getWebAssetManager();
 $wa->useStyle('com_usernotes.css.admin')
 	->useScript('multiselect');
 
-// Include the component HTML helpers.
-//HTMLHelper::addIncludePath(JPATH_COMPONENT.'/helpers/html');
-
 $listOrder	= $this->state('list.ordering');
 $listDirn	= $this->state('list.direction');
 $canDo		= UsernotesHelper::getActions();
 
 $component = ComponentHelper::getComponent('com_usernotes');
-$extension = Table::getInstance('extension');
+$db = Factory::getContainer()->get('DatabaseDriver');
+$extension = new Extension($db);
 $extension->load($component->id);
 $manifest = new \Joomla\Registry\Registry($extension->manifest_cache);
 

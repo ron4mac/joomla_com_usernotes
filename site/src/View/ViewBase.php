@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.6
+* @since		1.6.0
 */
 namespace RJCreations\Component\Usernotes\Site\View;
 
@@ -11,8 +11,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
-use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use Joomla\CMS\Component\ComponentHelper;
 use RJCreations\Library\RJUserCom;
 
@@ -22,7 +21,7 @@ define('ITM_CAN_CREA', 4);
 define('ITM_CAN_COMMENT', 8);
 define('IS_SMALL_DEVICE', 0);
 
-class ViewBase extends HtmlView
+class ViewBase extends BaseHtmlView
 {
 	protected $userID;
 //	protected $notesID;
@@ -64,8 +63,7 @@ if ($this->jDoc->getType() === 'html') {
 			$wa->useStyle('com_usernotes.css.'.$css);
 		}
 
-		// get js's ... jQuery required for now
-//		HTMLHelper::_('jquery.framework', false);
+		// get js's
 		if (!is_array($this->usejs)) $this->usejs = [$this->usejs];
 		foreach ($this->usejs as $js) {
 			$wa->useScript('com_usernotes.'.$js);
@@ -86,7 +84,7 @@ if ($this->jDoc->getType() === 'html') {
 
 	protected function buildPathway ($to)
 	{
-		$db = $this->getModel()->getDbo();
+		$db = Factory::getContainer()->get('DatabaseDriver');
 		$pw = $this->app->getPathway();
 		$crums = [];
 		while ($to) {
@@ -110,7 +108,7 @@ if ($this->jDoc->getType() === 'html') {
 		if ($this->instanceObj->uid) {
 			if ($this->instanceObj->canEdit()) {
 				if ($this->item && $this->item->checked_out && $this->item->checked_out != $this->instanceObj->uid) {
-					$this->footMsg = 'Checked out by '.Factory::getUser($this->item->checked_out)->get('username').'.';
+					$this->footMsg = 'Checked out by '.Factory::getApplication()->getIdentity($this->item->checked_out)->get('username').'.';
 				} else {
 					$this->access = ITM_CAN_EDIT + ITM_CAN_DELE + ITM_CAN_CREA;	// + ITM_CAN_COMMENT;
 				}

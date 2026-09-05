@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.6
+* @since		1.6.0
 */
 defined('JPATH_BASE') or die;
 
@@ -19,12 +19,12 @@ $nextra = $userid ? '<input type="hidden" name="name" value="?" />' : '<br><labe
 $mmdl =  HTMLHelper::_(
 	'bootstrap.renderModal',
 	'comment-modal', // selector
-	array( // options
+	[ // options
 		'title'  => Text::_('COM_USERNOTES_COMMENT_TITLE'),
 		'footer' => '<button type="button" class="btn btn-secondary" '.M34C::bs('dismiss').'="modal">Close</button>
 					<button type="button" class="btn btn-primary" id="cmntSbb" onclick="UNote.submitComment(this)" disabled>Submit Comment</button>',
 		//'modalWidth' => 30
-	),
+	],
 	'<form id="newcmnt" method="POST" onsubmit="return false">
 	<div class="new-comment"><textarea id="cmnt-text" name="cmntext" onkeyup="UNote.watchcmnt()"></textarea>'.$nextra.'</div>
 	<input type="hidden" name="task" value="Raw.addComment" />

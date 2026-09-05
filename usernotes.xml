@@ -3,12 +3,12 @@
 <extension type="component" method="upgrade">
 	<name>com_usernotes</name>
 	<author>Ron Crans</author>
-	<creationDate>August 2026</creationDate>
+	<creationDate>September 2026</creationDate>
 	<copyright>(C) 2015-2026 RJCreations. All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>ron@jrjconline.net</authorEmail>
 	<authorUrl>rjconline.net</authorUrl>
-	<version>1.5.6</version>
+	<version>1.6.0</version>
 	<updater jver="(4\.[0-9])||(5\.[0-1])" pver="8.0" />
 	<description>COM_USERNOTES_XML_DESCRIPTION</description>
 	<namespace path="src">RJCreations\Component\Usernotes</namespace>
@@ -35,7 +35,6 @@
 		<files folder="admin">
 			<filename>access.xml</filename>
 			<filename>config.xml</filename>
-			<folder>forms</folder>
 			<folder>language</folder>
 			<folder>services</folder>
 			<folder>sql</folder>

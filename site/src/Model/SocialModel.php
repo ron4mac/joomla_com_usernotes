@@ -19,7 +19,7 @@ class SocialModel extends UsernotesModel
 	public function rate ($iid, $val)
 	{
 		// add a new rating to an item's collective rating
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->transactionStart();
 		if ($val) {
 			$db->setQuery('SELECT ratecnt,ratetot FROM meedyaitems WHERE id='.$iid);
@@ -48,7 +48,7 @@ class SocialModel extends UsernotesModel
 //		}
 
 		// remember where the rating came from to inhibit multiples
-		$uid = Factory::getUser()->get('id');
+		$uid = Factory::getApplication()->getIdentity()->get('id');
 		if ($uid) {
 			$db->setQuery('INSERT INTO uratings (iid,uid,rdate) VALUES('.$iid.','.$uid.','.time().')');
 		} else {
@@ -64,8 +64,8 @@ class SocialModel extends UsernotesModel
 	// returns false if there has been no recorded submission
 	public function rateChk ($iid)
 	{
-		$db = $this->getDbo();
-		$uid = Factory::getUser()->get('id');
+		$db = $this->getDatabase();
+		$uid = Factory::getApplication()->getIdentity()->get('id');
 		if ($uid) {
 			$db->setQuery('SELECT rdate FROM uratings WHERE iid='.$iid.' AND uid='.$uid);
 		} else {
@@ -77,7 +77,7 @@ class SocialModel extends UsernotesModel
 	// get all the comments for and item
 	public function getComments ($iid)
 	{
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT * FROM comments WHERE noteID='.$iid.' ORDER BY `ctime` DESC');
 		return $db->loadAssocList();
 	}
@@ -85,7 +85,7 @@ class SocialModel extends UsernotesModel
 	// add a new comment
 	public function addComment ($iid, $cmnt, $uid=0, $who='')
 	{
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->transactionStart();
 		$db->setQuery('INSERT INTO comments (noteID,uID,who,ctime,comment) VALUES('.$iid.','.$uid.','.$db->quote($who).','.time().','.$db->quote($cmnt).')')->execute();
 		$db->setQuery('SELECT cmntcnt FROM notes WHERE itemID='.$iid);
@@ -98,7 +98,7 @@ class SocialModel extends UsernotesModel
 	// delete a comment
 	public function delComment ($cid)
 	{
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->transactionStart();
 		$db->setQuery('SELECT noteID FROM comments WHERE cmntID='.$cid);
 		$nid = $db->loadResult();

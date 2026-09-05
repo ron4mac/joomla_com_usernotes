@@ -3,8 +3,9 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.6
+* @since		1.6.0
 */
+/** @var \RJCreations\Component\Usernotes\Site\View\Usernotes\HtmlView $this */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Uri\Uri;
@@ -40,7 +41,7 @@ if (/*$this->state->secured*/ $this->item && $this->item->secured && $_SERVER['S
 
 if (RJC_DBUG) echo '<div class="RJDBG">'.json_encode($this->instanceObj).'</div>';
 
-if (isset($this->posq)) {
+if (property_exists($this, 'posq') && $this->posq !== null) {
 	$svty = 'notice';
 	$msg = Text::sprintf('COM_USERNOTES_NOTICE_QUOTA', UsernotesHelper::formatBytes($this->storSize, 1, ''), $this->posq * 100);
 	if ($this->posq > 0.95) {

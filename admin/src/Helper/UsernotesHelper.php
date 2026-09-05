@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.4
+* @since		1.6.0
 */
 namespace RJCreations\Component\Usernotes\Administrator\Helper;
 
@@ -12,24 +12,21 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Access\Access;
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\Database\DatabaseInterface;
 use Joomla\Filesystem\Helper as FilesystemHelper;
 use RJCreations\Library\RJUserCom;
 
 abstract class UsernotesHelper
 {
 	const COMP = 'com_usernotes';
-	protected static $instanceType = null;
-	protected static $instanceObj = null;
-	protected static $ownerID = null;
+	protected static $instanceType;
+	protected static $instanceObj;
+	protected static $ownerID;
 
 	public static function getLimits ()	// SO
 	{
-		$app = Factory::getApplication();
-
 		// Get the component parameters
 		$cparams = ComponentHelper::getParams(self::COMP);		//var_dump($cparams);
-		// Get the instance parameters
-		$mparams = $app->getParams();		//var_dump($mparams);
 
 		$storQuota = $cparams->get('storQuota');
 		$storQuota = $storQuota?:134217728;
@@ -43,7 +40,7 @@ abstract class UsernotesHelper
 
 	public static function getGroupTitle ($gid)	// AO
 	{
-		$db = Factory::getDbo();
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 		$db->setQuery('SELECT title FROM #__usergroups WHERE id='.$gid);
 		return $db->loadResult();
 	}
@@ -60,9 +57,8 @@ abstract class UsernotesHelper
 		if ($sm == 2) {	// use OpenSSL
 			if ($de) {
 				return self::decrypt($dat, $pass);
-			} else {
-				return self::encrypt($dat, $pass);
 			}
+			return self::encrypt($dat, $pass);
 		}
 
 		if (!function_exists('mcrypt_module_open')) {
@@ -84,7 +80,7 @@ abstract class UsernotesHelper
 	// ======================= Alternate encryption method using openssl
 	const METHOD = 'aes-256-ctr';
 
-	private static function encrypt ($message, $key)
+	private static function encrypt ($message, $key): string
 	{
 		$nonceSize = openssl_cipher_iv_length(self::METHOD);
 		$nonce = openssl_random_pseudo_bytes($nonceSize);
@@ -100,29 +96,27 @@ abstract class UsernotesHelper
 		return base64_encode($nonce.$ciphertext);
 	}
 
-	private static function decrypt ($message, $key)
+	private static function decrypt ($message, $key): string|false
 	{
 		$message = base64_decode($message);
 		$nonceSize = openssl_cipher_iv_length(self::METHOD);
 		$nonce = mb_substr($message, 0, $nonceSize, '8bit');
 		$ciphertext = mb_substr($message, $nonceSize, null, '8bit');
 
-		$plaintext = openssl_decrypt(
+		return openssl_decrypt(
 			$ciphertext,
 			self::METHOD,
 			$key,
 			OPENSSL_RAW_DATA,
 			$nonce
 		);
-
-		return $plaintext;
 	}
 	// =======================
 
 	public static function userCanRate ()	// SO
 	{
 	//	self::getTypeOwner();
-		$user = (int)JVERSION > 3 ? Factory::getApplication()->getIdentity() : Factory::getUser();
+		$user = Factory::getApplication()->getIdentity();
 		$uid = $user->get('id');
 		return ($uid || Factory::getApplication()->getParams()->get('pubrate', false));
 	}
@@ -130,18 +124,17 @@ abstract class UsernotesHelper
 	public static function userAuth ()	// SO vet this more
 	{
 		self::getTypeOwner();
-		$user = (int)JVERSION > 3 ? Factory::getApplication()->getIdentity() : Factory::getUser();
+		$user = Factory::getApplication()->getIdentity();
 		$uid = $user->get('id');
 		$ugrps = $user->get('groups');
 		switch (self::$instanceType) {
 			case 0:
 				return $uid == self::$ownerID ? 2 : 0;
-				break;
 			case 1:
 			case 2:
 				return array_intersect((array)self::$ownerID, $ugrps) ? 2 : 1;
-				break;
 		}
+		return null;
 	}
 
 	private static function getTypeOwner ()	// SO vet this more
@@ -173,7 +166,7 @@ abstract class UsernotesHelper
 
 	public static function getActions ()	// AO
 	{
-		$user = (int)JVERSION > 3 ? Factory::getApplication()->getIdentity() : Factory::getUser();
+		$user = Factory::getApplication()->getIdentity();
 		$result = new \stdClass();
 
 		$actions = Access::getActionsFromFile(JPATH_ADMINISTRATOR . '/components/'.self::COMP.'/access.xml');
@@ -186,7 +179,7 @@ abstract class UsernotesHelper
 	}
 
 	// convert string in form n(K|M|G) to an integer value
-	private static function to_bytes ($val)	// SO
+	private static function to_bytes (string|bool $val): int	// SO
 	{
 		$val = trim($val);
 		$last = strtolower($val[strlen($val)-1]);
@@ -205,7 +198,7 @@ abstract class UsernotesHelper
 		$bytes = max($bytes, 0);
 		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
 		$pow = min($pow, count($units) - 1); 
-		$bytes /= pow(1024, $pow);
+		$bytes /= 1024 ** $pow;
 		return round($bytes, $precision) . $sep . $units[$pow];
 	}
 

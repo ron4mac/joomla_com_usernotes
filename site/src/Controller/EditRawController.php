@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.4
+* @since		1.6.0
 */
 namespace RJCreations\Component\Usernotes\Site\Controller;
 
@@ -34,7 +34,7 @@ class EditRawController extends BaseController
 
 /**** ajax calls *******************************/
 
-	public function saveFolder ()
+	public function saveFolder (): void
 	{
 		$this->tokenCheck();
 
@@ -42,12 +42,11 @@ class EditRawController extends BaseController
 
 		// Get the data from POST
 		$formData = new Input($this->input->post->get('jform', [], 'array'));
-		//file_put_contents('APPARMS.TXT',print_r($formData,true),FILE_APPEND);
 
 		// Check permissions
-		if (!(($formData->getInt('itemID', 0) && $this->instanceObj->canEdit()) || $this->instanceObj->canCreate())) jexit(Text::_('JERROR_ALERTNOAUTHOR'));
+		if ((!$formData->getInt('itemID', 0) || !$this->instanceObj->canEdit()) && !$this->instanceObj->canCreate()) jexit(Text::_('JERROR_ALERTNOAUTHOR'));
 
-		$pid = $model->storeFolder($formData, $this->instanceObj->uid);
+		$model->storeFolder($formData, $this->instanceObj->uid);
 
 		if ($errs = $model->getErrors()) {
 			$erm = [];
@@ -63,7 +62,7 @@ class EditRawController extends BaseController
 	}
 
 
-	public function cat_hier ()
+	public function cat_hier (): void
 	{
 		$pid = $this->input->post->getInt('pID', 0);
 		$m = $this->getModel('usernotes');
@@ -75,7 +74,7 @@ class EditRawController extends BaseController
 	}
 
 
-	public function movitm ()
+	public function movitm (): void
 	{
 		$iid = $this->input->post->getInt('iID', 0);
 		$pid = $this->input->post->getInt('pID', 0);
@@ -84,10 +83,10 @@ class EditRawController extends BaseController
 	}
 
 
-	public function tool ()
+	public function tool (): void
 	{
 		$act = $this->input->post->getCmd('mnuact','');
-		$iid = $this->input->post->getInt('iID', 0);
+		$this->input->post->getInt('iID', 0);
 		$cid = $this->input->post->getInt('cID', 0);
 	//	$this->load->model('content_model', 'mycmodel');
 	//	$ictnt = $this->mycmodel->get_item($cid, $this->enty_item);
@@ -96,7 +95,7 @@ class EditRawController extends BaseController
 	}
 
 
-	public function attach ()
+	public function attach (): void
 	{
 		$this->tokenCheck();
 
@@ -121,7 +120,7 @@ class EditRawController extends BaseController
 	}
 
 
-	public function detach ()
+	public function detach (): void
 	{
 		$m = $this->getModel('usernote');
 		$cid = $this->input->post->getInt('contentID', 0);
@@ -140,7 +139,7 @@ class EditRawController extends BaseController
 	}
 
 
-	public function renAttach ()
+	public function renAttach (): void
 	{
 		$m = $this->getModel('usernote');
 		$cid = $this->input->post->getInt('contentID', 0);
@@ -160,7 +159,7 @@ class EditRawController extends BaseController
 	}
 
 
-	public function attlist ()
+	public function attlist (): void
 	{
 		$m = $this->getModel('usernote');
 		$cid = $this->input->post->getInt('contentID', 0);
@@ -180,7 +179,7 @@ class EditRawController extends BaseController
 		return '';
 	}
 
-	private function tokenCheck ()
+	private function tokenCheck (): void
 	{
 		if (!Session::checkToken()) {
 			//$this->app->setHeader('status', 401, true);

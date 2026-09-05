@@ -1,9 +1,9 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2024 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.0
+* @since		1.6.0
 */
 namespace RJCreations\Component\Usernotes\Site\View\Usernotes;
 
@@ -14,10 +14,13 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
 //use Joomla\CMS\Component\ComponentHelper;
 use RJCreations\Component\Usernotes\Site\View\ViewBase;
+use RJCreations\Component\Usernotes\Site\Model\UsernotesModel;
 use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
 class HtmlView extends ViewBase
 {
+	public $mparams;
+
 	protected $state;
 	protected $items;
 	protected $parentID = 0;
@@ -27,13 +30,15 @@ class HtmlView extends ViewBase
 
 	public function display ($tpl = null)
 	{
+		$m = $this->getModel();
+
 		$app = Factory::getApplication();
 
 		// Get view related request variables.
 
 		// Get model data.
-		$this->state = $this->get('State');
-		$this->items = $this->get('Items');
+		$this->state = $m->getState();
+		$this->items = $m->getItems();
 		$this->item = $this->getModel()->getItem();
 		if (!$this->item) $this->item = (object) ['itemID'=>0, 'parentID'=>0, 'secured'=>false, 'checked_out'=>false];
 
@@ -44,16 +49,15 @@ class HtmlView extends ViewBase
 
 		// Check for errors.
 		// @TODO: Maybe this could go into ComponentHelper::raiseErrors($this->get('Errors'))
-		if (count($errors = $this->get('Errors'))) {
+		if (count($errors = $m->getErrors())) {
 			throw new Exception(implode("\n", $errors), 500);
-			return false;
 		}
 
 		// Get the component parameters
 //		$this->cparams = ComponentHelper::getParams('com_usernotes');		//echo'<xmp>';var_dump($this->cparams);echo'</xmp>';
 		// and the menu instance parameters
 //		$this->mparams = $app->getParams();		//echo'<xmp>';var_dump($this->mparams);echo'</xmp>';
-		
+
 
 		$this->_prepareDocument();
 
@@ -62,7 +66,7 @@ class HtmlView extends ViewBase
 			$storQuota = (int) $this->mparams->get('storQuota', 0);
 			if (!$storQuota) $storQuota = (int) $this->state->cparams->get('storQuota', 67108864);		//echo'<xmp>';var_dump($storQuota,$this->cparams);echo'</xmp>';
 			if ($storQuota) {
-				$storSize = $this->get('StorSize');		//echo '=========================================== '.$storSize;
+				$storSize = $m->getStorSize();		//echo '=========================================== '.$storSize;
 				$posq = $storSize / $storQuota;
 				if ($posq > 0.8) {
 					$svty = 'notice';
@@ -78,6 +82,8 @@ class HtmlView extends ViewBase
 
 		parent::display($tpl);
 		echo LayoutHelper::render('list_bottom');
+
+		return null;
 	}
 
 }

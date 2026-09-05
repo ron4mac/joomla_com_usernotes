@@ -21,7 +21,7 @@ abstract class M34C
 		return (in_array($tag, $bs4) ? 'data-bs-' : 'data-') . $tag;
 	}
 
-	public static function btn ($which)
+	public static function btn (string $which)
 	{
 		$btns = [
 			'p' => ['btn btn-primary','btn btn-primary'],

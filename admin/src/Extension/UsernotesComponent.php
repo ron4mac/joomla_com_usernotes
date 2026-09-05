@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2022-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.5
+* @since		1.6.0
 */
 namespace RJCreations\Component\Usernotes\Administrator\Extension;
 
@@ -19,7 +19,7 @@ class UsernotesComponent extends MVCComponent implements BootableExtensionInterf
 {
 	use HTMLRegistryAwareTrait;
 
-	public function boot(ContainerInterface $container)
+	public function boot (ContainerInterface $container): void
 	{
 		$this->getRegistry()->register('myGrid', new MyGrid());
 	}

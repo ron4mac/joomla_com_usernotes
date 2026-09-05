@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.6
+* @since		1.6.0
 */
 namespace RJCreations\Component\Usernotes\Site\Model;
 
@@ -22,8 +22,8 @@ use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 class UsernoteModel extends ItemModel
 {
 	protected $_context = 'com_usernotes.usernote';
-	protected $_storPath = null;
-	protected $_item = null;	// use for cache
+	protected $_storPath;
+	protected $_item;	// use for cache
 
 
 	public function __construct ($config = [], $factory = null)
@@ -41,14 +41,12 @@ class UsernoteModel extends ItemModel
 
 		if ($pk < 0) $pk = $this->getPublish();
 
-		if ($this->_item === null) {
-			$this->_item = [];
-		}
+		$this->_item ??= [];
 
 		if (!isset($this->_item[$pk])) {
 			try
 			{
-				$db = $this->getDbo();
+				$db = $this->getDatabase();
 				$query = $db->getQuery(true)
 					->select('n.*, c.serial_content'/*, a.attached'*/)
 					->from('notes AS n')
@@ -61,12 +59,13 @@ class UsernoteModel extends ItemModel
 
 				if (empty($data)) {
 					throw new \Exception(Text::_('COM_USERNOTES_ERROR_NOTE_NOT_FOUND')." : $pk", 404);
-				} else {
-					if ($nm = @unserialize($data->serial_content)) {
-						$data->serial_content = $nm->rendered();
-					}
-					$data->attached = $this->attachments($data->contentID);
 				}
+
+				if ($nm = @unserialize($data->serial_content)) {
+					$data->serial_content = $nm->rendered();
+				}
+
+				$data->attached = $this->attachments($data->contentID);
 
 				if ($data->secured) {
 					$data->title = base64_decode($data->title);
@@ -87,7 +86,7 @@ class UsernoteModel extends ItemModel
 	public function addRating ($iid, $rate)
 	{
 		$uid = $ip = 0;
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 
 		try
 		{
@@ -145,7 +144,7 @@ class UsernoteModel extends ItemModel
 	// save a new or edited folder item
 	// @data [itemID, title, ephrase, contentID, serial_content, parentID, maksec, pissec]
 	// @user user id#
-	public function storeNote ($data, $user)
+	public function storeNote ($data, $user): void
 	{
 		$iid = $data->getInt('itemID');
 		$secured = 0;
@@ -160,7 +159,7 @@ class UsernoteModel extends ItemModel
 
 		try
 		{
-			$db = $this->getDbo();
+			$db = $this->getDatabase();
 			$db->transactionStart();
 			if ($iid) {
 				$q = $db->getQuery(true);
@@ -203,7 +202,7 @@ class UsernoteModel extends ItemModel
 		$pid = 0;
 		try
 		{
-			$db = $this->getDbo();
+			$db = $this->getDatabase();
 			if ($iid) {
 				if ($data->getInt('pissec',0)) {
 					$ftitl = base64_encode($ftitl);
@@ -238,7 +237,7 @@ class UsernoteModel extends ItemModel
 	public function getForm ($data = [], $loadData = true)
 	{
 		// Get the encryption phrase form.
-		$form = Form::getInstance('com_usernotes.ephrase', JPATH_COMPONENT.'/forms/ephrase.xml');
+		$form = Form::getInstance('com_usernotes.ephrase', JPATH_SITE.'/components/com_usernotes/forms/ephrase.xml');
 
 		if (empty($form)) {
 			return false;
@@ -251,7 +250,7 @@ class UsernoteModel extends ItemModel
 	public function itemIsSecure ($nid)
 	{
 		if (!$nid) return false;
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 		$db->setQuery('SELECT secured FROM notes WHERE itemID='.$nid);
 		return $db->loadResult();
 	}
@@ -259,7 +258,7 @@ class UsernoteModel extends ItemModel
 
 	public function add_attached ($contentID=0, $files=NULL, $gz=false, $key=false)
 	{
-		if (!$contentID || !$files) return;
+		if (!$contentID || !$files) return null;
 		$path = JPATH_BASE.'/'.$this->_storPath.'/attach/'.$contentID;
 		$msg = '';
 		$fns = [];
@@ -305,13 +304,13 @@ class UsernoteModel extends ItemModel
 				$msg .= Text::sprintf('COM_USERNOTES_UPLOADERR', $file['error']);
 			}
 		}
-		if ($fns) {
+		if ($fns !== []) {
 			// store file properties in the db
 			try
 			{
-				$db = $this->getDbo();
+				$db = $this->getDatabase();
 				foreach ($fns as $fn) {
-					list($fname,$fsize,$fmime) = $fn;
+					[$fname, $fsize, $fmime] = $fn;
 					$db->setQuery('SELECT attached FROM fileatt WHERE contentID='.$contentID.' AND attached='.$db->quote($fname));
 					$r = $db->loadResult();
 					if ($r) {
@@ -336,7 +335,7 @@ class UsernoteModel extends ItemModel
 		if (!$contentID) return false;
 		try
 		{
-			$db = $this->getDbo();
+			$db = $this->getDatabase();
 			$db->setQuery('SELECT attached FROM fileatt WHERE contentID='.$contentID);
 			return $db->loadRowList();
 		}
@@ -349,10 +348,10 @@ class UsernoteModel extends ItemModel
 
 	public function deleteAttachment ($contentID=0, $file=null)
 	{
-		if (!$contentID || !$file) return;
+		if (!$contentID || !$file) return null;
 		try
 		{
-			$db = $this->getDbo();
+			$db = $this->getDatabase();
 			$q = $db->getQuery(true);
 			$q->delete('fileatt')
 				->where('contentID='.$contentID)
@@ -371,15 +370,15 @@ class UsernoteModel extends ItemModel
 
 	public function renameAttachment ($contentID=0, $file=null, $tofile=null)
 	{
-		if (!$contentID || !$file || !$tofile) return;
-		if ($file == $tofile) return;
+		if (!$contentID || !$file || !$tofile) return null;
+		if ($file == $tofile) return null;
 		$path = JPATH_BASE.'/'.$this->_storPath.'/attach/'.$contentID.'/';
 		if (!file_exists($path.$file)) return 'No such file';
 		if (file_exists($path.$tofile)) return 'File already exists';
 		if (!rename($path.$file,$path.$tofile)) return 'Failed to rename file';
 		try
 		{
-			$db = $this->getDbo();
+			$db = $this->getDatabase();
 			$db->setQuery('UPDATE fileatt SET attached='.$db->quote($tofile).' WHERE contentID='.$contentID.' AND attached='.$db->quote($file));
 			$db->execute();
 		}
@@ -393,17 +392,17 @@ class UsernoteModel extends ItemModel
 
 	public function deleteAttachments ($contentID=0)
 	{
-		if (!$contentID) return;
+		if (!$contentID) return null;
 
 		$atDir = $this->_storPath.'/attach/'.$contentID;
 
 		// do nothing if there are no attachments
-		if (!file_exists($atDir)) return;
+		if (!file_exists($atDir)) return null;
 
 		$atts = [];
 		try
 		{
-			$db = $this->getDbo();
+			$db = $this->getDatabase();
 			$db->setQuery('SELECT contentID,attached FROM fileatt WHERE contentID='.$contentID);
 			$atts = $db->loadRowList();
 			foreach ($atts as $att) {
@@ -422,11 +421,11 @@ class UsernoteModel extends ItemModel
 	}
 
 
-	public function dofraction ($cid)
+	public function dofraction ($cid): void
 	{
 		try
 		{
-			$db = $this->getDbo();
+			$db = $this->getDatabase();
 			$db->setQuery('SELECT serial_content FROM content WHERE contentID='.$cid);
 			$cont = $db->loadResult();
 			$pattern = '/([^\d])(\d)\/(\d)([^\d])/';
@@ -445,11 +444,11 @@ class UsernoteModel extends ItemModel
 	}
 
 
-	public function unfraction ($cid)
+	public function unfraction ($cid): void
 	{
 		try
 		{
-			$db = $this->getDbo();
+			$db = $this->getDatabase();
 			$db->setQuery('SELECT serial_content FROM content WHERE contentID='.$cid);
 			$cont = $db->loadResult();
 			$pattern = '/([^\d])(\d)(&frac)/';
@@ -472,7 +471,7 @@ class UsernoteModel extends ItemModel
 	{
 		try
 		{
-			$db = $this->getDbo();
+			$db = $this->getDatabase();
 			$q = $db->getQuery(true);
 			$q->select('contentID,isParent,parentID')->from('notes')->where('itemID='.$iid);
 			$db->setQuery($q);
@@ -502,7 +501,7 @@ class UsernoteModel extends ItemModel
 	{
 		try
 		{
-			$db = $this->getDbo();
+			$db = $this->getDatabase();
 			$db->setQuery('PRAGMA  application_id='.$nid);
 			$db->execute();
 			return 'Published';
@@ -511,16 +510,16 @@ class UsernoteModel extends ItemModel
 		{
 			$this->setError($e);
 		}
+		return null;
 	}
 
 	public function getPublish ()
 	{
 		try
 		{
-			$db = $this->getDbo();
+			$db = $this->getDatabase();
 			$db->setQuery('PRAGMA  application_id');
-			$pid = $db->loadResult();
-			return $pid;
+			return $db->loadResult();
 		}
 		catch (Exception $e)
 		{
@@ -528,7 +527,7 @@ class UsernoteModel extends ItemModel
 		}
 	}
 
-	private function gzFile ($src, $dest)
+	private function gzFile ($src, string $dest): false|string
 	{
 		$error = false; 
 		if ($fp_out = gzopen($dest, 'wb9')) { 
@@ -543,16 +542,17 @@ class UsernoteModel extends ItemModel
 		} else {
 			$error = true; 
 		}
-		if ($error) return false; 
-		else return $dest; 
+		if ($error) return false;
+
+		return $dest; 
 	}
 
 
-	private function deleteFolder ($iid)
+	private function deleteFolder ($iid): void
 	{
 		try
 		{
-			$db = $this->getDbo();
+			$db = $this->getDatabase();
 			$db->setQuery('SELECT itemID FROM notes WHERE parentID='.$iid);
 			$itms = $db->loadAssocList();
 			foreach ($itms as $itm) {
@@ -571,7 +571,7 @@ class UsernoteModel extends ItemModel
 		// Initialize variables
 		$app = Factory::getApplication();
 		$params = ComponentHelper::getParams('com_usernotes');
-		$input = $app->input;
+		$input = $app->getInput();
 
 		// menu params
 		$mparams = $app->getParams();

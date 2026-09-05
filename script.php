@@ -1,17 +1,19 @@
 <?php
 /**
 * @package		com_usernotes
-* @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.4
+* @since		1.6.0
 */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Installer\InstallerScript;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
+use RJCreations\Library\RJUserCom;
 
 class com_usernotesInstallerScript extends InstallerScript
 {
@@ -19,7 +21,7 @@ class com_usernotesInstallerScript extends InstallerScript
 	protected $com_name = 'com_usernotes';
 	protected $release = '';
 
-	public function install ($parent)
+	public function install ($parent): void
 	{
 		$parent->getParent()->setRedirectURL('index.php?option='.$this->com_name);
 	}
@@ -30,7 +32,7 @@ class com_usernotesInstallerScript extends InstallerScript
 	}
 
 
-	public function update ($parent)
+	public function update ($parent): void
 	{
 		Factory::getApplication()->enqueueMessage('<a href="index.php?option=com_usernotes&view=groupnotes">'.Text::_('COM_USERNOTES_UPDATE_MESSAGE').'</a>', 'warning');
 	}
@@ -54,7 +56,7 @@ class com_usernotesInstallerScript extends InstallerScript
 			return false;
 		}
 		// and is current enough
-		if (!method_exists('RJCreations\Library\RJUserCom','Igaa')) {
+		if (!(method_exists('RJCreations\Library\RJUserCom','Igaa')) || RJUserCom::Igaa()<5) {
 			Log::add('The installed version of <a href="https://github.com/ron4mac/joomla_lib_rjuser" target="_blank">RJUser Library</a> must be updated.', Log::WARNING, 'jerror');
 			return false;
 		}
@@ -65,9 +67,11 @@ class com_usernotesInstallerScript extends InstallerScript
 		} else {
 			$this->release = $parent->get('manifest')->version;
 		}
+
+		return null;
 	}
 
-	public function postflight ($type, $parent)
+	public function postflight ($type, $parent): void
 	{
 		if ($type == 'uninstall') return;
 		$params['version'] = $this->release;
@@ -83,11 +87,11 @@ class com_usernotesInstallerScript extends InstallerScript
 	}
 
 
-	private function mySetParams ($param_array=[], $replace=false)
+	private function mySetParams (array $param_array=[], bool $replace=false): void
 	{
 		if (count($param_array) > 0) {
 			// read the existing component value(s)
-			$db = Factory::getDbo();
+			$db = Factory::getContainer()->get(DatabaseInterface::class);
 			$db->setQuery('SELECT params FROM #__extensions WHERE name = "'.$this->com_name.'"');
 			$params = json_decode($db->loadResult(), true);
 			// add the new variable(s) to the existing one(s), replacing existing only if requested

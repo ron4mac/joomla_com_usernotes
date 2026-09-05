@@ -3,13 +3,15 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.6
+* @since		1.6.0
 */
+/** @var HtmlView $this */
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Language\Text;
 use RJCreations\Component\Usernotes\Site\Helper\FileEncrypt;
+use RJCreations\Component\Usernotes\Site\View\Atvue\HtmlView;
 
 if (file_exists($this->fpath)) {
 	if ($this->down) {

@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.6
+* @since		1.6.0
 */
 namespace RJCreations\Component\Usernotes\Site\View\Edit;
 
@@ -12,10 +12,14 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use RJCreations\Library\RJUserCom;
 use RJCreations\Component\Usernotes\Site\View\ViewBase;
+use RJCreations\Component\Usernotes\Site\Model\EditModel;
 use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
 class HtmlView extends ViewBase
 {
+	public $form;
+	public $pageclass_sfx;
+
 	protected $type;
 	protected $pid;
 	protected $state;
@@ -33,16 +37,18 @@ class HtmlView extends ViewBase
 
 	public function display ($tpl = null)
 	{
+		/** @var EditModel $model */
+		$m = $this->getModel();
+
 		$app = Factory::getApplication();
-		$input = $app->input;
+		$input = $app->getInput();
 
 		// Get view related request variables.
 		$this->type = $input->get('type','','cmd');
 		$this->pid = $input->get('pid',0,'int');
 
 		// Get model data.
-		$m = $this->getModel();
-		$this->state = $this->get('State');
+		$this->state = $m->getState();
 		$this->isecure = $m->itemIsSecure($this->pid);
 		$item = $m->getItem($input->get('nid',0,'int'));
 
@@ -55,7 +61,7 @@ class HtmlView extends ViewBase
 				$cookn = UsernotesHelper::hashCookieName(RJUserCom::getInstObject(), $item->itemID, $item->contentID);
 				$cookv = $input->cookie->getBase64($cookn);
 				if ($cookv) {
-					setcookie($cookn, '', time() - 3600);
+					setcookie($cookn, '', ['expires' => time() - 3600]);
 					$item->ephrase = UsernotesHelper::doCrypt($item->itemID.'-@:'.$item->contentID, $cookv, true);
 				} elseif ($ephrase = $input->post->get('ephrase','','string')) {
 					$item->ephrase = $ephrase;
@@ -86,9 +92,8 @@ class HtmlView extends ViewBase
 
 		// Check for errors.
 		// @TODO: Maybe this could go into JComponentHelper::raiseErrors($this->get('Errors'))
-		if (count($errors = $this->get('Errors'))) {
+		if (count($errors = $m->getErrors())) {
 			throw new Exception(implode("\n", $errors), 500);
-			return false;
 		}
 
 		// Get the current menu item
