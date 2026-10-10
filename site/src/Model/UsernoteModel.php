@@ -21,7 +21,7 @@ use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
 class UsernoteModel extends ItemModel
 {
-	use BreadcrumbTrait;
+	use NotesModelTrait;
 
 	protected $_context = 'com_usernotes.usernote';
 	protected $_storPath;

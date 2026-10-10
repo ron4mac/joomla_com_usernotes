@@ -7,7 +7,7 @@
 */
 namespace RJCreations\Component\Usernotes\Site\Model;
 
-trait BreadcrumbTrait {
+trait NotesModelTrait {
 	public function pathWays ($to)
 	{
 		$db = $this->getDatabase();

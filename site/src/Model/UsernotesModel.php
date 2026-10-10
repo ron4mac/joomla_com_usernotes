@@ -17,7 +17,7 @@ use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
 class UsernotesModel extends ListModel
 {
-	use BreadcrumbTrait;
+	use NotesModelTrait;
 
 	const DBFILE = '/usernotes.db3';
 	protected $instanceObj;

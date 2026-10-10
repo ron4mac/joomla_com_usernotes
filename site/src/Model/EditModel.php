@@ -18,7 +18,7 @@ use RJCreations\Library\RJUserCom;
 
 class EditModel extends FormModel
 {
-	use BreadcrumbTrait;
+	use NotesModelTrait;
 
 	protected $_context = 'com_usernotes.usernote';
 	protected $_data;
