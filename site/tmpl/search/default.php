@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.6.0
+* @since		1.6.1
 */
 /** @var \RJCreations\Component\Usernotes\Site\View\Search\HtmlView $this */
 defined('_JEXEC') or die;
@@ -23,7 +23,7 @@ $jsicns = [
 	'clip' => HtmlUsernotes::getIcon('clip'),
 	'cmnt' => HtmlUsernotes::getIcon('cmms')
 ];
-$this->jDoc->addScriptDeclaration('UNote.L = '.json_encode($jslang).';
+$this->wa->addInlineScript('UNote.L = '.json_encode($jslang).';
 UNote.I = '.json_encode($jsicns).';
 ');
 

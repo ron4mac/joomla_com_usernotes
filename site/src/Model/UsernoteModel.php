@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.6.0
+* @since		1.6.1
 */
 namespace RJCreations\Component\Usernotes\Site\Model;
 
@@ -21,6 +21,8 @@ use RJCreations\Component\Usernotes\Administrator\Helper\UsernotesHelper;
 
 class UsernoteModel extends ItemModel
 {
+	use BreadcrumbTrait;
+
 	protected $_context = 'com_usernotes.usernote';
 	protected $_storPath;
 	protected $_item;	// use for cache

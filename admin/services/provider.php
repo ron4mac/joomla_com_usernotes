@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.6.0
+* @since		1.6.1
 */
 defined('_JEXEC') or die;
 
@@ -29,7 +29,7 @@ return new class implements ServiceProviderInterface
 		$container->registerServiceProvider(new ComponentDispatcherFactory('\\RJCreations\\Component\\Usernotes'));
 		$container->set(
 				ComponentInterface::class,
-				function (Container $container): \RJCreations\Component\Usernotes\Administrator\Extension\UsernotesComponent
+				function (Container $container): UsernotesComponent
 				{
 					$component = new UsernotesComponent($container->get(ComponentDispatcherFactoryInterface::class));
 					$component->setMVCFactory($container->get(MVCFactoryInterface::class));

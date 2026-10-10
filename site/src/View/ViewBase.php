@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.6.0
+* @since		1.6.1
 */
 namespace RJCreations\Component\Usernotes\Site\View;
 
@@ -34,6 +34,7 @@ class ViewBase extends BaseHtmlView
 	protected $instanceObj;
 //	protected $instance;
 	protected $jDoc;
+	protected $wa;
 
 	// allow subclass to specify alternate css file(s)
 	protected $usecss = 'usernotes';
@@ -51,24 +52,22 @@ class ViewBase extends BaseHtmlView
 		}
 //		$this->instance = Factory::getApplication()->getUserState('com_usernotes.instance', '::');
 		$this->jDoc = Factory::getDocument();
-
-if ($this->jDoc->getType() === 'html') {
-
 		// get the web asset manager
-		$wa = $this->jDoc->getWebAssetManager();
+		$this->wa = $this->jDoc->getWebAssetManager();
 
-		// get css's for subclasses
-		if (!is_array($this->usecss)) $this->usecss = [$this->usecss];
-		foreach ($this->usecss as $css) {
-			$wa->useStyle('com_usernotes.css.'.$css);
+		if ($this->jDoc->getType() === 'html') {
+			// get css's for subclasses
+			if (!is_array($this->usecss)) $this->usecss = [$this->usecss];
+			foreach ($this->usecss as $css) {
+				$this->wa->useStyle('com_usernotes.css.'.$css);
+			}
+			// get js's
+			if (!is_array($this->usejs)) $this->usejs = [$this->usejs];
+			foreach ($this->usejs as $js) {
+				$this->wa->useScript('com_usernotes.'.$js);
+			}
 		}
 
-		// get js's
-		if (!is_array($this->usejs)) $this->usejs = [$this->usejs];
-		foreach ($this->usejs as $js) {
-			$wa->useScript('com_usernotes.'.$js);
-		}
-}
 		// Get the component parameters
 		$this->cparams = ComponentHelper::getParams('com_usernotes');		//echo'<xmp>';var_dump($this->cparams);echo'</xmp>';
 		// and the menu instance parameters
@@ -84,22 +83,15 @@ if ($this->jDoc->getType() === 'html') {
 
 	protected function buildPathway ($to)
 	{
-		$db = Factory::getContainer()->get('DatabaseDriver');
 		$pw = $this->app->getPathway();
-		$crums = [];
-		while ($to) {
-			$db->setQuery('SELECT title,parentID,secured FROM notes WHERE itemID='.$to);
-			$r = $db->loadAssoc();
-			if ($r['secured']) {
-				$r['title'] = base64_decode($r['title']);
+		$m = $this->getModel();
+		if (method_exists($m, 'pathWays')) {
+			$crums = $m->pathWays($to);
+			foreach ($crums as $crum) {
+				$pw->addItem($crum[0], $this->aUrl($crum[1]));
 			}
-//			array_unshift($crums, [$r['title'],'index.php?option=com_usernotes&pid='.$to]);
-//			array_unshift($crums, [$r['title'], Route::_('index.php?option=com_usernotes&pid='.$to.'&Itemid='.$this->menuid, false)]);
-			array_unshift($crums, [$r['title'], $this->aUrl('pid='.$to)]);
-			$to = $r['parentID'];
-		}
-		foreach ($crums as $crum) {
-			$pw->addItem($crum[0], $crum[1]);
+		} else {
+			$pw->setPathway([]);
 		}
 	}
 

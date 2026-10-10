@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.6.0
+* @since		1.6.1
 */
 /** @var \RJCreations\Component\Usernotes\Site\View\Edit\HtmlView $this */
 defined('_JEXEC') or die;
@@ -26,7 +26,7 @@ $jsvars = [
 $jslang = [
 		'ru_sure' => Text::_('COM_USERNOTES_RU_SURE')
 	];
-$this->jDoc->addScriptDeclaration('var baseURL = "'.Uri::base().'";
+$this->wa->addInlineScript('var baseURL = "'.Uri::base().'";
 	UNote.L = '.json_encode($jslang).';
 	UNote.V = '.json_encode($jsvars).';
 ');

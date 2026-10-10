@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.6.0
+* @since		1.6.1
 */
 /** @var \RJCreations\Component\Usernotes\Site\View\Usernote\HtmlView $this */
 defined('_JEXEC') or die;
@@ -34,7 +34,7 @@ $jsvars = [
 $jsicns = [
 	'abrt' => HtmlUsernotes::getIcon('abrt')
 ];
-$this->jDoc->addScriptDeclaration('var baseURL = "'.Uri::base().'";
+$this->wa->addInlineScript('var baseURL = "'.Uri::base().'";
 var upldDestURL = "'.$this->aUrl('format=raw').'";
 var fup_payload = {task:"EditRaw.attach",iID:'.$this->item->itemID.',cID:'.$this->item->contentID.',[Joomla.getOptions("csrf.token","")]:"1"};
 var uploadMaxFilesize = '.$this->maxUploadBytes.';
