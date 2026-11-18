@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.6.0
+* @since		1.6.2
 */
 defined('_JEXEC') or die;
 
@@ -20,6 +20,13 @@ class com_usernotesInstallerScript extends InstallerScript
 	protected $minimumJoomla = '4.1';
 	protected $com_name = 'com_usernotes';
 	protected $release = '';
+	protected $deleteFolders = [
+		'components/com_usernotes/classes',
+		'components/com_usernotes/static',
+		'administrator/components/com_usernotes/forms',
+		'administrator/components/com_usernotes/helpers',
+		'administrator/components/com_usernotes/static'];
+	protected $deleteFiles = [];
 
 	public function install ($parent): void
 	{
@@ -83,6 +90,9 @@ class com_usernotesInstallerScript extends InstallerScript
 			$params['standard_skin'] = '';
 			$params['show_version'] = false;
 			$this->mySetParams($params);
+		}
+		if ($type === 'update') {
+			$this->removeFiles();
 		}
 	}
 
