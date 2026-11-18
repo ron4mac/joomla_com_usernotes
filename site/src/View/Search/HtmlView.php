@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.6.0
+* @since		1.6.2
 */
 namespace RJCreations\Component\Usernotes\Site\View\Search;
 
@@ -35,12 +35,14 @@ class HtmlView extends ViewBase
 		$app->getPathWay()->addItem(Text::_('COM_USERNOTES_SEARCH'),'');
 
 		// Get view related request variables.
-		$this->sterm = $app->getInput()->getString('sterm');
-		$this->pid = $app->getInput()->getInt('pid', 0);
-	//	$this->sterm = base64_decode(str_replace(['-','_'], ['+','/'], $app->input->get->getString('s',''))) || $this->sterm;
+		$input = $app->getInput();
+		$this->sterm = $input->getString('sterm');
+		$this->pid = $input->getInt('pid', 0);
+		$starred = $input->getBool('starred', false);
+		$recent = $input->getBool('recent', false);
 
 		// Get model data.
-		$items = $m->search($this->sterm, $this->pid);
+		$items = $m->search($this->sterm, $this->pid, $starred, $recent);
 		$m->addItemPaths($items);
 
 		// Check for errors.

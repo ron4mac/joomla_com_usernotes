@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.6.1
+* @since		1.6.2
 */
 namespace RJCreations\Component\Usernotes\Site\Model;
 
@@ -64,7 +64,7 @@ class UsernotesModel extends ListModel
 	}
 
 
-	public function search ($sterm, $pid)
+	public function search ($sterm, $pid, $starred=false, $recent=false)
 	{
 		if ($sterm == '**starred') return $this->starred();
 		if ($sterm == '**recent') return $this->recent();
@@ -88,7 +88,6 @@ class UsernotesModel extends ListModel
 		$userID = $this->instanceObj->uid;
 
 		$db = $this->getDatabase();
-//		$db->getConnection()->sqliteCreateFunction('sfunc', [$this,'sfunc'], 1);
 
 		$query = $db->getQuery(true);
 		$query->select('I.itemID,I.title,I.isParent,I.parentID,I.shared,I.secured,I.vtotal,I.vcount,I.cmntcnt')->from('notes AS I');
@@ -99,6 +98,11 @@ class UsernotesModel extends ListModel
 		}
 		$query->where(['I.secured IS NOT 1','(I.ownerID == \''.$userID.'\' OR I.shared)']);
 		$query->andWhere(['sfunc(C.serial_content)','sfunc(I.title)']);
+		if ($starred) {
+			$query->andWhere(['I.vtotal > 0'])
+			->order('vavg(I.vtotal,I.vcount) DESC');
+		}
+		if ($recent) $query->order('I.cdate DESC');
 		$db->setQuery($query);
 		$this->logQ($db);
 		$a1 = $db->loadObjectList();

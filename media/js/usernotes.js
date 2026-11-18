@@ -2,7 +2,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.6
+* @since		1.6.2
 */
 'use strict';
 
@@ -158,6 +158,19 @@
 
 
 	UNote.moveTo = (evt) => {
+		estop(evt);
+		ddlog = document.createElement('div');
+		ddlog.className = 'utildlog';
+		_celm.appendChild(ddlog);
+		postAction('EditRaw.cat_hier', { iID: UNote.V.itemID, pID: UNote.V.parentID }, (data) => {
+			if (data) { ddlog.innerHTML = data; }
+			else { alert('no data'); }
+		});
+		return false;
+	};
+
+
+	UNote.fMoveTo = (evt) => {
 		estop(evt);
 		ddlog = document.createElement('div');
 		ddlog.className = 'utildlog';

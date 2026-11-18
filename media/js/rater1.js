@@ -1,3 +1,9 @@
+/**
+* @package		com_usernotes
+* @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
+* @license		GNU General Public License version 3 or later; see LICENSE.txt
+* @since		1.6.2
+*/
 'use strict';
 /*
  * This content is licensed according to the W3C Software License at

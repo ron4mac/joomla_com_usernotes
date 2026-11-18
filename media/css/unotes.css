@@ -2,10 +2,13 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2025 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.5.2
+* @since		1.6.2
 */
 
 /* container */
+#container{
+	position: relative;
+}
 #container #body {
 	margin-top: .6em;
 }
@@ -27,6 +30,22 @@ div.search .fa {
 	color: darkgray;
 	cursor: pointer;
 }
+div.search input[type="search"] {
+	margin-right: .5rem;
+}
+.fa-checkbox input[type="checkbox"] {
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+.fa-checkbox i {
+	font-size: large;
+}
+.fa-checkbox input:checked + i {
+	color: blue;
+}
+
 
 /* lists of notes/folders */
 #itemsList .item {
@@ -117,6 +136,26 @@ div.search .fa {
 .rj_hdlog:focus-visible {
 	outline: none;
 }
+
+
+/* ============================ small utility dialog
+*/
+div.utildlog {
+	position: absolute;
+	min-width: 300px;
+	bottom: 36px;
+	left: 50%;
+	transform: translate(-50%, 0);
+	padding: 6px;
+	background-color: #DFD;
+	border: 2px solid #CCC;
+	border-radius: 3px;
+	box-shadow: 0 0 5px #D0D0D0;
+}
+div.utildlog button {
+	margin-left: 0.5rem;
+}
+
 
 /* footer */
 #container .footer {

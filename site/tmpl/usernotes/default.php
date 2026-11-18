@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.6.1
+* @since		1.6.2
 */
 /** @var \RJCreations\Component\Usernotes\Site\View\Usernotes\HtmlView $this */
 defined('_JEXEC') or die;
@@ -25,6 +25,7 @@ $jslang = [
 	];
 $jsvars = [
 	'aBaseURL' => $this->aUrl('format=raw'),
+	'itemID' => $this->item->itemID
 ];
 $jsicns = [
 	'clip' => HtmlUsernotes::getIcon('clip'),
@@ -68,7 +69,7 @@ $ratings = $this->mparams->get('ratings', false);
 // accommodate targeted breadcrumb module
 echo HTMLHelper::_('content.prepare', '{loadposition usernotes_bc}');
 // display the search field
-echo HtmlUsernotes::searchField($this->parentID);
+echo HtmlUsernotes::searchField($this->parentID, '', $ratings);
 ?>
 <style>
 	.rated, #ratep { float: right; }
@@ -90,6 +91,7 @@ echo HtmlUsernotes::searchField($this->parentID);
 		&nbsp;
 		<?php endif;?>
 		<?php if ($this->parentID) {
+			if ($this->access & ITM_CAN_DELE) echo HtmlUsernotes::fMovActIcon($this->parentID,Text::_('COM_USERNOTES_EDIT_FORM_MOVE_F'));
 			if ($this->access & ITM_CAN_DELE) echo HtmlUsernotes::fDelActIcon($this->parentID,Text::_('COM_USERNOTES_EDIT_FORM_DELETE_F'));
 			if ($this->access & ITM_CAN_EDIT) echo HtmlUsernotes::fEdtActIcon($this->parentID,Text::_('COM_USERNOTES_EDIT_FORM_EDIT_F'));
 			}

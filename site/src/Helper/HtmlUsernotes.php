@@ -3,7 +3,7 @@
 * @package		com_usernotes
 * @copyright	Copyright (C) 2015-2026 RJCreations. All rights reserved.
 * @license		GNU General Public License version 3 or later; see LICENSE.txt
-* @since		1.6.0
+* @since		1.6.2
 */
 namespace RJCreations\Component\Usernotes\Site\Helper;
 
@@ -149,6 +149,10 @@ abstract class HtmlUsernotes
 				['title'=>$titl, 'class'=>'act act-left', M34C::bs('toggle')=>'modal', M34C::bs('target')=>'#foldercr-modal']
 			);
 	}
+	public static function fMovActIcon ($id, $titl)
+	{
+		return '<a href="javascript:void(0);" title="'.$titl.'" class="act act-left" onclick="UNote.fMoveTo(event)">'.self::getIcon('mv').'</a>';
+	}
 	public static function fEdtActIcon ($id, $titl)
 	{
 		return HTMLHelper::link(
@@ -176,15 +180,17 @@ abstract class HtmlUsernotes
 	}
 
 
-	public static function searchField ($pid, $val='')
+	public static function searchField ($pid, $val='', $ratings=false)
 	{
 		$fact = self::aiUrl('');
+		$r = $ratings ? '<label class="fa-checkbox" title="starred items"><input type="checkbox" name="starred" value="1" aria-label="starred items"><i class="fa fa-star-half-o"></i></label>' : '';
 		return <<<EOD
 <div class="search">
 	<form name="sqry" action="{$fact}" method="POST" onsubmit="return UNote.performSearch(this)">
 		<input type="hidden" name="task" value="search">
 		<input type="hidden" name="pid" value="{$pid}">
-		<input type="search" name="sterm" size="40" results="0" autosave="true" placeholder="Search..." value="{$val}">
+		<input type="search" name="sterm" size="40" results="0" autosave="true" placeholder="Search..." value="{$val}">{$r}
+		<label class="fa-checkbox" title="recently added"><input type="checkbox" name="recent" value="1" aria-label="recently added"><i class="fa fa-clock-o"></i></label>
 		<input type="submit" style="display: none">
 	</form>
 	<i class="fa fa-info-circle" onclick="UNote.helpDisplay('search')"></i>
